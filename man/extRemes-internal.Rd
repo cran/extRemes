@@ -1,6 +1,8 @@
 \name{extRemes internal }
 \alias{DataSummaryGUI}
 \alias{extremalind.gui}
+\alias{percentilefun}
+\alias{quantilefun}
 \alias{gev.ret}
 \alias{gev.rlci}
 \alias{gpd.ret}

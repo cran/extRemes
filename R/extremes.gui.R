@@ -15,11 +15,11 @@ data.exists <- FALSE
 			}
 		} # end of for i loop
 if( !data.exists) {
-	mess <- paste("Must load or simulate a data set. \n\n")
-	tkconfigure(txt, state = "normal")
-	tkinsert(txt, "end", mess)
-	tkyview.moveto(txt, 1)
-	tkconfigure(txt, state = "disabled")
+	print("Must load or simulate a data set.")
+	# tkconfigure(txt, state = "normal")
+	# tkinsert(txt, "end", mess)
+	# tkyview.moveto(txt, 1)
+	# tkconfigure(txt, state = "disabled")
 	return(0)
 	} else return(1)
 } # end of ev.dataexists fcn
@@ -258,7 +258,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 1.62")
+    tkwm.title(base, "Extremes Toolkit: version 1.63")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 

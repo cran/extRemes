@@ -1,0 +1,19 @@
+citHeader("To cite package 'extRemes' in publications use:")
+     
+     ## R >= 2.8.0 passes package metadata to citation().
+     if(!exists("meta") || is.null(meta)) meta <- packageDescription("extRemes")
+     year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date)
+     vers <- paste("R package version", meta$Version)
+     
+     citEntry(entry="article",
+              title = "New software to analyze how extremes change over time",
+              author = personList(as.person("Eric Gilleland"),
+                                  as.person("Richard W. Katz")),
+	      journal = "Eos",
+              year = 2011,
+    	      volume = 92,
+	      number = 2,
+	      pages = "13--14", 
+              textVersion =
+              paste("Gilleland, E. and R. W. Katz, 2011: New software to analyze how extremes change over time. ",
+                    "Eos, 92(2), 13--14", sep=""))
