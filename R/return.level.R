@@ -110,14 +110,12 @@ if( class(z) == "gev.fit") {
 										rl.xlow=yl[1],
 										rl.xup=yl[2],
 										conf=cl,
-										npy=npy,
 										rl.only=TRUE))
 			else temp <- try( gpd.parameterCI(	z=z,
 								m=rlevels[i],
 								rl.xlow=yl[1]*1.25,
 								rl.xup=yl[2]*1.5,
 								conf=cl,
-								npy=npy,
 								rl.only=TRUE))
 			if( class(temp) != "try-error") {
 				conf.low[i] <- temp$rl$dn
