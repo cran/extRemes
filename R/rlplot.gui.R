@@ -1,7 +1,8 @@
 rlplot.gui <- function( base.txt) {
 
 conf.value <- tclVar("0.05")
-rlevel.value <- tclVar("")
+ci <- tclVar(0)
+# rlevel.value <- tclVar("")
 
 # Refresh fcn 
 refresh <- function() {
@@ -9,7 +10,7 @@ refresh <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
                 dd <- get( full.list[ data.select])
-                } else stop("fitdiag.gui: Must load a data object!")
+                } else stop("rlplot.gui: Must load a data object!")
 	models.fit <- names( dd$models)
 	for( i in 1:length( models.fit))
 		tkinsert( fit.listbox, "end", paste( models.fit[i]))
@@ -20,19 +21,30 @@ submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
                 dd <- get( full.list[ data.select])
-                } else stop("fitdiag.gui: Must load a data object!")
+                } else stop("rlplot.gui: Must load a data object!")
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
-	rlvl <- as.character( tclvalue( rlevel.value))
-	if( rlvl=="") return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)))
-	else {
-		rlvl <- get( rlvl)
-		return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)),rlevels=rlvl)
-		}
+# 	rlvl <- as.character( tclvalue( rlevel.value))
+# 	if( rlvl=="") return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)))
+# 	else {
+# 		rlvl <- get( rlvl)
+# 		return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)),rlevels=rlvl)
+# 		}
+	z <- dd$models[[ fit.select]]
+	ci.val <- as.numeric(tclvalue(conf.value))
+	rlplot(a=z$mle, u=z$threshold, la=z$rate, n=z$n, npy=z$npy, mat=z$cov, dat=z$data, xdat=z$xdata,
+			klaas=class(z), ci=ci.val, add.ci=ifelse( tclvalue(ci)==1, TRUE,FALSE))
+	tkdestroy( base)
 	invisible()
 } # end of submit fcn.
 
-rlhelp <- function( base.txt) {
-	help( return.level)
+rlhelp <- function() {
+	tkconfigure(base.txt,state="normal")
+	msg1 <- paste("", "Plots the return levels for several return periods.", "",
+			"If desired, confidence bounds may be added using the delta method.",
+			sep="\n")
+	tkinsert(base.txt,"end",msg1)
+	tkconfigure(base.txt,state="disabled")
+	# help( return.level)
 	} # end of rlhelp fcn
 
 endprog <- function() {
@@ -82,9 +94,9 @@ tkbind( data.listbox, "<Button-1>", "")
 tkbind( data.listbox, "<ButtonRelease-1>", refresh)
 
 # Middle frame for choosing confidence level and which fit to plot.
-conf.frm <- tkframe( mid.frm, borderwidth=2, relief="groove")
-conf.entry <- tkentry( conf.frm, textvariable=conf.value, width=5)
-tkpack( tklabel( conf.frm, text="Confidence Level", padx=4), conf.entry, side="left")
+# conf.frm <- tkframe( mid.frm, borderwidth=2, relief="groove")
+# conf.entry <- tkentry( conf.frm, textvariable=conf.value, width=5)
+# tkpack( tklabel( conf.frm, text="Confidence Level", padx=4), conf.entry, side="left")
 
 fit.frm <- tkframe( mid.frm, borderwidth=2, relief="flat")
 fit.listbox <- tklistbox( fit.frm,
@@ -100,11 +112,17 @@ tkinsert( fit.listbox, "end", "")
 
 tkpack( tklabel( fit.frm, text="Select a fit: ", padx=4), side="left")
 tkpack( fit.listbox, fit.scroll, side="left", fill="y")
-tkpack(conf.frm, fit.frm, side="top")
+tkpack(fit.frm, side="top")
 
-# Return Level frame.
-rlvl.entry <- tkentry( rlvl.frm, textvariable=rlevel.value, width=10)
-tkpack( tklabel( rlvl.frm, text="Specific Return Levels",padx=4),rlvl.entry,side="left")
+# Return Level confidence interval frame.
+conf.frm <- tkframe( rlvl.frm, borderwidth=2, relief="groove")
+conf.entry <- tkentry( conf.frm, textvariable=conf.value, width=5)
+tkpack( tklabel( conf.frm, text="Confidence Level", padx=4), conf.entry, side="left")
+
+rlvl.chk <- tkcheckbutton(rlvl.frm,text="Add confidence bounds",variable=ci)
+tkpack( conf.frm, rlvl.chk, side="top")
+# rlvl.entry <- tkentry( rlvl.frm, textvariable=rlevel.value, width=10)
+# tkpack( tklabel( rlvl.frm, text="Specific Return Levels",padx=4),rlvl.entry,side="left")
 
 # Bottom frame for execution and cancellation.
 

@@ -5,6 +5,7 @@
 \alias{gev.rlci}
 \alias{gpd.ret}
 \alias{gpd.rlci}
+\alias{gpd.rl2}
 \alias{indicatorTransform.gui}
 \alias{llhrt.gui}
 \alias{plot.gev.fit}
@@ -14,6 +15,7 @@
 \alias{plot.rlarg.fit}
 \alias{rl.gev.fit}
 \alias{rl.gpd.fit}
+\alias{rlplot}
 \alias{scatterplot.gui}
 \alias{damage}  
 \alias{Denmint}
@@ -85,6 +87,7 @@ gev.ret(A, b, c, p = 100, ...)
 gev.rlci(z, m, prange = NULL, conf = 0.95, nint = 100)
 gpd.ret(z, p)
 gpd.rlci(z, m, prange=NULL, npy = 365, conf = 0.95, nint = 100)
+gpd.rl2(a, u, la, n, npy, mat, dat, xdat, ci=0.05, add.ci=FALSE)
 indicatorTransform.gui(base.txt)
 llhrt.gui(base.txt)
 plot.gev.fit(x, ...)
@@ -94,6 +97,7 @@ plot.pp.fit(x, ...)
 plot.rlarg.fit(x, ...)
 rl.gev.fit(a, mat, dat)
 rl.gpd.fit(a, u, la, n, npy, mat, dat, xdat)
+rlplot(a, u, la, n, npy, mat, dat, xdat, klaas="gpd.fit", ci=0.05, add.ci=FALSE)
 scatterplot.gui(base.txt)
 damage
 Denmint
