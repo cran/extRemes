@@ -1,0 +1,8 @@
+dclust                  Decluster data by runs declustering.
+extremalindex           Estimate the extremal index (theta)
+gen.gev                 Simulate data from a generalized extreme value
+                        (GEV) (Generalized Pareto (GPD)) distribution.
+gev.parameterCI         Return level and shape parameter confidence
+                        intervals for GEV (or GP) distribution.
+return.level            Computes m-year return levels for GEV and GPD
+                        with confidence bounds.
