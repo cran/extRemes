@@ -12,8 +12,7 @@ gen.gpd(n,sigma,xi,u)
 }
 %- maybe also `usage' for other objects documented here.
 \arguments{
-  \item{p}{ A $1\times 3$ vector indicating the mean, scale and shape of the
-		GEV, respectively. }
+  \item{p}{ A 1 X 3 vector indicating the mean, scale and shape of the GEV, respectively. }
   \item{n}{ The sample size to generate.}
   \item{trend}{ Slope of the location parameter trend (if desired). }
   \item{sigma}{ Scale parameter of GPD.}
@@ -22,12 +21,12 @@ gen.gpd(n,sigma,xi,u)
 }
 \details{
 Value returned (with no trend) is derived from the follwing formula (GEV).
-$\mu + \sigma \frac{X^{-\xi - 1}}{\xi}$, where $X$ is a uniform random
+mu + sigma (X**(-xi - 1))*xi, where X is a uniform random
 variable.
 
 For GPD the formula is:
-$\frac{\sigma}{\xi}\cdot((1-$runif$(n))^{-\xi-1}$ for $\xi\neq 0$ and
-rexp$(n,$ rate=$\frac{1}{\sigma}$ for $\xi = 0$.
+sigma/xi * ((1-runif(n))**(-xi-1) for xi != 0 and
+rexp(n, rate=1/sigma for xi = 0.
 
 }
 \value{
