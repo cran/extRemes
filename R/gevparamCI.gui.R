@@ -209,7 +209,7 @@ if( !rl.only) {
 		cat( nl1)
 		}
 	} # end of if else 'gev.fit' present stmt
-	tkdestroy( base)
+	# tkdestroy( base)
         # tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of submit fcn

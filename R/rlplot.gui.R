@@ -2,7 +2,7 @@ rlplot.gui <- function( base.txt) {
 
 conf.value <- tclVar("0.05")
 ci <- tclVar(0)
-# rlevel.value <- tclVar("")
+rlevel.value <- tclVar("")
 
 # Refresh fcn 
 refresh <- function() {
@@ -38,9 +38,17 @@ submit <- function() {
 	# rlplotCMD <- paste( "rlplot( a=z[[\"mle\"]], u=z[[\"threshold\"]], la=z[[\"rate\"]], n=z[[\"n\"]], ",
 	# 	"mat=z[[\"cov\"]], dat=z[[\"data\"]], xdat=z[[\"xdata\"]], klaas=class( z), ",
 	# 	"ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
-	rlplotCMD <- paste( "rlplot( z=z, ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
+	save.rlvs <- tclvalue( rlevel.value)
+	if( save.rlvs == "") rlplotCMD <- paste( "rlplot( z=z, ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
+	else rlplotCMD <- paste( "rlvals <- rlplot( z=z, ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
 	eval( parse( text=rlplotCMD))
 	write( rlplotCMD, file="extRemes.log", append=TRUE)
+
+	if( save.rlvs != "") {
+		CMD <- paste( "assign( \"", save.rlvs, "\", rlvals, pos=\".GlobalEnv\")", sep="")
+		eval( parse( text=CMD))
+		write( CMD, file="extRemes.log", append=TRUE)
+		}
 	tkdestroy( base)
 	invisible()
 } # end of submit fcn.
@@ -130,8 +138,8 @@ tkpack( tklabel( conf.frm, text="Confidence Level", padx=4), conf.entry, side="l
 
 rlvl.chk <- tkcheckbutton(rlvl.frm,text="Add confidence bounds",variable=ci)
 tkpack( conf.frm, rlvl.chk, side="top")
-# rlvl.entry <- tkentry( rlvl.frm, textvariable=rlevel.value, width=10)
-# tkpack( tklabel( rlvl.frm, text="Specific Return Levels",padx=4),rlvl.entry,side="left")
+rlvl.entry <- tkentry( rlvl.frm, textvariable=rlevel.value, width=10)
+tkpack( tklabel( rlvl.frm, text="Save Return Levels As (optional)",padx=4),rlvl.entry,side="left")
 
 # Bottom frame for execution and cancellation.
 

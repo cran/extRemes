@@ -11,6 +11,11 @@ mat <- z$cov
 dat <- z$data
 xdat <- z$xdata
 klaas <- class( z)
+if( klaas=="rlarg.fit") {
+	z$data <- z$data[,1]
+	klaas <- "gev.fit"
+	warning("rlplot: Return Level plot using block maxima only (i.e., first column of dataset)")
+	}
 
 if( klaas=="gev.fit") {
     eps <- 1e-06
@@ -65,14 +70,17 @@ if( klaas=="gev.fit") {
         main = "Return Level Plot")
     lines(m[q > u - 1]/npy, q[q > u - 1])
     if( add.ci) {
-	lines(m[q > u - 1]/npy, q[q > u - 1] + qnorm(1-ci/2) * sqrt(v)[q > u - 1], col = 4)
-    	lines(m[q > u - 1]/npy, q[q > u - 1] - qnorm(1-ci/2) * sqrt(v)[q > u - 1], col = 4)
+	lines(m[q > u - 1]/npy, upper <- q[q > u - 1] + qnorm(1-ci/2) * sqrt(v)[q > u - 1], col = 4)
+    	lines(m[q > u - 1]/npy, lower <- q[q > u - 1] - qnorm(1-ci/2) * sqrt(v)[q > u - 1], col = 4)
+	} else {
+	upper <- NULL
+	lower <- NULL
 	}
     nl <- n - length(dat) + 1
     sdat <- sort(xdat)
     points((1/(1 - (1:n)/(n + 1))/npy)[sdat > u], sdat[sdat > u])
-	out <- list( period=m/npy, level=q)
+	out <- list( period=m/npy, level=q, lower=lower, upper=upper)
 	class( out) <- "extRemes.return"
-	}
+} else stop("rlplot: Must give an object of class \"gev.fit\", \"gpd.fit\", or \"rlarg.fit\"")
 invisible(out)
 }
