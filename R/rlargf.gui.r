@@ -236,9 +236,9 @@ first.time <- TRUE
         method.list <- c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN")
         method.select <- as.numeric(tkcurselection(method.listbox)) + 1
 	if( length( method.select) == 0) {
-                cat( paste( "No optimization method selected.  Using \"BFGS\"",
+                cat( paste( "No optimization method selected.  Using \"Nelder-Mead\"",
                         "(use \'help( optim)\' for more details)"), sep="\n")
-                method.value.cmd <- "method.value <- \"BFGS\""
+                method.value.cmd <- "method.value <- \"Nelder-Mead\""
 } else method.value.cmd <- paste( "method.value <- \"", method.list[method.select], "\"", sep="")
 	eval( parse( text=method.value.cmd))
 	write( method.value.cmd, file="extRemes.log", append=TRUE)

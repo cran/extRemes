@@ -32,7 +32,8 @@ fpp(xdat, threshold, npy = 365, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL
 For non-stationary fitting it is recommended that the covariates
      within the generalized linear models are (at least approximately)
      centered and scaled (i.e. the columns of 'ydat' should be
-     approximately centered and scaled).
+     approximately centered and scaled).  Otherwise, the optimization
+     numerics may be unstable.
 
 This function is a modification of the \pkg{ismev} function \code{pp.fit},
 but uses the estimation $\sum_i \lambda_i$ instead of $\sum_i \lambda_i\cdot I_{x > u}$
@@ -45,7 +46,7 @@ of the point process likelihood.
      assuming that successful convergence is indicated, the components
      'nexc', 'nllh', 'mle' and 'se' are always printed.
 
-   trans: An logical indicator for a non-stationary fit.
+   trans: A logical indicator for a non-stationary fit.
 
    model: A list with components 'mul', 'sigl' and 'shl'.
 

@@ -306,9 +306,9 @@ temp.cols <- as.numeric( unlist( strsplit( tclvalue( tkcurselection(sig.covlist)
 method.list <- c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN")
 method.select <- as.numeric( tkcurselection( method.listbox))+1
 if( length( method.select) == 0) {
-		cat( paste( "No optimization method selected.  Using \"BFGS\"",
+		cat( paste( "No optimization method selected.  Using \"Nelder-Mead\"",
 			"(use \'help( optim)\' for more details)"), sep="\n")
-		method.value <- "BFGS"
+		method.value <- "Nelder-Mead"
 } else method.value <- method.list[ method.select]
 
 	number.of.models <- length( dd$models)
