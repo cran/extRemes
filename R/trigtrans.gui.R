@@ -2,7 +2,7 @@ trigtrans.gui <- function(base.txt) {
 
 # This function provides a gui interface for finding the trigonometric
 # transformation of a dataset.  The gui will list all objects of class
-# "ev.data" and the column names of the user selected object.
+# "extRemesDataObject" and the column names of the user selected object.
 # After taking the sine (sin(2pi*t/T) and cosine (cos(2pi*t/T)) of the selected data,
 # will return two new columns with the same column names, but with a ".sinT" or ".cosT"
 # extension (for sine/cosine with period T).
@@ -23,7 +23,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data))
 		tkinsert( col.listbox, "end",
@@ -38,60 +38,106 @@ trig.trans <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
 
-cols.selected <- character(0)
+cols.selected.cmd <- "cols.selected <- character(0)"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
 
 # Gather column names to add trig transforms to end.
-cnames <- colnames( dd$data)
+# cnames <- colnames( dd$data)
+# cnames.cmd <- paste( "cnames <- colnames( ", full.list[ data.select], "$data)", sep="")
+cnames.cmd <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
 
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
 
-X <- dd$data[,temp]
+# X <- dd$data[,temp]
+if( length( temp) > 1) {
+	tempos <- character(0)
+	for( i in 1:(length( temp)-1)) tempos <- paste( tempos, temp, ", ", sep="")
+	tempos <- paste( "c( ", tempos, ")", sep="")
+} else tempos <- temp
+Xcmd <- paste( "X <- dd[[\"data\"]][, ", tempos, "]", sep="")
+eval( parse( text=Xcmd))
+# Xcmd <- paste( "X <- ", full.list[ data.select], "$data[,", tempos, "]", sep="")
+write( Xcmd, file="extRemes.log", append=TRUE)
 Tp <- as.numeric( tclvalue( period.val))
-sinT <- sin( 2*pi*X/Tp)
-cosT <- cos( 2*pi*X/Tp)
+sinTcmd <- paste( "sinT <- sin( 2*pi*X/", Tp, ")", sep="")
+eval( parse( text=sinTcmd))
+write( sinTcmd, file="extRemes.log", append=TRUE)
+cosTcmd <- paste( "cosT <- cos( 2*pi*X/", Tp, ")", sep="")
+eval( parse( text=cosTcmd))
+write( cosTcmd, file="extRemes.log", append=TRUE)
 
 # Make sure a column has been selected.
 if( is.na( temp)) return()
 
-cols.selected <- cnames[temp]
+for( i in 1:length( temp)) {
+	# cols.selected <- cnames[temp]
+	cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, \"", cnames[temp[i]], "\")", sep="")
+	eval( parse( text=cols.selected.cmd))
+	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
 
 newnames <- c( paste( cnames[temp], ".", "sin", round(Tp, digits=0), sep=""),
 		paste( cnames[temp], ".", "cos", round(Tp, digits=0), sep=""))
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, sinT, cosT)
-colnames( dd$data) <- cnames
-assign( full.list[ data.select], dd, pos=".GlobalEnv")
+for( i in 1:length( newnames)) {
+	# cnames <- c( cnames, newnames)
+	cnames.cmd <- paste( "cnames <- c( cnames, \"", newnames[i], "\")", sep="")
+	eval( parse( text=cnames.cmd))
+	write( cnames.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
+# dd$data <- cbind( dd$data, sinT, cosT)
+# dd.cmd <- paste( full.list[ data.select], "$data <- cbind( ", full.list[ data.select], "$data, sinT, cosT)", sep="")
+dd.cmd <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], sinT, cosT)"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
+# colnames( dd$data) <- cnames
+# colnames.cmd <- paste( "colnames( ", full.list[ data.select], "$data) <- cnames", sep="")
+colnames.cmd <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnames.cmd))
+write( colnames.cmd, file="extRemes.log", append=TRUE)
+assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+eval( parse( text=assignCMD))
+write( assignCMD, file="extRemes.log", append=TRUE)
 
-tkconfigure( base.txt, state="normal")
+# tkconfigure( base.txt, state="normal")
 msg <- paste( " ", "sin(2pi*X/T) and cos(2pi*X/T) taken for", " ", sep="\n")
-tkinsert( base.txt, "end", msg)
+cat( msg)
+# tkinsert( base.txt, "end", msg)
 for( i in 1:length( cols.selected)) {
 	msg1 <- paste( cols.selected[i], ", ", sep="")
 	msg2 <- paste(" assigned to ", deparse( newnames), sep="")
-	tkinsert( base.txt, "end", msg1)
-	tkinsert( base.txt, "end", msg2)
+	# tkinsert( base.txt, "end", msg1)
+	cat( msg1)
+	# tkinsert( base.txt, "end", msg2)
+	cat( msg2)
 	} # end of for i loop
 nl1 <- paste(" ", "**************", " ", sep="\n")
-tkinsert( base.txt, "end", nl1)
+# tkinsert( base.txt, "end", nl1)
+cat( nl1)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of trig.trans fcn
 
 trigtranshelp <- function() {
-	tkconfigure( base.txt, state="normal")
+# 	tkconfigure( base.txt, state="normal")
 	help.msg1 <- paste( " ",
 "This is a simple function that takes a data set X and returns two columns:",
 "sin(2*pi*X/T) and cos(2*pi*X/T), with T = period.", " ",
 "Returns two extra columns for each column transformed to data set.",
 "New data set will have the same previous column names, but with sinT and cosT",
-"extensions, where T is the period rounded to 0 digits.", sep="\n")
-	tkinsert( base.txt, "end", help.msg1)
-	tkconfigure( base.txt, state="disabled")
+"extensions, where T is the period rounded to 0 digits.", " ", sep="\n")
+# 	tkinsert( base.txt, "end", help.msg1)
+	cat( help.msg1)
+# 	tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of trigtranshelp
 
@@ -127,7 +173,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -146,7 +192,7 @@ tkbind( data.listbox, "<ButtonRelease-1>", refresh)
 leftmid.frm <- tkframe( mid.frm, borderwidth=2, relief="groove")
 col.listbox <- tklistbox( leftmid.frm,
 			yscrollcommand=function(...) tkset( col.scroll, ...),
-			selectmode="multiple",
+			selectmode="single", # was multiple, but wasn't set up for it, maybe change later.
 			width=20,
 			height=5,
 			exportselection=0)
@@ -155,7 +201,7 @@ col.scroll <- tkscrollbar( leftmid.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")

@@ -16,14 +16,22 @@ refresh <- function() {
 submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+		eval( parse( text=dd.cmd))
+		write( dd.cmd, file="extRemes.log", append=TRUE)
                 } else stop("fitdiag.gui: Must load a data object!")
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
-	plot( dd$models[[ fit.select]])
+	plotCMD <- paste( "plot( dd[[\"models\"]][[ ", fit.select, "]])", sep="")
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
 	invisible()
 } # end of submit fcn.
 
 diaghelp <- function( base.txt) {
+	cat( "\n", "Invokes slightly modified versions of the \'ismev\' functions: \n")
+	cat( "\'gev.diag\', \'gpd.diag\', \'rlarg.diag\' or \'pp.diag\' depending on\n")
+	cat( "The fitted object\'s class.\n")
+	cat( "See the help files for the above functions for more help (e.g., \'help( gev.diag)\').\n")
 	help( gev.diag)
 	} # end of diaghelp fcn
 
@@ -58,7 +66,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE

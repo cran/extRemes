@@ -23,20 +23,38 @@ submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
 		data.name <- full.list[ data.select]
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
                 } else stop("scrubber.gui: Must load a data object!")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
 	# Scrub any selected data columns.
 	resp.select <- as.numeric( tkcurselection( resp.listbox))+1
 	if( tclvalue( tkcurselection( resp.listbox)) != "") {
-		tmp.names <- colnames( dd$data)
+		NameCMD <- "tmp.names <- colnames( dd[[\"data\"]])"
+		eval( parse( text=NameCMD))
+		write( NameCMD, file="extRemes.log", append=TRUE)
 		if( length( resp.select) == ncol( dd$data)) {
 			warning("scrubber.gui: Removing entire data set!")
-			dd$data <- NULL
+			dd.cmd <- "dd[[\"data\"]] <- NULL"
+			eval( parse( text=dd.cmd))
+			write( dd.cmd, file="extRemes.log", append=TRUE)
 		} else {
-			tmp <- dd$data[,-resp.select]
-			colnames( tmp) <- tmp.names[-resp.select]
-			dd$data <- tmp
+			if( length( resp.select) > 1) {
+				respos <- character(0)
+				for( i in 1:(length( resp.select)-1)) respos <- paste( respos, resp.select[i], ", ", sep="")
+				respos <- paste( "c( ", respos, resp.select[ length( resp.select)], ")", sep="")
+			} else respos <- resp.select
+			# tmp <- dd$data[,-resp.select]
+			tmpCMD <- paste( "tmp <- dd[[\"data\"]][, -", respos, "]", sep="")
+			eval( parse( text=tmpCMD))
+			write( tmpCMD, file="extRemes.log", append=TRUE)
+			colnamesCMD <- paste( "colnames( tmp) <- tmp.names[-", respos, "]", sep="")
+			eval( parse( text=colnamesCMD))
+                        write( colnamesCMD, file="extRemes.log", append=TRUE)
+			dd.cmd <- "dd[[\"data\"]] <- tmp"
+			eval( parse( text=dd.cmd))
+                        write( dd.cmd, file="extRemes.log", append=TRUE)
 			} # end of if else remove all data stmt.
 		} # end of if a data column selected or not stmt.
 
@@ -45,31 +63,60 @@ submit <- function() {
 	if( tclvalue( tkcurselection( fit.listbox)) != "" ) {
 		if( length( fit.select) == length( dd$models)) {
 			warning("scrubber.gui: Removing all model fits!")
-			dd$models <- NULL
+			dd.cmd <- "dd[[\"models\"]] <- NULL"
+			eval( parse( text=dd.cmd))
+			write( dd.cmd, file="extRemes.log", append=TRUE)
 		} else {
-			tmp.names <- names( dd$models)[-fit.select]
-			tmp <- list()
-			for( i in 1:length( tmp.names)) if( !any( i == fit.select)) tmp[[i]] <- dd$models[[i]]
-			names( tmp) <- tmp.names
-			dd$models <- tmp
+			if( length( fit.select) > 1) {
+				fitsos <- character(0)
+				for( i in 1:(length( fit.select)-1)) fitsos <- paste( fitsos, fit.select[i], ", ", sep="")
+				fitsos <- paste( "c( ", fitsos, ", ", fit.select[ length( fit.select)], ")", sep="")
+			} else fitsos <- fit.select
+			# tmp.names <- names( dd$models)[-fit.select]
+			tmpCMD <- paste( "tmp.names <- names( dd[[\"models\"]])[ -", fitsos, "]", sep="")
+			eval( parse( text=tmpCMD))
+			write( tmpCMD, file="extRemes.log", append=TRUE)
+			tmpCMD <- "tmp <- list()"
+			eval( parse( text=tmpCMD))
+			write( tmpCMD, file="extRemes.log", append=TRUE)
+			# for( i in 1:length( tmp.names)) if( !any( i == fit.select)) tmp[[i]] <- dd$models[[i]]
+			for( i in 1:length( tmp.names)) {
+				if( !any( i == fit.select))
+				tmpCMD <- paste( "tmp[[", i, "]] <- dd[[\"models\"]][[", i, "]]", sep="")
+				eval( parse( text=tmpCMD))
+				write( tmpCMD, file="extRemes.log", append=TRUE)
+				} # end of for 'i' loop.
+			tmpCMD <- "names( tmp) <- tmp.names"
+			eval( parse( text=tmpCMD))
+			write( tmpCMD, file="extRemes.log", append=TRUE)
+			dd.cmd <- "dd[[\"models\"]] <- tmp"
+			eval( parse( text=dd.cmd))
+			write( dd.cmd, file="extRemes.log", append=TRUE)
 			} # end of if else remove all models stmt.
 		} # end of if any models selected or not stmt.
-	assign( data.name, dd, pos=".GlobalEnv")
+	assignCMD <- paste( "assign( \"", data.name, "\", dd, pos=\".GlobalEnv\")", sep="")
+	eval( parse( text=assignCMD))
+	write( assignCMD, file="extRemes.log", append=TRUE)
 	tkdestroy(base)
-    tkconfigure(base.txt,state="disabled")
+    # tkconfigure(base.txt,state="disabled")
 } # end of submit fcn.
 
 scrubberhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	nl1 <- paste(" ", "---------------------------------", " ", sep="\n")
         help.msg1 <- paste( " ", "Scrubber Info:", " ", "Select data columns and/or model fits for deletion.", " ", sep="\n")
-	help.msg2 <- paste(" ", "To remove an entire data object use: ", " ", "> rm object.name", " ",
+	help.msg2 <- paste(" ",
+		"To remove an entire data object use the \'rm\' function: (use \'help( rm)\' for more help)", " ",
 				" ", "from the R command prompt.", sep="\n")
-	tkinsert( base.txt, "end", nl1)
-        tkinsert( base.txt, "end", help.msg1)
-	tkinsert( base.txt, "end", help.msg2)
-	tkinsert( base.txt, "end", nl1)
-        tkconfigure( base.txt, state="disabled")
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+        # tkinsert( base.txt, "end", help.msg1)
+	cat( help.msg1)
+	# tkinsert( base.txt, "end", help.msg2)
+	cat( help.msg2)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+        # tkconfigure( base.txt, state="disabled")
         invisible()
 	} # end of scrubberhelp fcn
 
@@ -106,7 +153,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE
@@ -128,8 +175,8 @@ resp.scroll <- tkscrollbar(top.l,orient="vert",
                         command=function(...)tkyview(resp.listbox,...))
 
 if( is.nothing) {
-for( i in 1:ncol(.ev$data))
-        tkinsert( resp.listbox, "end", paste(colnames(.ev$data)[i]))
+for( i in 1:ncol(extRemesData$data))
+        tkinsert( resp.listbox, "end", paste(colnames(extRemesData$data)[i]))
 # end of for i loop
         } else tkinsert( resp.listbox, "end", "")
 

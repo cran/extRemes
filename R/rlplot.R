@@ -1,6 +1,17 @@
 "rlplot" <-
-function (a, u, la, n, npy, mat, dat, xdat, klaas="gpd.fit", ci=0.05, add.ci=FALSE) 
+function (z, ci=0.05, add.ci=FALSE) 
 {
+# Originally, these were passed into the function separately.
+a <- z$mle
+u <- z$threshold
+la <- z$rate
+n <- z$n
+npy <- z$npy
+mat <- z$cov
+dat <- z$data
+xdat <- z$xdata
+klaas <- class( z)
+
 if( klaas=="gev.fit") {
     eps <- 1e-06
     a1 <- a

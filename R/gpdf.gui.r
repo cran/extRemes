@@ -29,7 +29,7 @@ refresh <- function() {
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
 	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	} else dd <- extRemesData
 
 	tkdelete( resp.listbox, 0.0, "end")
 	tkdelete( sig.covlist, 0.0, "end")
@@ -59,7 +59,7 @@ redolists<-function() {
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
 	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	} else dd <- extRemesData
 
 dd2 <- dd$data[, as.numeric( tkcurselection( resp.listbox))+1]
 
@@ -85,12 +85,16 @@ submit <- function() {
     #
 
     # names of the covariates used (if any) 
-    cov.names<-character(0) 
+    cov.names.cmd <- "cov.names<-character(0)"
+	eval( parse( text=cov.names.cmd))
+        write( cov.names.cmd, file="extRemes.log", append=TRUE)
 
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
-		dd <- get( full.list[ data.select])
-	} else dd <- .ev
+		dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
     resp.select<-as.numeric(tkcurselection(resp.listbox))+1
  
@@ -99,98 +103,154 @@ submit <- function() {
       return()
 
 
-    tkconfigure(base.txt,state="normal")
-    tkinsert(base.txt,"end",paste("GPD fit \n"))
-    tkinsert(base.txt,"end",paste("-----------------------------------\n"))
-    tkinsert(base.txt,"end",paste("Response variable:",
-             colnames( dd$data)[resp.select],"\n"))
+    # tkconfigure(base.txt,state="normal")
+    # tkinsert(base.txt,"end",paste("GPD fit \n"))
+    # tkinsert(base.txt,"end",paste("-----------------------------------\n"))
+    # tkinsert(base.txt,"end",paste("Response variable:",
+     #         colnames( dd$data)[resp.select],"\n"))
 
     # process the covariates and link functions
-	covs <- NULL
+	covs.cmd <- "covs <- NULL"
+	eval( parse( text=covs.cmd))
+	write( covs.cmd, file="extRemes.log", append=TRUE)
 	cur.cov.cols <- 0
 
 # do the sigma 
    
-    sig.cov.cols<-NULL 
+    # sig.cov.cols<-NULL 
     if (tclvalue( tkcurselection(sig.covlist)) !="") {
 
      # get the right covariates
      # temp.cols<-as.numeric(strsplit(tkcurselection(sig.covlist)," ")[[1]])
 temp.cols <- 
 	as.numeric( unlist( strsplit( tclvalue( tkcurselection(sig.covlist)), " ")))
-      cov.selected<-character(0)
+      cov.selected.cmd <- "cov.selected<-character(0)"
+	eval( parse( text=cov.selected.cmd))
+	write( cov.selected.cmd, file="extRemes.log", append=TRUE)
       for (i in temp.cols) {
-        cov.selected<-c(cov.selected, tclvalue( tkget(sig.covlist,i)))
+        cov.selected.cmd <- paste( "cov.selected<-c(cov.selected, \"", tclvalue( tkget(sig.covlist,i)), "\")", sep="")
+	eval( parse( text=cov.selected.cmd))
+	write( cov.selected.cmd, file="extRemes.log", append=TRUE)
       }
  
       # match the covariate names to the cols of  dd
  
-      dat.cols<-numeric(0)
+      dat.cols.cmd <- "dat.cols<-numeric(0)"
+	eval( parse( text=dat.cols.cmd))
+	write( dat.cols.cmd, file="extRemes.log", append=TRUE)
       for (j in 1:length(colnames( dd$data))) {
         for (i in cov.selected) {
           if (i == colnames( dd$data)[j]) {
-            dat.cols<-c(dat.cols,j)
+            dat.cols.cmd <- paste( "dat.cols<-c(dat.cols, ", j, ")", sep="")
+		eval( parse( text=dat.cols.cmd))
+		write( dat.cols.cmd, file="extRemes.log", append=TRUE)
           }
         }
       }
+      # covs <- cbind(covs,as.matrix( dd$data[,dat.cols]))
+	# covs.cmd <- paste( "covs <- cbind( covs, ", "as.matrix( ", full.list[ data.select],
+	# 							"$data[,", dat.cols, "]))", sep="")
+	covs.cmd <- "covs <- cbind( covs, as.matrix( dd[[\"data\"]][, dat.cols]))"
+	eval( parse( text=covs.cmd))
+	write( covs.cmd, file="extRemes.log", append=TRUE)
 
+      # sig.cov.cols.cmd <- "sig.cov.cols<-(cur.cov.cols+1):(length(dat.cols)+cur.cov.cols)"
+	sig.cov.cols.cmd <- paste("sig.cov.cols <- ", cur.cov.cols+1,":", length(dat.cols)+cur.cov.cols, sep="")
+        eval( parse( text=sig.cov.cols.cmd))
+	write( sig.cov.cols.cmd, file="extRemes.log", append=TRUE)
 
-      covs <- cbind(covs,as.matrix( dd$data[,dat.cols]))
-      sig.cov.cols<-(cur.cov.cols+1):(length(dat.cols)+cur.cov.cols)
       cur.cov.cols<-cur.cov.cols+length(dat.cols)
-      cov.names<-c(cov.names,colnames( dd$data)[dat.cols])
-    }
+      # cov.names<-c(cov.names,colnames( dd$data)[dat.cols])
+	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[dat.cols])"
+	eval( parse( text=cov.names.cmd))
+	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+    } else {
+	sig.cov.cols.cmd <- "sig.cov.cols<-NULL"
+	eval( parse( text=sig.cov.cols.cmd))
+	write( sig.cov.cols.cmd, file="extRemes.log", append=TRUE)
+	}
 
 
     # do the gamma
     
-    gam.cov.cols<-NULL
+    # gam.cov.cols<-NULL
     if (tclvalue( tkcurselection(gam.covlist)) !="") {
 
      # get the right covariates
      #  temp.cols<-as.numeric(strsplit(tkcurselection(gam.covlist)," ")[[1]])
 	temp.cols <- as.numeric( unlist( strsplit( tclvalue( tkcurselection(gam.covlist)), " ")))
-      cov.selected<-character(0)
+      cov.selected.cmd <- "cov.selected<-character(0)"
+	eval( parse( text=cov.selected.cmd))
+	write( cov.selected.cmd, file="extRemes.log", append=TRUE)
       for (i in temp.cols) {
-        cov.selected<-c(cov.selected, tclvalue( tkget(gam.covlist,i)))
+        cov.selected.cmd <- paste( "cov.selected<-c(cov.selected, \"", tclvalue( tkget(gam.covlist,i)), "\")", sep="")
+	eval( parse( text=cov.selected.cmd))
+	write( cov.selected.cmd, file="extRemes.log", append=TRUE)
       }
  
       # match the covariate names to the cols of  dd
- 
-      dat.cols<-numeric(0)
+
+	dat.cols.cmd <- "dat.cols<-numeric(0)"
+	eval( parse( text=dat.cols.cmd))
+	write( dat.cols.cmd, file="extRemes.log", append=TRUE) 
       for (j in 1:length(colnames( dd$data))) {
         for (i in cov.selected) {
           if (i == colnames( dd$data)[j]) {
-            dat.cols<-c(dat.cols,j)
+            dat.cols.cmd <- paste( "dat.cols<-c(dat.cols, ", j, ")", sep="")
+		eval( parse( text=dat.cols.cmd))
+		write( dat.cols.cmd, file="extRemes.log", append=TRUE)
           }
         }
       }
 
-      covs <- cbind(covs,as.matrix( dd$data[,dat.cols]))
-      gam.cov.cols<-(cur.cov.cols+1):(length(dat.cols)+cur.cov.cols)
+      # covs <- cbind(covs,as.matrix( dd$data[,dat.cols]))
+	# covs.cmd <- paste( "cbind( covs, as.matrix( ", full.list[ data.select], "$data[,", dat.cols, "]))", sep="")
+	covs.cmd <- "covs <- cbind( covs, as.matrix( dd[[\"data\"]][, dat.cols]))"
+	eval( parse( text=covs.cmd))
+	write( covs.cmd, file="extRemes.log", append=TRUE)
+
+      # gam.cov.cols.cmd <- "gam.cov.cols<-(cur.cov.cols+1):(length(dat.cols)+cur.cov.cols)"
+	gam.cov.cols.cmd <- paste("gam.cov.cols <- ", cur.cov.cols+1, ":", length(dat.cols)+cur.cov.cols, sep="")
+        eval( parse( text=gam.cov.cols.cmd))
+	write( gam.cov.cols.cmd, file="extRemes.log", append=TRUE)
       cur.cov.cols<-cur.cov.cols+length(dat.cols)
-      cov.names<-c(cov.names,colnames( dd$data)[dat.cols])
-    }
+      # cov.names<-c(cov.names,colnames( dd$data)[dat.cols])
+	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[ dat.cols])"
+	eval( parse( text=cov.names.cmd))
+	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+    } else {
+	gam.cov.cols.cmd <- "gam.cov.cols<-NULL"
+	eval( parse( text=gam.cov.cols.cmd))
+	write( gam.cov.cols.cmd, file="extRemes.log", append=TRUE)
+	}
 
 
     # process the link functions for each
     if (tclvalue(sig.link) =="identity") {
-      sig.linker<-identity
+      sig.linker.cmd <- "sig.linker<-identity"
     }
     else {
-      sig.linker<-exp
+      sig.linker.cmd <- "sig.linker<-exp"
     }
+	eval( parse( text=sig.linker.cmd))
+	write( sig.linker.cmd, file="extRemes.log", append=TRUE)
 
     if (tclvalue(gam.link) =="identity") {
-      gam.linker<-identity
+      gam.linker.cmd <- "gam.linker<-identity"
     }
     else {
-      gam.linker<-exp
+      gam.linker.cmd <- "gam.linker<-exp"
     }
+	eval( parse( text=gam.linker.cmd))
+	write( gam.linker.cmd, file="extRemes.log", append=TRUE)
 
 method.list <- c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN")
 method.select <- as.numeric( tkcurselection( method.listbox))+1
-method.value <- method.list[ method.select]
+if( length( method.select) == 0) {
+                cat( paste( "No optimization method selected.  Using \"BFGS\"",
+                        "(use \'help( optim)\' for more details)"), sep="\n")
+                method.value <- "BFGS"
+} else method.value <- method.list[ method.select]
 
 maxit.val <- as.numeric( tclvalue( maxit.value))
 
@@ -201,123 +261,185 @@ jj <- 0
 if( number.of.models > 0) for( i in 1:number.of.models) if( class( dd$models[[i]]) == "gpd.fit") jj <- jj+1
 names.of.models <- c( names.of.models, paste( "gpd.fit", jj+1, sep=""))
 
+# data.cmd <- paste( "xdata <- ", full.list[ data.select], "$data[,", resp.select, "]", sep="")
+data.cmd <- paste( "xdata <- dd[[\"data\"]][, ", resp.select, "]", sep="")
+eval( parse( text=data.cmd))
+write( data.cmd, file="extRemes.log", append=TRUE)
+
 # fit the GPD
-dd$models[[number.of.models+1]] <-
-	gpd.fit(	xdat=dd$data[,resp.select],
-			threshold=as.numeric( tclvalue( threshold.value)),
-			npy=as.numeric( tclvalue( npy)),
-			ydat=covs,
-			sigl=sig.cov.cols,
-			siglink=sig.linker,
-			shl=gam.cov.cols,
-			shlink=gam.linker,
-			method=method.value,
-			maxit=maxit.val)
-names( dd$models) <- names.of.models
-class( dd$models[[number.of.models+1]]) <- "gpd.fit"
+cmd <- paste( "dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]] <- ",
+		"gpd.fit( xdat=xdata, threshold=", as.numeric( tclvalue( threshold.value)), ", npy=",
+		as.numeric( tclvalue( npy)),
+		", ydat=covs, sigl=sig.cov.cols, siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, ",
+		"method=\"", method.value,"\"", ", maxit=", maxit.val, ", show=FALSE)", sep="")
+# dd$models[[number.of.models+1]] <-
+eval( parse( text=cmd))
+# cmd <- paste( full.list[ data.select], "$models$", names.of.models[number.of.models+1], " <- ", cmd, sep="")
+write( cmd, file="extRemes.log", append=TRUE)
+
+# class( dd$models[[number.of.models+1]]) <- "gpd.fit"
+# class.cmd <- paste( "class(", full.list[ data.select], "$models$gpd.fit", jj+1, ") <- \"gpd.fit\"", sep="")
+class.cmd <- paste( "class( dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]) <- \"gpd.fit\"", sep="")
+eval( parse( text=class.cmd))
+write( class.cmd, file="extRemes.log", append=TRUE)
+
+# names( dd$models) <- names.of.models
+# add.new.model.name.cmd <- paste( "names( ", full.list[ data.select], "[[\"models\"]]) <- names.of.models", sep="")
+# eval( parse( text=add.new.model.name.cmd))
+# write( add.new.model.name.cmd, file="extRemes.log", append=TRUE)
+
+# tmp <- eval( parse( text=cmd))
+# dd$models[[number.of.models+1]] <- eval( parse( text=cmd))
+# cmd <- paste( full.list[ data.select], "[[\"models\"]][[", number.of.models+1, "]] <- ", cmd, sep="")
+# 	gpd.fit(	xdat=dd$data[,resp.select],
+# 			threshold=as.numeric( tclvalue( threshold.value)),
+# 			npy=as.numeric( tclvalue( npy)),
+# 			ydat=covs,
+# 			sigl=sig.cov.cols,
+# 			siglink=sig.linker,
+# 			shl=gam.cov.cols,
+# 			shlink=gam.linker,
+# 			method=method.value,
+# 			maxit=maxit.val)
+# if( is.null( dd$models)) dd$models <- list()
+# names( dd$models) <- names.of.models
+# class( dd$models[[number.of.models+1]]) <- "gpd.fit"
+
+# fit.obj.cmd <- paste( "fit.obj <- ", full.list[ data.select], "[[\"models\"]][[", number.of.models+1,"]]", sep="")
+# eval( parse( text=fit.obj.cmd))
+# write( fit.obj.cmd, file="extRemes.log", append=TRUE)
 
 if( is.null( dd$models[[number.of.models+1]])) {
       # failure to fit
 
-      fail.str<-paste(" ", "Fit failed.", " ", sep="\n")
-      tkinsert(base.txt,"end",fail.str)
+      # fail.str<-paste(" ", "Fit failed.", " ", sep="\n")
+	cat("\n", "Fit failed.\n")
+      # tkinsert(base.txt,"end",fail.str)
       tkyview.moveto(base.txt,1.0)
 
     }
     else {
 
-#	if( is.nothing) assign( ".ev", dd, pos=".GlobalEnv")
-#	else assign( full.list[ data.select], dd, pos=".GlobalEnv")
-
+	if( is.nothing) assignCMD <- "assign( \"extRemesData\", dd, pos=\".GlobalEnv\")"
+	else assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+	eval( parse( text=assignCMD))
+	write( assignCMD, file="extRemes.log", append=TRUE)
+	# write( cmd, file="extRemes.log", append=TRUE)
       # print the output
 
-	fit.obj <- dd$models[[number.of.models+1]]
+	# fit.obj <- dd$models[[number.of.models+1]]
 
       links<-c( tclvalue(sig.link), tclvalue(gam.link))
 
 # Print some informative output to the main gui window.
-	tkconfigure( base.txt, state="normal")
-	nl1 <- paste( " ", "**********", " ", sep="\n")
-        nl2 <- paste( "   ", "   ", sep="\n")
-	tkinsert( base.txt, "end", nl1)
-        tkinsert( base.txt, "end", nl2)
+## Print to R console instead.
+	# tkconfigure( base.txt, state="normal")
+	# nl1 <- paste( " ", "**********", " ", sep="\n")
+        # nl2 <- paste( "   ", "   ", sep="\n")
+	# tkinsert( base.txt, "end", nl1)
+        # tkinsert( base.txt, "end", nl2)
 
         # Print info about convergence of 'optim' function.
-        if( fit.obj$conv == 0)
-                CONV.msg <- paste("Convergence successfull!")
-        else if( fit.obj$conv == 1)
-                CONV.msg <- paste("Iteration limit exceeded.",
-                                        "Did not convergence.", sep="\n")
-        else if( fit.obj$conv == 51 | fit.obj$conv == 52)
-                CONV.msg <- paste( fit.obj$message)
-	else CONV.msg <- paste("Convergence code: ", fit.obj$conv, " (See help file for optim for more info)",
-					sep="")
+# fit.obj <- get( full.list[ data.select])$models[[number.of.models+1]]
+# fit.obj.cmd <- paste( full.list[ data.select], "[[\"models\"]][[", number.of.models+1, "]]", sep="")
+fit.obj.cmd <- paste( "fit.obj <- dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]", sep="")
+eval( parse( text=fit.obj.cmd))
+# write( fit.obj.cmd, file="extRemes.log", append=TRUE)
+if( fit.obj$conv == 0) cat("\n", "Convergence successfull!\n") # CONV.msg <- paste("Convergence successfull!")
+else if( fit.obj$conv == 1) {
+	cat("\n", "Iteration limit exceeded.\n")
+	cat("Did not converge.\n")
+# CONV.msg <- paste("Iteration limit exceeded.",
+#                                         "Did not convergence.", sep="\n")
+	} else if( fit.obj$conv == 51 | fit.obj$conv == 52) cat("\n", fit.obj$message, "\n")#CONV.msg<-paste(fit.obj$message)
+ 	else cat( "\n", "Convergence code: ", fit.obj$conv, " (See help file for optim for more info).\n")
 
-        tkinsert( base.txt, "end", CONV.msg)
-        tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", nl2)
-        Thresh.msg <- paste( paste("Threshold = ", fit.obj$threshold, sep=""),
-                                paste("Number of exceedances = ", fit.obj$nexc, sep=""),
-                                paste("Exceedance rate (per year) = ", fit.obj$rate*fit.obj$npy, sep=""), sep="\n")
-        tkinsert( base.txt, "end", Thresh.msg)
-        tkinsert( base.txt, "end", nl2)
-        tkinsert( base.txt, "end", nl2)
-        c1 <- cbind( fit.obj$mle, fit.obj$se)
-        colnames( c1) <- c( "MLE", "Std. Err.")
-	# rnames <- c( paste("SIGMA: (", links[1], ")	", sep = ""))
-	if( tclvalue( sig.link)=="log") rnames <- c( paste( "log Scale: ", sep=""))
-	else rnames <- c( paste( "Scale (sigma): ", sep=""))
-        if( !is.null( fit.obj$model[[1]]))
-                rnames <- c( rnames, paste( cov.names[ fit.obj$model[[1]]], sep=""))
-			#	": (", links[1], ")	", sep=""))
-	if( tclvalue( gam.link) == "log") rnames <- c(rnames, paste("log Shape: ", sep=""))
-	else rnames <- c( rnames, paste("Shape (xi): ", sep=""))
-	# rnames <- c(rnames, paste("Xi: (", links[2], ")	", sep = ""))
-        if( !is.null( fit.obj$model[[2]]))
-                rnames <- c(rnames, paste( cov.names[ fit.obj$model[[2]]], sep=""))
-			#	": (", links[2], ")     ", sep=""))
-        rownames( c1) <- rnames
-	dd$models[[number.of.models+1]]$parameter.names <- rnames
-	dd$models[[number.of.models+1]]$summary1 <- c1
+# CONV.msg <- paste("Convergence code: ", fit.obj$conv, " (See help file for optim for more info)", sep="")
+# 
+#         tkinsert( base.txt, "end", CONV.msg)
+#         tkinsert( base.txt, "end", nl2)
+# 	tkinsert( base.txt, "end", nl2)
+#         Thresh.msg <- paste( paste("Threshold = ", fit.obj$threshold, sep=""),
+#                                 paste("Number of exceedances = ", fit.obj$nexc, sep=""),
+#                                 paste("Exceedance rate (per year) = ", fit.obj$rate*fit.obj$npy, sep=""), sep="\n")
+#         tkinsert( base.txt, "end", Thresh.msg)
+#         tkinsert( base.txt, "end", nl2)
+#         tkinsert( base.txt, "end", nl2)
+ 	# rnames <- c( paste("SIGMA: (", links[1], ")	", sep = ""))
+ 	# rnames <- c(rnames, paste("Xi: (", links[2], ")	", sep = ""))
+#
 
-	 if( is.nothing) assign( ".ev", dd, pos=".GlobalEnv")
-        else assign( full.list[ data.select], dd, pos=".GlobalEnv")
+## Prepare summary information.
+c1 <- cbind( fit.obj$mle, fit.obj$se)
+colnames( c1) <- c( "MLE", "Std. Err.")
+if( tclvalue( sig.link)=="log") rnames <- c( paste( "log Scale: ", sep=""))
+        else rnames <- c( paste( "Scale (sigma): ", sep=""))
+         if( !is.null( fit.obj$model[[1]]))
+                 rnames <- c( rnames, paste( cov.names[ fit.obj$model[[1]]], sep=""))
+                        #       ": (", links[1], ")     ", sep=""))
+        if( tclvalue( gam.link) == "log") rnames <- c(rnames, paste("log Shape: ", sep=""))
+        else rnames <- c( rnames, paste("Shape (xi): ", sep=""))
+if( !is.null( fit.obj$model[[2]])) rnames <- c(rnames, paste( cov.names[ fit.obj$model[[2]]], sep=""))
+                        #       ": (", links[2], ")     ", sep=""))
+rownames( c1) <- rnames
+dd$models[[number.of.models+1]]$parameter.names <- rnames
+dd$models[[number.of.models+1]]$summary1 <- c1
 
-        tkinsert( base.txt, "end", paste( "			",
-			colnames( c1)[1], "		",
-			colnames( c1)[2]))
-        tkinsert( base.txt, "end", nl2)
-        for( i in 1:dim( c1)[1]) {
-                tkinsert( base.txt, "end",
-                        paste( rownames( c1)[i], " ",
-				round( c1[i,1], digits=5),
-				"	",
-				round( c1[i,2], digits=5), sep=""))
-                tkinsert( base.txt, "end", nl2)
-                } # end of for i loop
-        tkinsert( base.txt, "end", nl2)
+# summary( dd$models[[number.of.models+1]])
+# msg.cmd <- paste( "summary( ", full.list[ data.select], "$models$", names.of.models[number.of.models+1], ")", sep="")
+msg.cmd <- paste( "print( summary( dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]))", sep="")
+eval( parse( text=msg.cmd))
+write( msg.cmd, file="extRemes.log", append=TRUE)
 
-      nllh.str <- paste( "\n Negative log likelihood:",
-                        round(dd$models[[number.of.models+1]]$nllh,4),"\n")
-      tkinsert( base.txt, "end", nllh.str)
-      tkinsert( base.txt,"end", nl1)
-	final.msg <- paste(" ", "Saved as: ", names.of.models[number.of.models+1], " ", sep="\n")
-	tkinsert( base.txt, "end", final.msg)
-      tkyview.moveto( base.txt, 1.0)
+# names( dd$models) <- names.of.models
+# class( dd$models[[number.of.models+1]]) <- "gpd.fit"
+ 
+  	 if( is.nothing) assignCMD <- "assign( \"extRemesData\", dd, pos=\".GlobalEnv\")"
+         else assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+	eval( parse( text=assignCMD))
+	write( assignCMD, file="extRemes.log", append=TRUE)
+# 
+#         tkinsert( base.txt, "end", paste( "			",
+# 			colnames( c1)[1], "		",
+# 			colnames( c1)[2]))
+#         tkinsert( base.txt, "end", nl2)
+#         for( i in 1:dim( c1)[1]) {
+#                 tkinsert( base.txt, "end",
+#                         paste( rownames( c1)[i], " ",
+# 				round( c1[i,1], digits=5),
+# 				"	",
+# 				round( c1[i,2], digits=5), sep=""))
+#                 tkinsert( base.txt, "end", nl2)
+#                 } # end of for i loop
+#         tkinsert( base.txt, "end", nl2)
+# 
+#       nllh.str <- paste( "\n Negative log likelihood:",
+#                         round(dd$models[[number.of.models+1]]$nllh,4),"\n")
+#       tkinsert( base.txt, "end", nllh.str)
+#       tkinsert( base.txt,"end", nl1)
+ 	final.msg <- paste("Model name: ", names.of.models[number.of.models+1], sep="")
+	cat( final.msg)
+# 	tkinsert( base.txt, "end", final.msg)
+#       tkyview.moveto( base.txt, 1.0)
 
       # plot diagnostics if requested
 
       if (tclvalue(plot.diags)==1) {
-	plot( dd$models[[number.of.models+1]])
+	# plotcmd <- paste( "plot( ", full.list[ data.select], "$models[[", number.of.models+1,"]])", sep="")
+	plotCMD <- paste( "plot( dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]])", sep="")
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
+	# plot( dd$models[[number.of.models+1]])
       }
 
     }
  
     tkdestroy(base)
-    tkconfigure(base.txt,state="disabled")
+    # tkconfigure(base.txt,state="disabled")
 } # end of submit fcn
 
 gpdfithelp <- function() {
+	cat("\n", "Invokes the \'ismev\' function \'gpd.fit\'.  ", "\n", "Use \'help( gpd.fit)\' for more help.\n")
 	help( gpd.fit)
 	} # end of gpdfithelp fcn
 
@@ -331,7 +453,7 @@ gpdfithelp <- function() {
 
 
 base<-tktoplevel()
-tkwm.title(base,"Fit Generalized Pareto Distribution")
+tkwm.title(base,"Fit Data to Generalized Pareto (GP) Distribution")
 
 data.frm <- tkframe( base, borderwidth=2, relief="groove")
 top.frm <- tkframe(base,borderwidth=2,relief="groove")
@@ -344,7 +466,7 @@ method.frm <- tkframe( optim.frm, borderwidth=2, relief="flat")
 maxit.frm <- tkframe( optim.frm, borderwidth=2, relief="flat")
 
 # Choose which data object to use (set the listbox to contain all objects of
-# class "ev.data").
+# class "extRemesDataObject").
 
 data.listbox <- tklistbox(data.frm,
 			yscrollcommand=function(...) tkset(data.scroll,...),
@@ -358,13 +480,13 @@ data.scroll <- tkscrollbar( data.frm, orient="vert",
 
 # initialize variables for data list.
 # 'temp' is list of everything in global environment.
-# 'full.list' will be list of all objects in '.GlobalEnv' of class "ev.data".
+# 'full.list' will be list of all objects in '.GlobalEnv' of class "extRemesDataObject".
 temp <- ls(all=TRUE, name=".GlobalEnv")
 is.nothing <- TRUE
 full.list <- character(0)
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i]))[1] == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -389,8 +511,8 @@ resp.listbox <-
 resp.scroll <- tkscrollbar(top.l,orient="vert",
 			command=function(...)tkyview(resp.listbox,...))
 if( is.nothing) {
-for( i in 1:ncol( .ev$data)) 
-	tkinsert( resp.listbox, "end", paste(colnames( .ev$data)[i]))  
+for( i in 1:ncol( extRemesData$data)) 
+	tkinsert( resp.listbox, "end", paste(colnames( extRemesData$data)[i]))  
 # end of for i loop
 	} else tkinsert( resp.listbox, "end", "")
 
@@ -439,8 +561,8 @@ sig.covscr <- tkscrollbar(sig.l,orient="vert",
 		command=function(...)tkyview(sig.covlist,...))
 
 if( is.nothing) { 
-for (i in 1:ncol( .ev$data)) 
-	tkinsert(sig.covlist,"end",paste(colnames( .ev$data)[i]))
+for (i in 1:ncol( extRemesData$data)) 
+	tkinsert(sig.covlist,"end",paste(colnames( extRemesData$data)[i]))
 # end of for i loop
 	} else tkinsert( sig.covlist, "end", "")
 
@@ -469,8 +591,8 @@ gam.covscr <- tkscrollbar(gam.l,orient="vert",
 		command=function(...)tkyview(gam.covlist,...))
 
 if( is.nothing) { 
-for (i in 1:ncol( .ev$data))
-	tkinsert(gam.covlist,"end",paste(colnames( .ev$data)[i]))
+for (i in 1:ncol( extRemesData$data))
+	tkinsert(gam.covlist,"end",paste(colnames( extRemesData$data)[i]))
 # end of for i loop
 	} else tkinsert( gam.covlist, "end", "")
 

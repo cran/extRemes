@@ -2,10 +2,10 @@ indicatorTransform.gui <- function(base.txt) {
 
 # This function provides a gui interface for taking an indicator transformation 
 # of data, 'x'.
-# That is, functions creates a column in the 'ev.data' list object's data
+# That is, functions creates a column in the 'extRemesDataObject' list object's data
 # matrix with the value 'z=I_{x > u}', where 'I' is an indicator that is 1 if
 # 'x > u' and 0 otherwise.
-# The gui will list all objects of class "ev.data" and the column names of the
+# The gui will list all objects of class "extRemesDataObject" and the column names of the
 # user selected object.
 #
 # After taking the indicator transformation of the selected data, will return a 
@@ -27,7 +27,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data))
 		tkinsert( col.listbox, "end",
@@ -41,57 +41,112 @@ indicator.trans <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
-cols.selected <- character(0)
+cols.selected.cmd <- "cols.selected <- numeric(0)"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
 
 # Gather column names to add indicator transform(s) to end.
-cnames <- colnames( dd$data)
+# cnames <- colnames( dd$data)
+# cnames.cmd <- paste( "cnames <- colnames( ", full.list[ data.select], "$data)", sep="")
+cnames.cmd <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
 
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
 
 # Make sure a column has been selected.
 if( is.na( temp)) return()
 
-cols.selected <- cnames[temp]
+# cols.selected <- cnames[temp]
+for( i in 1:length( temp)) {
+	cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, ", temp, ")", sep="") 
+	eval( parse( text=cols.selected.cmd))
+	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+	}
+cols.selected.cmd <- "cols.selected <- cnames[cols.selected]"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+
 u.value <- as.numeric(tclvalue(u))
-z <- dd$data[ ,cols.selected]
-ind <- z > u.value
-z[ind] <- 1
-z[!ind] <- 0
+# z <- dd$data[ ,cols.selected]
+# z.cmd <- paste( "z <- ", full.list[ data.select], "$data[,cols.selected]", sep="")
+z.cmd <- "z <- dd[[\"data\"]][, cols.selected]"
+eval( parse( text=z.cmd))
+write( z.cmd, file="extRemes.log", append=TRUE)
+# ind <- z > u.value
+ind.cmd <- paste( "ind <- z > ", u.value, sep="")
+eval( parse( text=ind.cmd))
+write( ind.cmd, file="extRemes.log", append=TRUE)
+# z[ind] <- 1
+z.cmd <- "z[ind] <- 1"
+eval( parse( text=z.cmd))
+write( z.cmd, file="extRemes.log", append=TRUE)
+# z[!ind] <- 0
+z.cmd <- "z[!ind] <- 0"
+eval( parse( text=z.cmd))
+write( z.cmd, file="extRemes.log", append=TRUE)
 
-newnames <- paste( cnames[temp], ".ind", u.value, sep="")
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, z)
-colnames( dd$data) <- cnames
-assign( full.list[ data.select], dd, pos=".GlobalEnv")
+# newnames <- paste( cnames[temp], ".ind", u.value, sep="")
+newnames.cmd <- "newnames <- character(0)"
+eval( parse( text=newnames.cmd))
+write( newnames.cmd, file="extRemes.log", append=TRUE)
+for( i in 1:length( temp)) {
+	newnames.cmd <- paste( "newnames <- c( newnames, \"", paste( cnames[temp[i]], ".ind", u.value, sep=""),
+					"\")", sep="")
+	eval( parse( text=newnames.cmd))
+	write( newnames.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
+# cnames <- c( cnames, newnames)
+cnames.cmd <- "cnames <- c( cnames, newnames)"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
+# dd$data <- cbind( dd$data, z)
+dd.cmd <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], z)"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
+colnames.cmd <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnames.cmd))
+write( colnames.cmd, file="extRemes.log", append=TRUE)
+# assign( full.list[ data.select], dd, pos=".GlobalEnv")
+# assignCMD <- paste( full.list[ data.select], "$data <- cbind( ", full.list[ data.select], "$data, z)", sep="")
+assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+eval( parse( text=assignCMD))
+write( assignCMD, file="extRemes.log", append=TRUE)
 
-tkconfigure( base.txt, state="normal")
+# tkconfigure( base.txt, state="normal")
 msg <- paste( "\n", "Indicator transformation z = I_{x > ", u.value, "}",
 		" taken for", "\n",
-		" ", cols.selected, " and assigned to ", newnames, sep="")
-tkinsert( base.txt, "end", msg)
+		" x= ", cols.selected, " and assigned to ", newnames, "\n", sep="")
+cat( msg)
+# tkinsert( base.txt, "end", msg)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of indicator.trans fcn
 
 indicatorhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	help.msg1 <- paste( " ",
 "This is a simple function that takes a data set X and returns the",
 "indicator transformation of X.  That is", "  ", sep="\n")
 	help.msg2 <- paste(" ", "z=I_{X > u}", " ",
 			"where \'I\' is 1 if X > u and 0 otherwise.", sep="\n")
 help.msg3 <- paste( " ",
-"Returns object of class \"ev.data\" with an extra column in the data",
+"Returns object of class \"extRemesDataObject\" with an extra column in the data",
 	"indicated by a .indU extension where \'U\' is the value of u.",
 	" ", sep="\n")
-	tkinsert( base.txt, "end", help.msg1)
-	tkinsert( base.txt, "end", help.msg2)
-	tkinsert( base.txt, "end", help.msg3)
-	tkconfigure( base.txt, state="disabled")
+	# tkinsert( base.txt, "end", help.msg1)
+	cat( help.msg1)
+	# tkinsert( base.txt, "end", help.msg2)
+	cat( help.msg2)
+	# tkinsert( base.txt, "end", help.msg3)
+	cat( help.msg3)
+	# tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of indicatorhelp
 
@@ -127,7 +182,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -155,7 +210,7 @@ col.scroll <- tkscrollbar( var.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")

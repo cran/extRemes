@@ -13,8 +13,10 @@ submit <- function() {
 
 	# Obtain selected data.
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-        if( is.nothing) dd <- .ev
-        else dd <- get( full.list[ data.select])
+        if( is.nothing) dd.cmd <- "dd <- extRemesData"
+        else dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
     # fit the poisson distribution
 
@@ -23,37 +25,69 @@ submit <- function() {
     if (is.na(resp.select))
       return()
 
-    tkconfigure(base.txt,state="normal")
-    tkinsert(base.txt,"end","\nPoisson Fit\n")
-    tkinsert(base.txt,"end","-------------------------\n")
+    # tkconfigure(base.txt,state="normal")
+    # tkinsert(base.txt,"end","\nPoisson Fit\n")
+	cat( "\n", "\n", "Poisson Fit\n")
+    # tkinsert(base.txt,"end", "-------------------------\n")
+	cat( "-------------------------\n", "\n")
 
 
     if (tclvalue( tkcurselection(trend.list)) =="") {
       # no trend component indicated
     
-      gsum <- sum( dd$data[,resp.select])
-	m1 <- length( dd$data[,resp.select])
-      lambda <- gsum/m1
-	sigma2 <- var( dd$data[,resp.select], na.rm=TRUE)
-	chisqtest <- (m1-1)*sigma2/lambda
-	pval <- pchisq( chisqtest, df=m1-1, lower.tail=FALSE)
+# gsum <- sum( dd$data[,resp.select])
+# gsum.cmd <- paste( "gsum <- sum( ", full.list[ data.select], "$data[,", resp.select, "])", sep="")
+	gsum.cmd <- paste( "gsum <- sum( dd[[\"data\"]][, ", resp.select, "])", sep="")
+	eval( parse( text=gsum.cmd))
+	write( gsum.cmd, file="extRemes.log", append=TRUE)
+
+	# m1 <- length( dd$data[,resp.select])
+	# m1.cmd <- paste( "m1 <- length( ", full.list[ data.select], "$data[,", resp.select, "])", sep="")
+	m1.cmd <- paste( "m1 <- length( dd[[\"data\"]][, ", resp.select, "])", sep="")
+	eval( parse( text=m1.cmd))
+	write( m1.cmd, file="extRemes.log", append=TRUE)
+      lambda.cmd <- "lambda <- gsum/m1"
+	eval( parse( text=lambda.cmd))
+	write( lambda.cmd, file="extRemes.log", append=TRUE)
+
+	# sigma2 <- var( dd$data[,resp.select], na.rm=TRUE)
+	# sigma2.cmd <- paste( "sigma2 <- var( ", full.list[ data.select], "$data[,", resp.select, "], na.rm=TRUE)", sep="")
+	sigma2.cmd <- paste( "sigma2 <- var( dd[[\"data\"]][, ", resp.select, "], na.rm=TRUE)", sep="")
+	eval( parse( text=sigma2.cmd))
+	write( sigma2.cmd, file="extRemes.log", append=TRUE)
+	chisquaretest.cmd <- "chisqtest <- (m1-1)*sigma2/lambda"
+	eval( parse( text=chisquaretest.cmd))
+	write( chisquaretest.cmd, file="extRemes.log", append=TRUE)
+
+	pvalCMD <- "pval <- pchisq( chisqtest, df=m1-1, lower.tail=FALSE)"
+	eval( parse( text=pvalCMD))
+	write( pvalCMD, file="extRemes.log", append=TRUE)
 	nl1 <- paste("**********", " ", sep="\n")
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
 	nl2 <- paste(" ", " ", sep="\n")	
       mess <- paste("  Lambda: ",round(lambda,3), sep="")
-	tkinsert( base.txt, "end", nl2)
-      tkinsert( base.txt, "end", mess)
-	
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
+      # tkinsert( base.txt, "end", mess)
+	cat( mess)
 	mess2 <- paste(" Variance: ", round( sigma2,3), sep="")
-	tkinsert( base.txt, "end", mess2)
-	tkinsert( base.txt, "end", nl2)
+	# tkinsert( base.txt, "end", mess2)
+	cat( mess2)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
 	mess3 <- paste(" Chi-square statistic: ", round( chisqtest, 3), " with ", m1-1, " degrees of freedom", sep="")
-	tkinsert( base.txt, "end", mess3)
-	tkinsert( base.txt, "end", nl2)
+	# tkinsert( base.txt, "end", mess3)
+	cat( mess3)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
 	mess4 <- paste(" p-value for Chi-square test of equality of mean and variance: ", round( pval, 3), sep="")
-	tkinsert( base.txt, "end", mess4)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", mess4)
+	cat( mess4)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
     }
     else {
       # trend component indicated
@@ -61,15 +95,36 @@ submit <- function() {
       trend.select <- as.numeric( tkcurselection( trend.list))+1 
       mess <- paste("Trend variable: ",
 		colnames( dd$data)[trend.select],"\n")
-      tkinsert( base.txt, "end", mess)
+      # tkinsert( base.txt, "end", mess)
+	cat( mess)
       mess <- paste( "Response variable: ", colnames(dd$data)[resp.select],"\n\n")
-      tkinsert( base.txt, "end", mess)
-     
-      response<-dd$data[,resp.select]
-	cnames <- colnames( dd$data)[-resp.select]
-	trend<- dd$data[,cnames[trend.select]]
+      # tkinsert( base.txt, "end", mess)
+     cat( mess)
+# response<-dd$data[,resp.select]
+# response.cmd <- paste( "response <- ", full.list[data.select], "$data[,", resp.select, "]", sep="")
+	response.cmd <- paste( "response <- dd[[\"data\"]][, ", resp.select, "]", sep="")
+	eval( parse( text=response.cmd))
+	write( response.cmd, file="extRemes.log", append=TRUE)
+	# cnames <- colnames( dd$data)[-resp.select]
+	# cnamesCMD <- paste( "cnames <- colnames( ", full.list[data.select], "$data)[-",resp.select, "]", sep="")
+	cnamesCMD <- paste( "cnames <- colnames( dd[[\"data\"]])[-", resp.select, "]", sep="")
+	eval( parse( text=cnamesCMD))
+	write( cnamesCMD, file="extRemes.log", append=TRUE)
+	# trend<- dd$data[,cnames[trend.select]]
+	trendNameCMD <- "trendName <- character(0)"
+	eval( parse( text=trendNameCMD))
+	write( trendNameCMD, file="extRemes.log", append=TRUE)
+	for( i in 1:length( trend.select)) {
+	 	trendNameCMD <- paste( "trendName <- c( trendName, \"", cnames[trend.select[i]], "\")", sep="")
+		eval( parse( text=trendNameCMD))
+	 	write( trendNameCMD, file="extRemes.log", append=TRUE)
+	 	} # end of for 'i' loop.
+	# trendCMD <- paste( "trend <- ", full.list[data.select], "$data[,trendName]", sep="")
+	trendCMD <- "trend <- dd[[\"data\"]][, trendName]"
+	eval( parse( text=trendCMD))
+	write( trendCMD, file="extRemes.log", append=TRUE)
 
-	# Save fit in 'models' component of list.
+	# Put fit in 'models' component of list.
 number.of.models <- length( dd$models)
 names.of.models <- names( dd$models)
 if( is.null( names.of.models)) names.of.models <- character(0)
@@ -78,41 +133,61 @@ if( number.of.models > 0) for( i in 1:number.of.models) if( class( dd$models[[i]
 names.of.models <- c( names.of.models, paste( "poisson.fit", jj+1, sep=""))
 
 # fit the Poisson distribution.
-	mod.fit <- glm( response~trend, family=poisson())
-	# Store the fit in the 'models' component of 'ev.data' object.
-	dd$models[[number.of.models+1]] <- mod.fit
+	mod.fit.cmd <- "mod.fit <- glm( response~trend, family=poisson())"
+	eval( parse( tex=mod.fit.cmd))
+	write( mod.fit.cmd, file="extRemes.log", append=TRUE)
+
+	# Put the fit in the 'models' component of 'extRemesDataObject' object.
+	# dd$models[[number.of.models+1]] <- mod.fit
+# putfitCMD <- paste( full.list[data.select], "$models[[\"", names.of.models[length( names.of.models)], "\"]] <- mod.fit",
+# 			sep="")
+	putfitCMD <- paste( "dd[[\"models\"]][[\"poisson.fit", jj+1, "\"]] <- mod.fit", sep="")
+	eval( parse( text=putfitCMD))
+	write( putfitCMD, file="extRemes.log", append=TRUE)
+
 	if( tclvalue( diags.value) == 1) {
-		plot( mod.fit$residuals, type="l")
-		abline(h=0, lty=2)
+		plotCMD <- "plot( mod.fit[[\"residuals\"]], type=\"l\")"
+		eval( parse( text=plotCMD))
+		write( plotCMD, file="extRemes.log", append=TRUE)
+		ablineCMD <- "abline(h=0, lty=2)"
+		eval( parse( text=ablineCMD))
+		write( ablineCMD, file="extRemes.log", append=TRUE)
 		}
-names( dd$models) <- names.of.models
+# names( dd$models) <- names.of.models
 	nl1 <- paste(" ", "**********", " ", sep="\n")
 	nl2 <- paste( " ", " ", sep="\n")
 #	msg1 <- paste( "Call: ", deparse( mod.fit$call), sep="")
 no.of.pars <- length( mod.fit$coef)
 summ.fit <- summary( mod.fit)$coef
-	tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", paste(".........", " "))
+	# tkinsert( base.txt, "end", nl2)
+#	cat( nl2)
+# tkinsert( base.txt, "end", paste(".........", " "))
+#	cat( paste(".........", " "))
 # tkinsert( base.txt, "end", paste(  "Estimate", "    ", "Std. Error", "    ",
 #	"z-value", "    ", "P(>|z|)", sep=""))
-tkinsert( base.txt, "end", paste(  "Estimate", "    ", "Std. Error", sep=""))
-tkinsert( base.txt, "end", nl2)
+#	cat( paste(  "Estimate", "    ", "Std. Error", "    ", "z-value", "    ", "P(>|z|)", sep=""))
+# tkinsert( base.txt, "end", paste(  "Estimate", "    ", "Std. Error", sep=""))
+# tkinsert( base.txt, "end", nl2)
 coef.names <- c("Intercept", cnames[trend.select])
 nchar1 <- nchar( coef.names[2])
 if( nchar1 < 9) for( j in 1:(9-nchar1)) coef.names[2] <- paste( coef.names[2], ".", sep="")
 else if( nchar1 > 9) for( j in 1:(nchar1-9)) coef.names[1] <- paste( coef.names[1], ".", sep="")
 
-for( i in 1:no.of.pars) {
-	tkinsert( base.txt, "end", paste( coef.names[i], " ", sep=""))
+summaryCMD <- "print( summary( mod.fit))"
+eval( parse( text=summaryCMD))
+write( summaryCMD, file="extRemes.log", append=TRUE)
+
+#for( i in 1:no.of.pars) {
+#	tkinsert( base.txt, "end", paste( coef.names[i], " ", sep=""))
 #	summ.msg <- paste( round( summ.fit[i,1], digits=6), "    ",
 #			round( summ.fit[i,2], digits=6), "    ",
 #			round( summ.fit[i,3], digits=6), "    ",
 #			round( summ.fit[i,4], digits=6),  sep="")
-	summ.msg <- paste( round( summ.fit[i,1], digits=6), "    ",
-			round( summ.fit[i,2], digits=6), "    ", sep="")
-	tkinsert( base.txt, "end", summ.msg)
-tkinsert( base.txt, "end", nl2)
-	} # end of for i loop
+#	summ.msg <- paste( round( summ.fit[i,1], digits=6), "    ",
+#			round( summ.fit[i,2], digits=6), "    ", sep="")
+#	tkinsert( base.txt, "end", summ.msg)
+#tkinsert( base.txt, "end", nl2)
+#	} # end of for 'i' loop.
 
 msg3 <- paste( "Residual degrees of freedom: ", mod.fit$df.residual, sep="")
 lr <- mod.fit$null.deviance - mod.fit$deviance
@@ -132,30 +207,41 @@ msg5 <- paste( "likelihood-ratio (against null model): ", round( lr, digits=4),
 #	tkinsert( base.txt, "end", msg1)
 #	tkinsert( base.txt, "end", nl2)
 #	tkinsert( base.txt, "end", msg2)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg3)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg4)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg5)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", nl2)
+cat( nl2)
+	# tkinsert( base.txt, "end", msg3)
+# cat( msg3)
+	# tkinsert( base.txt, "end", nl2)
+# cat( nl2)
+	# tkinsert( base.txt, "end", msg4)
+# cat( msg4)
+	# tkinsert( base.txt, "end", nl2)
+cat( nl2)
+	# tkinsert( base.txt, "end", msg5)
+cat( msg5)
+	# tkinsert( base.txt, "end", nl2)
+cat( nl2)
+	# tkinsert( base.txt, "end", nl1)
+cat( nl1)
 #	tkinsert( base.txt, "end", msg6)
 #	tkinsert( base.txt, "end", nl1)
 	
     }
 	tkyview.moveto(base.txt,1.0) 
     tkdestroy(base)
-    tkconfigure(base.txt,state="disabled") 
-	 if( is.nothing) assign( ".ev", dd, pos=".GlobalEnv")
-        else assign( full.list[ data.select], dd, pos=".GlobalEnv")
+    # tkconfigure(base.txt,state="disabled") 
+	 if( is.nothing) assignCMD <- "assign( \"extRemesData\", dd, pos=\".GlobalEnv\")"
+        else assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+	eval( parse( text=assignCMD))
+	write( assignCMD, file="extRemes.log", append=TRUE)
+invisible()
 } # end of submit fcn
 
 refresh <- function() {
 	tkdelete( resp.listbox, 0.0, "end")
 	tkdelete( trend.list, 0.0, "end")
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	if( is.nothing) dd <- .ev
+	if( is.nothing) dd <- extRemesData
 	else dd <- get( full.list[ data.select])
 	
 	for( i in colnames( dd$data)) {
@@ -168,7 +254,7 @@ refresh <- function() {
 redolists <- function() {
 
 data.select <- as.numeric( tkcurselection( data.listbox))+1
-        if( is.nothing) dd <- .ev
+        if( is.nothing) dd <- extRemesData
         else dd <- get( full.list[ data.select])
 	
     resp.name<-colnames(dd$data)[as.numeric(tkcurselection(resp.listbox))+1]
@@ -184,11 +270,14 @@ data.select <- as.numeric( tkcurselection( data.listbox))+1
 } # end of redolists fcn
 
 poissonhelp <- function() {
-	tkconfigure( base.txt, state="normal")
-	help.msg <- paste( " ",
-"Uses the glm function.  See the help file for this function.", " ", sep="\n")
-	tkinsert( base.txt, "end", help.msg)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="normal")
+	cat("\n", "For fits without a trend, this function simply returns a mean, and\n")
+	cat( "no new objects (or components of objects) are returned.\n")
+	cat( "\n", "For fits with a trend, the R function \'glm\' is invoked.\n")
+	help.msg <- paste( "Use \'help( glm)\' for more help.", " ", sep="\n")
+	# tkinsert( base.txt, "end", help.msg)
+	cat( help.msg)
+	# tkconfigure( base.txt, state="disabled")
 
 	help( glm)
 	invisible()
@@ -231,7 +320,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i]))[1] == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -259,8 +348,8 @@ resp.scroll <- tkscrollbar( top.l,orient="vert",
 			command=function(...)tkyview(resp.listbox,...))
 
 if( is.nothing) { 
-  for (i in 1:ncol(.ev$data)) {
-    tkinsert(resp.listbox,"end",paste(colnames(.ev$data)[i]))
+  for (i in 1:ncol(extRemesData$data)) {
+    tkinsert(resp.listbox,"end",paste(colnames(extRemesData$data)[i]))
   }
 	} else tkinsert( resp.listbox, "end", "")
 
@@ -281,8 +370,8 @@ tkbind( resp.listbox, "<Button-1>", "")
   trend.covscr <- tkscrollbar(trend.l,orient="vert",command=function(...)tkyview(trend.list,...))
 
 if( is.nothing) {
-  for (i in 1:ncol(.ev$data)) {
-    tkinsert(trend.list,"end",paste(colnames(.ev$data)[i]))
+  for (i in 1:ncol(extRemesData$data)) {
+    tkinsert(trend.list,"end",paste(colnames(extRemesData$data)[i]))
   }
 	} else tkinsert( trend.list, "end", "")
 

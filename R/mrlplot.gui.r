@@ -26,24 +26,42 @@ submit <- function() {
 	nint.val <- as.numeric( tclvalue( ninterval))
 	
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-        dd <- get( full.list[ data.select])
+        dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
 	var.select <- as.numeric( tkcurselection( var.listbox))+1
-	var.val <- dd$data[, var.select]
-	var.name <- colnames( dd$data)[ var.select]
+	# var.val <- dd$data[, var.select]
+	# var.val.cmd <- paste( "var.val <- ", full.list[ data.select], "$data[,", var.select, "]", sep="")
+	var.val.cmd <- paste( "var.val <- dd[[\"data\"]][, ", var.select, "]", sep="")
+	eval( parse( text=var.val.cmd))
+	write( var.val.cmd, file="extRemes.log", append=TRUE)
+	# var.name <- colnames( dd$data)[ var.select]
+	# var.name.cmd <- paste( "var.name <- colnames( ", full.list[ data.select], "$data)[", var.select, "]", sep="")
+	var.name.cmd <- paste( "var.name <- colnames( dd[[\"data\"]])[ ", var.select, "]", sep="")
+	eval( parse( text=var.name.cmd))
+	write( var.name.cmd, file="extRemes.log", append=TRUE)
 
-	mrl.plot( var.val, conf=conf.val, nint=nint.val)
+	mrlplotCMD <- paste("mrl.plot( var.val, conf=, ", conf.val, ", nint=", nint.val, ")", sep="")
+	eval( parse( text=mrlplotCMD))
+	write( mrlplotCMD, file="extRemes.log", append=TRUE)
 
 	# Add a title to the plot.
-	t1 <- paste("Mean Residual Life Plot:", full.list[ data.select],
-			var.name, sep=" ")
-	title(t1)
+	t1.cmd <- paste( "t1 <- paste(\"Mean Residual Life Plot:\", \"", full.list[ data.select], "\", \"", var.name, "\",
+			sep=\" \")", sep="")
+	eval( parse( text=t1.cmd))
+	write( t1.cmd, file="extRemes.log", append=TRUE)
+	titleCMD <- "title(t1)"
+	eval( parse( text=titleCMD))
+	write( titleCMD, file="extRemes.log", append=TRUE)
 
 	tkdestroy( base)
 	invisible()
 	} # end of submit fcn
 
 mrlhelp <- function() {
+	cat( "\n", "Invokes the \'ismev\' function \'mrl.plot\'.\n")
+	cat( "Use \'help( mrl.plot)\' for more help.\n")
 	help( mrl.plot)
 	invisible()
 	}
@@ -79,7 +97,7 @@ temp <- ls(all=TRUE, name=".GlobalEnv")
 full.list <- character(0)
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		}

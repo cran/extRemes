@@ -7,7 +7,7 @@ they are separated by fewer than 'r' (run length) values below a given
 threshold.
 }
 \usage{
-dclust(xdat, u, r, cluster.by = NULL)
+dclust(xdat, u, r, cluster.by = NULL, verbose=getOption("verbose"))
 }
 \arguments{
   \item{xdat}{ a single numeric vector of data to be declustered.}
@@ -16,6 +16,7 @@ dclust(xdat, u, r, cluster.by = NULL)
   \item{cluster.by}{ If there are blocks implying a natural clustering that is to be preserved
 	(e.g., if data cover several years, but only for a single season), this is a vector
 	defining the blocks to ensure that clusters do not cross over from one block to another.}
+  \item{verbose}{ logical whether to field progress information to screen or not.}
 }
 \details{
 This function applies runs declustering to automatically decluster a dataset.
@@ -42,8 +43,14 @@ will be questionable.
   \item{ncluster}{The number of clusters found by runs declustering.}
   \item{clust}{numeric vector giving the clusters.}
 }
-\references{ Coles, Stuart (2001).  An Introduction to Statistical Modeling of
-	Extreme Values.  Springer-Verlag, London. }
+\references{
+Coles, Stuart (2001).  An Introduction to Statistical Modeling of
+ Extreme Values.  Springer-Verlag, London.
+
+Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
+     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
+     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+}
 \author{ Eric Gilleland }
 
 \examples{
@@ -62,5 +69,6 @@ temp[["ncluster"]] # See how many clusters were found.
 temp2 <- dclust(xdat=Tphap[,"MaxT"], u=115, r=3, cluster.by = Tphap[,"Year"])
 temp2[["ncluster"]]
 
+# See Gilleland et al. (2005) for more.
 }
 \keyword{ manip}

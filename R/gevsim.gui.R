@@ -1,5 +1,4 @@
 gevsim.gui <- function(base.txt) {
-
 # Internal functions.
  
 generate <- function() {
@@ -13,45 +12,87 @@ generate <- function() {
 
 	mut <- parse(text=tclvalue(mut))[[1]]
 	size <- parse(text=tclvalue(size))[[1]]
-	p <- c(mu,sigma,xi)
-	gev.sim <- gen.gev(p,size,mut)
-	plot( gev.sim)
-	gev.sim <- cbind(1:size,gev.sim)
-	colnames( gev.sim) <- c("obs","gev.sim")
-	.evTemp$data <- data.frame(gev.sim)
-	.evTemp$name <- "GEV Simulated"
-	.evTemp$params <- c(mu,sigma,xi,mut)
-	.evTemp$generated <- TRUE
-	class( .evTemp) <- "ev.data"
+	# p <- c(mu,sigma,xi)
+	p.cmd <- paste( "p <- c( ", mu, ", ", sigma, ", ", xi, ")", sep="")
+	eval( parse( text=p.cmd))
+	write( p.cmd, file="extRemes.log", append=TRUE)
 
+	gev.sim.cmd <- paste( "gev.sim <- gen.gev(p=p, n=", size, ", trend=",  mut, ")", sep="")
+	eval( parse( text=gev.sim.cmd))
+	write( gev.sim.cmd, file="extRemes.log", append=TRUE)
+
+	plotCMD <- "plot( gev.sim)"
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
+
+	gev.sim.cmd <- paste( "gev.sim <- cbind(1:", size, ", gev.sim)", sep="")
+	eval( parse( text=gev.sim.cmd))
+        write( gev.sim.cmd, file="extRemes.log", append=TRUE)
+
+	colnamesCMD <- "colnames( gev.sim) <- c(\"obs\",\"gev.sim\")"
+	eval( parse( text=colnamesCMD))
+	write( colnamesCMD, file="extRemes.log", append=TRUE)
+
+	# .evTemp$data <- data.frame(gev.sim)
+	# .evTemp$name <- "GEV Simulated"
+	# .evTemp$params <- c(mu,sigma,xi,mut)
+	# .evTemp$generated <- TRUE
+	# class( .evTemp) <- "extRemesDataObject"
+	gev.sim.cmd <- "gev.sim <- as.extRemesDataObject( gev.sim)"
+	eval( parse( text=gev.sim.cmd))
+        write( gev.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gev.sim.cmd <- "gev.sim[[\"name\"]] <- \"GEV Simulated\""
+	eval( parse( text=gev.sim.cmd))
+        write( gev.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gev.sim.cmd <- paste( "gev.sim[[\"params\"]] <- c(", mu, ", ", sigma, ", ", xi, ", ", mut, ")", sep="")
+	eval( parse( text=gev.sim.cmd))
+        write( gev.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gev.sim.cmd <- "gev.sim[[\"generated\"]] <- TRUE"
+	eval( parse( text=gev.sim.cmd))
+        write( gev.sim.cmd, file="extRemes.log", append=TRUE)
 # Make sure data set has been generated and save if necessary.
 
+	.evTemp <- gev.sim
 	if( is.null( .evTemp$generated)) {
-		msg <- paste(" ", "Must first generate data!", " ", sep="\n")
-		tkconfigure( base.txt, state="normal")	
-		tkinsert( base.txt, "end", msg)
-		tkconfigure( base.txt, state="disabled")
+		cat("\n", "Data not generated!\n")
+		# tkconfigure( base.txt, state="normal")	
+		# tkinsert( base.txt, "end", msg)
+		# tkconfigure( base.txt, state="disabled")
 		invisible()
 		} else {
 	save.as <- tclvalue( save.as.value)
-	if( save.as != "") assign( save.as, .evTemp, pos=".GlobalEnv")
-
-	tkconfigure( base.txt, state="normal")
-	mess<-paste("GEV simulated data generated.\n")
-	mess<-paste(mess,"Parameters:\n")
-	tkinsert(base.txt,"end",mess)
+	if( save.as != "") {
+		# assign( save.as, .evTemp, pos=".GlobalEnv")
+		assignCMD <- paste( "assign( \"", save.as, "\", gev.sim, pos=\".GlobalEnv\")", sep="")
+		eval( parse( text=assignCMD))
+		write( assignCMD, file="extRemes.log", append=TRUE)
+		cat("\n", "Saving workspace (may take a few moments) ...\n")
+		saveCMD <- "save.image()"
+		eval( parse( text=saveCMD))
+		write( saveCMD, file="extRemes.log", append=TRUE)
+		}
+	# tkconfigure( base.txt, state="normal")
+	cat("\n", "GEV simulated data generated.\n")
+	cat("Parameters:\n")
+	# tkinsert(base.txt,"end",mess)
 	mess <- paste("  Mu:",.evTemp$params[1],"   Trend:",
 			.evTemp$params[4],
 			"  Sigma:",.evTemp$params[2],
 			"   Xi:",.evTemp$params[3],"\n\n")
-	tkinsert(base.txt,"end",mess)
+	# tkinsert(base.txt,"end",mess)
+	cat( mess)
 	tkyview.moveto(base.txt,1.0)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="disabled")
 	tkdestroy(tt)
 		} # end of if else not generated stmt
 	} # end of generate fcn
 
 	gevsimhelp <- function() {
+		cat("\n", "Invokes the function: \'gen.gev\'\n")
+		cat( "Use \'help( gen.gev)\' for more help.\n")
 		help( gen.gev)
 		} # end of gevsimhelp fcn
 endprog <- function() {

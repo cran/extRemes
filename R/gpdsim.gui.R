@@ -1,5 +1,6 @@
 gpdsim.gui <- function(base.txt) {
 
+
 # Internal functions.
  
 generate <- function() {
@@ -9,45 +10,88 @@ generate <- function() {
 	sigma <- as.numeric( tclvalue( sigma))
 	xi <- as.numeric( tclvalue( xi))
 	size <- parse(text=tclvalue(size))[[1]]
-	     u.val <- as.numeric( tclvalue( u.value))
+	u.val <- as.numeric( tclvalue( u.value))
  
-	gpd.sim <- gen.gpd(n=size, sigma=sigma, xi=xi, u=u.val)
-	plot( gpd.sim)
-	gpd.sim <- cbind(1:size, gpd.sim)
-	colnames( gpd.sim) <- c("obs","gpd.sim")
-	.evTemp$data <- data.frame(gpd.sim)
-	.evTemp$name <- "GEV Simulated"
-	.evTemp$params <- c(sigma,xi)
-	.evTemp$generated <- TRUE
-	class( .evTemp) <- "ev.data"
+	gpd.sim.cmd <- paste( "gpd.sim <- gen.gpd(n=", size, ", sigma=", sigma, ", xi=", xi, ", u=", u.val, ")", sep="")
+	eval( parse( text=gpd.sim.cmd))
+	write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	plotCMD <- "plot( gpd.sim)"
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
+
+	gpd.sim.cmd <- paste( "gpd.sim <- cbind(1:", size, ", gpd.sim)", sep="")
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gpd.sim.cmd <- "colnames( gpd.sim) <- c(\"obs\",\"gpd.sim\")"
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	# .evTemp$data <- data.frame(gpd.sim)
+	# .evTemp$name <- "GEV Simulated"
+	# .evTemp$params <- c(sigma,xi)
+	# .evTemp$generated <- TRUE
+	# class( .evTemp) <- "extRemesDataObject"
+	gpd.sim.cmd <- "gpd.sim <- as.extRemesDataObject( gpd.sim)"
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gpd.sim.cmd <- "gpd.sim[[\"name\"]] <- \"GEV Simulated\""
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gpd.sim.cmd <- paste( "gpd.sim[[\"params\"]] <- c(", sigma, ", ", xi, ")", sep="")
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	gpd.sim.cmd <- "gpd.sim[[\"generated\"]] <- TRUE"
+	eval( parse( text=gpd.sim.cmd))
+        write( gpd.sim.cmd, file="extRemes.log", append=TRUE)
+
+	.evTemp <- gpd.sim
 
 # Make sure data set has been generated and save if necessary.
 
 	if( is.null( .evTemp$generated)) {
-		msg <- paste(" ", "Must first generate data!", " ", sep="\n")
-		tkconfigure( base.txt, state="normal")	
-		tkinsert( base.txt, "end", msg)
-		tkconfigure( base.txt, state="disabled")
+		msg <- paste(" ", "Data not generated!", " ", sep="\n")
+		cat( msg)
+		# tkconfigure( base.txt, state="normal")	
+		# tkinsert( base.txt, "end", msg)
+		# tkconfigure( base.txt, state="disabled")
 		invisible()
 		} else {
 	save.as <- tclvalue( save.as.value)
-	if( save.as != "") assign( save.as, .evTemp, pos=".GlobalEnv")
+	if( save.as != "") {
+		# assign( save.as, .evTemp, pos=".GlobalEnv")
+		assignCMD <- paste("assign( \"", save.as, "\", gpd.sim, pos=\".GlobalEnv\")", sep="")
+		eval( parse( text=assignCMD))
+		write( assignCMD, file="extRemes.log", append=TRUE)
 
-	tkconfigure( base.txt, state="normal")
+		cat("\n", "Saving workspace (may take a few moments) ...\n")
+		saveCMD <- "save.image()"
+		eval( parse( text=saveCMD))
+		write( saveCMD, file="extRemes.log", append=TRUE)
+		}
+	# tkconfigure( base.txt, state="normal")
 	mess<-paste("GPD simulated data generated.\n")
 	mess<-paste(mess,"Parameters:\n")
-	tkinsert(base.txt,"end",mess)
+	# tkinsert(base.txt,"end",mess)
+	cat( mess)
 	mess <- paste("  Scale (sigma):",.evTemp$params[1],
 			"  Shape (xi):",.evTemp$params[2], "\n\n")
-	tkinsert(base.txt,"end",mess)
+	# tkinsert(base.txt,"end",mess)
+	cat( mess)
 	tkyview.moveto(base.txt,1.0)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="disabled")
 	tkdestroy(tt)
 		} # end of if else not generated stmt
 	} # end of generate fcn
 
 	gpdsimhelp <- function() {
-		help( gen.gev)
+		cat("\n", "Invokes the function \'gen.gpd\'.\n")
+		cat( "Use \'help( gen.gpd)' for more help.\n")
+		help( gen.gpd)
 		} # end of gpdsimhelp fcn
 endprog <- function() {
 	tkdestroy( tt)

@@ -6,6 +6,7 @@ function( base.txt) {
 #
 
 pch.value <- tclVar("o")
+type.value <- tclVar("point")
 
 ########################################
 # Internal functions
@@ -33,34 +34,52 @@ submit<-function() {
 # Actually plots the data.
 	
 	dd.select <- as.numeric( tkcurselection( data.listbox))+1
-        dd <- get( full.list[ dd.select])
-
+        # dd <- get( full.list[ dd.select])
+	dd.cmd <- paste("dd <- get( \"", full.list[ dd.select], "\")", sep="")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
+	
 	x.select<-as.numeric(tkcurselection(x.list))+1
 	y.select<-as.numeric(tkcurselection(y.list))+1
 
 	# if nothing was actually selected, end 
 	if( length( x.select)==0 & length(y.select)==0) {
-				tkconfigure( base.txt, state="normal")
+				# tkconfigure( base.txt, state="normal")
 				nl1 <- paste(" ", "**********", " ", sep="\n")
 				msg <- paste( "Must select a variable to plot!")
-				tkinsert( base.txt, "end", nl1)
-				tkinsert( base.txt, "end", msg)
-				tkinsert( base.txt, "end", nl1)
-				tkconfigure( base.txt, state="disabled")
+				# tkinsert( base.txt, "end", nl1)
+				cat( nl1)
+				# tkinsert( base.txt, "end", msg)
+				cat( msg)
+				# tkinsert( base.txt, "end", nl1)
+				cat( nl1)
+				# tkconfigure( base.txt, state="disabled")
 				return()
 	} else if( length(x.select)==0) {
-		plot(	dd$data[,y.select], xlab="",
-			ylab=colnames(dd$data)[y.select], pch=tclvalue(pch.value))
+		if( tclvalue( type.value) == "point") plotCMD <- paste( "plot(	dd[[\"data\"]][,",
+				y.select, "], xlab=\"\", ylab=colnames(dd[[\"data\"]])[", y.select,
+				"], pch=\"", tclvalue(pch.value), "\")", sep="")
+		else plotCMD <- paste( "plot( dd[[\"data\"]][,", y.select,
+				"], xlab=\"\", ylab=colnames(dd[[\"data\"]])[", y.select, "], type=\"l\")", sep="")
       
 } else if( length(y.select)==0) {
-		plot(	dd$data[,x.select], xlab="",
-			ylab=colnames(dd$data)[x.select], pch=tclvalue(pch.value))
+		if( tclvalue( type.value) == "point") plotCMD <- paste( "plot( dd[[\"data\"]][,",
+			x.select, "], xlab=\"\", ylab=colnames(dd[[\"data\"]])[", x.select,
+			"], pch=\"", tclvalue(pch.value), "\")", sep="")
+		else plotCMD <- paste( "plot( dd[[\"data\"]][,", x.select,
+			"], xlab=\"\", ylab=colnames(dd[[\"data\"]])[", x.select, "],type=\"l\")", sep="")
 } else {
-        plot(	dd$data[,x.select],
-		dd$data[,y.select],
-		xlab=colnames(dd$data)[x.select],
-		ylab=colnames(dd$data)[y.select], pch=tclvalue(pch.value))
+	if( tclvalue( type.value) == "point") plotCMD <- paste( "plot( dd[[\"data\"]][,", x.select,
+							"], dd[[\"data\"]][,", y.select,
+							"], xlab=colnames(dd[[\"data\"]])[", x.select,
+							"], ylab=colnames(dd[[\"data\"]])[", y.select,
+							"], pch=\"", tclvalue(pch.value), "\")", sep="")
+	else plotCMD <- paste( "plot( dd[[\"data\"]][,", x.select, "], dd[[\"data\"]][,", y.select,
+			"], xlab=colnames(dd[[\"data\"]])[", x.select,
+			"], ylab=colnames(dd[[\"data\"]])[", y.select, "], type=\"l\")", sep="")
 	} # end of if else stmts.
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
 	tkdestroy( base)
 	invisible()
 } # end of submit fcn
@@ -71,12 +90,16 @@ endprog <- function() {
 }
 
 plothelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	help.msg <- paste(" ", "*********", " ", "Simple 2-D plot of the data.",
 			"Use command line for more advanced plotting.",
 			" ", "*********", " ", sep="\n")
-	tkinsert( base.txt, "end", help.msg)
-	tkconfigure( base.txt, state="disabled")
+	# tkinsert( base.txt, "end", help.msg)
+	cat( help.msg)
+	cat("\n", "Invokes the R function \'plot\'.\n")
+	cat( "Use \'help( plot)\' for more help on this function, and\n")
+	cat( "\'help( par)\' for more information on arguments to \'plot\'.\n")
+	# tkconfigure( base.txt, state="disabled")
 	help( plot)
 	invisible()
 	} # end of plothelp fcn
@@ -91,6 +114,7 @@ tkwm.title(base,"Scatter Plot")
 
 top.frm <- tkframe( base, borderwidth=2, relief="groove")
 mid.frm <- tkframe( base, borderwidth=2, relief="flat")
+options.frm <- tkframe( base, borderwidth=2, relief="groove")
 left.frm <- tkframe( mid.frm, borderwidth=2, relief="groove")
 right.frm <- tkframe( mid.frm, borderwidth=2, relief="groove")
 bot.frm <- tkframe( base, borderwidth=2, relief="groove")
@@ -112,7 +136,7 @@ is.nothing <- TRUE
 full.list <- character(0)
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -165,9 +189,17 @@ tkpack( yframe)
 tkpack( left.frm, right.frm, side="left")
 
 # Frame for "pch" value.
-pch.frm <- tkframe( base, borderwidth=2, relief="flat")
+pch.frm <- tkframe( options.frm, borderwidth=2, relief="flat")
 pch.entry <- tkentry( pch.frm, textvariable=pch.value, width=1)
 tkpack( tklabel( pch.frm, text="Point Character (pch)", padx=4), pch.entry, side="left")
+
+type.frm <- tkframe( options.frm, borderwidth=2, relief="flat")
+for (i in c("point","line")) {
+        tmp<-tkradiobutton(type.frm,text=i,value=i,variable=type.value)
+        tkpack(tmp,anchor="w")
+} # end of for i loop
+
+tkpack( pch.frm, type.frm, side="left")
 
   # make the bottom frame
 
@@ -178,6 +210,6 @@ help.but <- tkbutton( bot.frm, text="Help", command=plothelp)
 tkpack( sub.but, quit.but, side="left")
 tkpack( help.but, side="right")
 
-tkpack( top.frm, pch.frm, mid.frm, bot.frm, side="top")
+tkpack( top.frm, options.frm, mid.frm, bot.frm, side="top")
 
 }

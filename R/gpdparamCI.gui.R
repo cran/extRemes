@@ -41,15 +41,24 @@ submit <- function() {
 	# Grab the data object and make sure it has a 'gpd.fit' component.
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
-		dd <- get( full.list[ data.select])
-		} else dd <- .ev
-	fit <- dd$models[[as.numeric( tkcurselection( fit.listbox))+1]]
+		dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+		} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
+
+	# fit <- dd$models[[as.numeric( tkcurselection( fit.listbox))+1]]
+	# fit.cmd <- paste( "fit <- ",
+	# 	full.list[ data.select], "$models[[", as.numeric( tkcurselection( fit.listbox))+1, "]]", sep="")
+	fit.cmd <- paste( "fit <- dd[[\"models\"]][[", as.numeric( tkcurselection( fit.listbox))+1, "]]", sep="")
+	eval( parse( text=fit.cmd))
+	write( fit.cmd, file="extRemes.log", append=TRUE)
 	if( length( fit$mle) != 2) stop("gpdprof.gui: No trends in parameters allowed!")
 	if( class( fit) != "gpd.fit") {
 		msg <- paste( "************", "Selected fit is not of class gpd.fit!",
                         "Must use a fitted GPD object.", "************", sep="\n")
-                tkconfigure( base.txt, state="normal")
-                tkinsert( base.txt, "end", msg)
+		cat( msg)
+                # tkconfigure( base.txt, state="normal")
+                # tkinsert( base.txt, "end", msg)
 		} else {
 			# Collect inputs for fcn args.
 			m.val <- as.numeric( tclvalue( m.value))
@@ -57,33 +66,45 @@ submit <- function() {
 			nint.val <- as.numeric( tclvalue( nint.value))
 			makeplot2 <- ifelse( as.numeric( tclvalue( makeplot))==1, TRUE, FALSE)
 			estRLup <- tclvalue(rl.xup.value)
-			if( estRLup == "") estRLup <- NULL
+			if( estRLup == "") estRLup <- "NULL"
 			else estRLup <- as.numeric( estRLup)
 
 			estRLdn <- tclvalue(rl.xlow.value)
-			if( estRLdn == "") estRLdn <- NULL
+			if( estRLdn == "") estRLdn <- "NULL"
 			else estRLdn <- as.numeric( estRLdn)
 
 			estXIup <- tclvalue(xi.xup.value)
-			if( estXIup == "") estXIup <- NULL
+			if( estXIup == "") estXIup <- "NULL"
 			else estXIup <- as.numeric( estXIup)
 
 			estXIdn <- tclvalue(xi.xlow.value)
-			if( estXIdn == "") estXIdn <- NULL
+			if( estXIdn == "") estXIdn <- "NULL"
                         else estXIdn <- as.numeric( estXIdn)
 
 			# Here is the actual function call.
-			ci <- gpd.parameterCI(fit,
-					m=m.val,
-					conf=conf.val,
-					nint=nint.val,
-					rl.only=rl.only,
-					xi.only=xi.only,
-					rl.xup=estRLup,
-					rl.xlow=estRLdn,
-					xi.xup=estXIup,
-                                        xi.xlow=estXIdn,
-					make.plot=makeplot2)
+# 			ci <- gpd.parameterCI(fit,
+# 					m=m.val,
+# 					conf=conf.val,
+# 					nint=nint.val,
+# 					rl.only=rl.only,
+# 					xi.only=xi.only,
+# 					rl.xup=estRLup,
+# 					rl.xlow=estRLdn,
+# 					xi.xup=estXIup,
+#                                         xi.xlow=estXIdn,
+# 					make.plot=makeplot2)
+			ci.cmd <- paste( "ci <- gpd.parameterCI(fit, m=", m.val,
+                                      ", conf=", conf.val,
+                                      ", nint=", nint.val,
+                                      ", rl.only=", rl.only,
+                                      ", xi.only=", xi.only,
+                                      ", rl.xup=", estRLup,
+                                      ", rl.xlow=", estRLdn,
+                                      ", xi.xup=", estXIup,
+                                      ",  xi.xlow=", estXIdn,
+                                      ", make.plot=", makeplot2, ")", sep="")
+			eval( parse( text=ci.cmd))
+			write( ci.cmd, file="extRemes.log", append=TRUE)
 	#		est.rl <- gpd.ret( fit, m.val)
 			est.rl <- ci$rl$mle
 			nl1 <- paste( " ", "*****", " ", sep="\n")
@@ -110,37 +131,56 @@ if( !rl.only) {
 			round( ci$xi$up, digits=5), ")", sep="")
 	}
 
-			tkconfigure( base.txt, state="normal")
-                	tkinsert( base.txt, "end", nl1)
-			tkinsert( base.txt, "end", msg1)
-			tkinsert( base.txt, "end", nl2)
+			# tkconfigure( base.txt, state="normal")
+                	# tkinsert( base.txt, "end", nl1)
+			cat( nl1)
+			# tkinsert( base.txt, "end", msg1)
+			cat( msg1)
+			# tkinsert( base.txt, "end", nl2)
+			cat( nl2)
 	if( !xi.only) {
-		tkinsert( base.txt, "end", npy.msg)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg2b)
-		tkinsert( base.txt, "end", nl2)
+		# tkinsert( base.txt, "end", npy.msg)
+		cat( npy.msg)
+		# tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+		# tkinsert( base.txt, "end", msg2b)
+		cat( msg2b)
+		# tkinsert( base.txt, "end", nl2)
+		cat( nl2)
 		}
 	if( !rl.only) {
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg2c)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", nl2)
+# 		tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+# 		tkinsert( base.txt, "end", msg2c)
+		cat( msg2c)
+# 		tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+		cat( nl2)
+# 		tkinsert( base.txt, "end", nl2)
 		}
 	if( !xi.only) {
-		tkinsert( base.txt, "end", msg4)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg5)
-		tkinsert( base.txt, "end", nl2)
+		# tkinsert( base.txt, "end", msg4)
+		cat( msg4)
+		# tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+		# tkinsert( base.txt, "end", msg5)
+		cat( msg5)
+		# tkinsert( base.txt, "end", nl2)
+		cat( nl2)
 		}
 	if( !rl.only) {
-                tkinsert( base.txt, "end", msg6)
-                tkinsert( base.txt, "end", nl2)
-                tkinsert( base.txt, "end", msg7)
-		tkinsert( base.txt, "end", nl1)
+                # tkinsert( base.txt, "end", msg6)
+		cat( msg6)
+                # tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+                # tkinsert( base.txt, "end", msg7)
+		cat( msg7)
+		# tkinsert( base.txt, "end", nl1)
+		cat( nl2)
 		}
 		} # end of if else 'gpd.fit' present stmt
 	tkdestroy( base)
-        tkconfigure( base.txt, state="disabled")
+        # tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of submit fcn
 
@@ -149,7 +189,7 @@ endprog <- function() {
 	}
 
 gpdprofhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	msg1 <- paste("Estimates confidence intervals for m-year return level and shape parameter (xi)",
 	"for fits to the GP distribution using the profile likelihood functions.",
 	"", "Uses the R function splinefun to estimate the profile likelihood function and",
@@ -160,9 +200,14 @@ gpdprofhelp <- function() {
 	"gpd.profxi; the ismev package functions that find the profile likelihoods.", 
 	"If an NA is returned, then the function failed to find the upcrossing.  In such",
 	"an event, try using gpd.prof (or gpd.profxi) from the command lines.", sep="\n")
-	tkinsert(base.txt, "end", msg1)
-	tkconfigure( base.txt, state="disabled")
+	# tkinsert(base.txt, "end", msg1)
+	# tkconfigure( base.txt, state="disabled")
+	cat( msg1)
+	cat("\n", "See the help files for the \'ismev\' function \'gpd.prof\' and for the ",
+		"\n", "\'extRemes\' function \'gpd.parameterCI\' for more help.\n")
+	cat( "(e.g., \'help( gpd.prof)\')\n")
 	help( gpd.prof)
+	invisible()
 	}
 
 #####################
@@ -196,7 +241,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i]))[1] == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE

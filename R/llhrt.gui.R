@@ -22,31 +22,63 @@ submit <- function() {
 	alpha <- as.numeric( tclvalue( alpha.val))
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
                 } else stop("llhrt.gui: Must load a data object!")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
+
 	fit1.select <- as.numeric( tkcurselection( fit1.listbox))+1
 	fit2.select <- as.numeric( tkcurselection( fit2.listbox))+1
-	m0 <- dd$models[[ fit1.select]]
-	n0 <- length( m0$mle)
-	m1 <- dd$models[[ fit2.select]]
-	n1 <- length( m1$mle)
-	df <- abs( n1 - n0)
+	# m0 <- dd$models[[ fit1.select]]
+	# m0.cmd <- paste( "m0 <- ", full.list[ data.select], "$models[[", fit1.select, "]]", sep="")
+	m0.cmd <- paste( "m0 <- dd[[\"models\"]][[ ", fit1.select, "]]", sep="")
+	eval( parse( text=m0.cmd))
+	write( m0.cmd, file="extRemes.log", append=TRUE)
+	# n0 <- length( m0$mle)
+	n0.cmd <- "n0 <- length( m0[[\"mle\"]])"
+	eval( parse( text=n0.cmd))
+	write( n0.cmd, file="extRemes.log", append=TRUE)
+	# m1 <- dd$models[[ fit2.select]]
+	# m1.cmd <- paste( "m1 <- ", full.list[ data.select], "$models[[", fit2.select, "]]", sep="")
+	m1.cmd <- paste( "m1 <- dd[[\"models\"]][[ ", fit2.select, "]]", sep="")
+	eval( parse( text=m1.cmd))
+	write( m1.cmd, file="extRemes.log", append=TRUE)
+	# n1 <- length( m1$mle)
+	n1.cmd <- "n1 <- length( m1[[\"mle\"]])"
+	eval( parse( text=n1.cmd))
+	write( n1.cmd, file="extRemes.log", append=TRUE)
+	# df <- abs( n1 - n0)
+	df.cmd <- "df <- abs( n1 - n0)"
+	eval( parse( text=df.cmd))
+	write( df.cmd, file="extRemes.log", append=TRUE)
 	if( n0 > n1) {
-		m2 <- m0
-		m3 <- m1
-		m0 <- m3
-		m1 <- m2
+		m2.cmd <- "m2 <- m0"
+		eval( parse( text=m2.cmd))
+		write( m2.cmd, file="extRemes.log", append=TRUE)
+		m3.cmd <- "m3 <- m1"
+		eval( parse( text=m3.cmd))
+		write( m3.cmd, file="extRemes.log", append=TRUE)
+		m0.cmd <- "m0 <- m3"
+		eval( parse( text=m0.cmd))
+		write( m0.cmd, file="extRemes.log", append=TRUE)
+		m1.cmd <- "m1 <- m2"
+		eval( parse( text=m1.cmd))
+		write( m1.cmd, file="extRemes.log", append=TRUE)
 		} # end of if n0 > n1 stmt
-	out <- deviancestat(	l1=m0$nllh,
-				l2=m1$nllh,
-				v=df,
-				alpha=alpha)
-	tkconfigure( base.txt, state="normal")
+	# out <- deviancestat(	l1=m0$nllh,
+	# 			l2=m1$nllh,
+	# 			v=df,
+	# 			alpha=alpha)
+	out.cmd <- paste( "out <- deviancestat( l1=m0[[\"nllh\"]], l2=m1[[\"nllh\"]], v=df, alpha=", alpha, ")", sep="")
+	eval( parse( text=out.cmd))
+	write( out.cmd, file="extRemes.log", append=TRUE)
+	# tkconfigure( base.txt, state="normal")
 	nl1 <- paste(" ", "**************", " ", sep="\n")
 	nl2 <- paste(" ", " ", sep="\n")
 	msg1 <- paste("Likelihood-ratio test statistic for models: M0 = ", names( dd$models)[fit1.select],
 			" and M1 = ", names( dd$models)[fit2.select], " is: ", sep="")
-	if( abs( out$DS) > out$c.alpha)
+	if( is.na( out$c.alpha)) msg2 <- paste("Chi-square critical value is ", out$c.alpha, sep="")
+	else if( abs( out$DS) > out$c.alpha)
 	msg2 <- paste( round( abs( out$DS), digits=4), " > ",
 				round( out$c.alpha, digits=4),
 				"= 1 - ", alpha, " quantile of",
@@ -58,33 +90,45 @@ submit <- function() {
 				"a Chi-square with ", df,
 				" degrees of freedom.", sep="")
 	msg3 <- paste(" p-value = ", round( out$p.value, digits=6), sep="")
-	tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", msg1)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg2)
-	tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", msg3)
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+	# tkinsert( base.txt, "end", msg1)
+	cat( msg1)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
+	# tkinsert( base.txt, "end", msg2)
+	cat( msg2)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+	# tkinsert( base.txt, "end", msg3)
+	cat( msg3)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
 	tkyview.moveto( base.txt, 1.0)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="disabled")
 	invisible()
 } # end of submit fcn.
 
 devhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	nl1 <- paste(" ", "**************", " ", sep="\n")
         nl2 <- paste(" ", " ", sep="\n")
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
 	h1 <- paste( "Simply computes the likelihood-ratio test", "D=2*log(M1/M0)",
 			"where M0 contained in M1 are the likelihood functions.",
 			"Also computed is the 1-alpha quantile of",
 			"a Chi-squared distribution with degrees of freedom",
 			"equal to the difference in the number of parameters of M0 and M1.", sep="\n")
-	tkinsert( base.txt, "end", h1)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", h1)
+	cat( h1)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
 	tkyview.moveto( base.txt, 1.0)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="disabled")
+	invisible()
 	} # end of devhelp fcn
 
 endprog <- function() {
@@ -120,7 +164,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE

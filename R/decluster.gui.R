@@ -2,7 +2,7 @@ decluster.gui <- function(base.txt) {
 
 # This function provides a gui interface for declustering a dataset.
 # The gui will list all objects of class
-# "ev.data" and the column names of the user selected object.
+# "extRemesDataObject" and the column names of the user selected object.
 # After declustering the selected data, will return a new column
 # to the data.  
 # Declustered data will keep the same column name as the original
@@ -27,7 +27,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data)) {
 		tkinsert( col.listbox, "end", paste( colnames( dd$data)[i])) 
@@ -42,84 +42,150 @@ submit <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
-	M <- dim( dd$data)[1]
-	} else dd <- .ev
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	# M <- dim( dd$data)[1]
+	} else dd.cmd <- "dd <- extRemesData"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
+
+M.cmd <- "M <- dim( dd[[\"data\"]])[1]"
+eval( parse( text=M.cmd))
+write( M.cmd, file="extRemes.log", append=TRUE)
 
 # Grab data to decluster.
-cols.selected <- character(0)
+cols.selected.cmd <- "cols.selected <- character(0)"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+
 # Gather column names to add decluster to end.
-cnames <- colnames( dd$data)
+cnames.cmd <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
+
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
+cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, \"", cnames[temp], "\")", sep="")
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+
 # Make sure a column has been selected.
 if( is.na( temp)) return()
-cols.selected <- cnames[temp]
+# for( i in 1:length( temp)) {
+# 	cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, ", cnames[temp[i]], sep="")
+# 	eval( parse( text=cols.selected.cmd))
+# 	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+# 	} # end of for 'i' loop.
 
 # Grab column to decluster by...
 temp2 <- as.numeric( tkcurselection( clustby.listbox))+1
 if( length( temp2) > 0) {
-	cluster.by.col <- cnames[temp2]
-	cluster.by.val <- dd$data[, cluster.by.col]
-} else cluster.by.val <- NULL
+	cluster.by.col.cmd <- paste( "cluster.by.col <- cnames[", temp2, "]", sep="")
+	eval( parse( text=cluster.by.col.cmd))
+	write( cluster.by.col.cmd, file="extRemes.log", append=TRUE) 
+	cluster.by.val.cmd <- "cluster.by.val <- dd[[\"data\"]][, cluster.by.col]"
+} else cluster.by.val.cmd <- "cluster.by.val <- NULL"
+eval( parse( text=cluster.by.val.cmd))
+write( cluster.by.val.cmd, file="extRemes.log", append=TRUE)
 
 r.val <- as.numeric( tclvalue( r.value))
-tmp.data <- dd$data[ ,cols.selected]
+tmp.data.cmd <- "tmp.data <- dd[[\"data\"]][ ,cols.selected]"
+# tmp.data.cmd <- paste( "tmp.data <- ", full.list[ data.select], "$data[,cols.selected]", sep="")
+eval( parse( text=tmp.data.cmd))
+write( tmp.data.cmd, file="extRemes.log", append=TRUE)
 
 # Draw a plot with horizontal line through threshold (if desired).
-if( tclvalue( add.plot.value)==1) plot( 1:length(tmp.data), tmp.data, xaxt="n", xlab="obs", ylab=cols.selected, pch=".")
-	if( !is.na( as.numeric( tclvalue( threshold.value)))) {
-		threshold.val <- as.numeric( tclvalue( threshold.value))
-		thresh.name <- as.character( threshold.val)
-if( is.null( cluster.by.val)) newnames <-
-	paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", sep="")
-else newnames <-
-	paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", "by",
-							cnames[temp2], sep="")
-	} else { 
-		threshold.val <- get( tclvalue( threshold.value))
-		thresh.name <- tclvalue( threshold.value)
-if( is.null( cluster.by.val)) newnames <-
-        paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", sep="")
-else newnames <-
-	paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", "by",
-							cnames[temp2], sep="")
-		}
+if( tclvalue( add.plot.value)==1) {
+	plotCMD <- paste( "plot( 1:", length(tmp.data),
+			", tmp.data, xaxt=\"n\", xlab=\"obs\", ylab=cols.selected, pch=\".\")", sep="")
+	eval( parse( text=plotCMD))
+	write( plotCMD, file="extRemes.log", append=TRUE)
+	}
+# Obtain the threshold values (is it a number or a name?).
+if( !is.na( as.numeric( tclvalue( threshold.value)))) {
+	threshold.val <- as.numeric( tclvalue( threshold.value))
+	thresh.name <- as.character( threshold.val)
+	if( is.null( cluster.by.val)) newnames <- paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", sep="")
+	else newnames <- paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", "by", cnames[temp2], sep="")
+} else { 
+	threshold.val <- get( tclvalue( threshold.value))
+	thresh.name <- tclvalue( threshold.value)
+	if( is.null( cluster.by.val)) newnames <- paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", sep="")
+	else newnames <- paste( cnames[temp], ".u",thresh.name, "r", r.val, "dc", "by", cnames[temp2], sep="")
+	} # end of if else 'threshold.value' is a number or a name stmts.
 
+	## Make sure this new decluster doesn't delete an existing column.
+	## The assumption is that if the column exists, then the procedure
+	## has already been performed, but this may not be the case.
 	for( i in 1:length( cnames)) {
         if( newnames == cnames[i]) {
-warn.msg <- paste(" ", "***************", "Warning: ",
-"This declustering procedure appears to have already been performed.",
-"No declustering applied.  Maybe change column name.", "***************", " ",
-sep="\n")
-                tkconfigure( base.txt, state="normal")
-                tkinsert( base.txt, "end", warn.msg)
-                tkconfigure( base.txt, state="disabled")
-                stop("Decluster already exists.")
+		warn.msg <- paste(" ", "***************", "Warning: ",
+				"This declustering procedure appears to have already been performed.",
+				"No declustering applied.  Maybe change column name.", "***************", " ", sep="\n")
+                # tkconfigure( base.txt, state="normal")
+                # tkinsert( base.txt, "end", warn.msg)
+                # tkconfigure( base.txt, state="disabled")
+                stop(warn.msg)
                 } # end of if stmt
         } # end of for i loop
 
 #	ind <- tmp.data > threshold.val
 #	NN <- sum( ind)
-	out <- dclust( xdat=tmp.data, u=threshold.val, r=r.val, cluster.by=cluster.by.val)
-	ncluster <- out$ncluster
-	nexc <- sum( tmp.data > threshold.val, na.rm=TRUE)
-	theta.r <- ncluster/nexc
-	Ferro <- extremalindex( tmp.data, threshold.val)
-	tmp.dc <- out$xdat.dc
+	# out <- dclust( xdat=tmp.data, u=threshold.val, r=r.val, cluster.by=cluster.by.val)
+	print( paste( "Declustering ...", sep=""))
+	print( paste( "This may take a long time for large datasets!", sep=""))
+	out.cmd <- paste( "out <- dclust( xdat=tmp.data, u=", threshold.val, ", r=", r.val,
+			", cluster.by=cluster.by.val)", sep="")
+	eval( parse( text=out.cmd))
+	write( out.cmd, file="extRemes.log", append=TRUE)
+	ncluster.cmd <- "ncluster <- out[[\"ncluster\"]]"
+	eval( parse( text=ncluster.cmd))
+	write( ncluster.cmd, file="extRemes.log", append=TRUE)
+	nexc.cmd <- paste( "nexc <- sum( tmp.data > ", threshold.val, ", na.rm=TRUE)", sep="")
+	eval( parse( text=nexc.cmd))
+	write( nexc.cmd, file="extRemes.log", append=TRUE)
+	thetar.cmd <- "theta.r <- ncluster/nexc"
+	eval( parse( text=thetar.cmd))
+	write( thetar.cmd, file="extRemes.log", append=TRUE)
+	Ferro.cmd <- paste( "Ferro <- extremalindex( tmp.data, ", threshold.val, ")", sep="")
+	eval( parse( text=Ferro.cmd))
+	write( Ferro.cmd, file="extRemes.log", append=TRUE)
+	tmp.dc.cmd <- "tmp.dc <- out[[\"xdat.dc\"]]"
+	eval( parse( text=tmp.dc.cmd))
+	write( tmp.dc.cmd, file="extRemes.log", append=TRUE)
 #c(out$xdat.dc,
 # rep( min( min( tmp.data, na.rm=TRUE), threshold.val-1), M-ncluster))
 if( tclvalue( add.plot.value)==1) {
-	abline( h=threshold.val)
-abline( v=(1:length(tmp.data))[diff( out$clust)>=1]+0.5, lty=2, col="red")
+	abline.cmd1 <- paste( "abline( h=", threshold.val, ")", sep="")
+	eval( parse( text=abline.cmd1))
+	write( abline.cmd1, file="extRemes.log", append=TRUE)
+	abline.cmd2 <- paste( "abline( v=(1:", length(tmp.data), ")[diff( out[[\"clust\"]]) >= 1]+0.5, lty=2, col=\"red\")",
+				sep="")
+	eval( parse( text=abline.cmd2))
+	write( abline.cmd2, file="extRemes.log", append=TRUE)
 	}
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, tmp.dc)
-colnames( dd$data) <- cnames
-assign( full.list[ data.select], dd, pos=".GlobalEnv")
+cnames.cmd <- paste( "cnames <- c( cnames, \"", newnames, "\")", sep="")
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
+# cnames.msg <- character(0)
+# for( i in 1:length( cnames)) {
+# 	if( i==1) cnames.msg <- paste( cnames.msg, "\"", cnames[i], "\"", sep="")
+# 	else cnames.msg <- paste( cnames.msg, ", ", "\"", cnames[i], "\"", sep="")
+# 	} # end of for 'i' loop.
+# cnames.msg <- paste("cnames <- c( ", cnames.msg, ")", sep="")
+# write( cnames.msg, file="extRemes.log", append=TRUE)
+dd.cmd <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], tmp.dc)"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
+colnames.cmd <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnames.cmd))
+write( colnames.cmd, file="extRemes.log", append=TRUE)
+assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+eval( parse( text=assignCMD))
+write( assignCMD, file="extRemes.log", append=TRUE)
+# colnames.cmd <- paste( "colnames( ", full.list[ data.select], "$data) <- cnames", sep="")
 
-tkconfigure( base.txt, state="normal")
-nl1 <- paste(" ", "**********************", " ", sep="\n")
-nl2 <- paste(" ", " ", sep="\n")
+# tkconfigure( base.txt, state="normal")
+# nl1 <- paste(" ", "**********************", " ", sep="\n")
+# nl2 <- paste(" ", " ", sep="\n")
 msg1 <- paste( "declustering performed for:", sep="")
 msg2 <- paste( cols.selected, " and assigned to ", newnames, sep="")
 if( length( threshold.val) == 1) msg3 <- paste( ncluster, " clusters using threshold of ", threshold.val, " and r = ", r.val, sep="")
@@ -134,30 +200,37 @@ msg5 <- paste("Extremal index (theta) estimated from intervals estimator: ",
 msg6 <- paste("Estimated run length (Ferro and Segers (2003)): ",
 			Ferro$run.length, sep="")
 msg7 <- Ferro$msg
-tkinsert( base.txt, "end", nl1)
-tkinsert( base.txt, "end", msg1)
-tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg2)
-tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg3)
-tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg4)
-tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg5)
-tkinsert( base.txt, "end", nl2)
-# tkinsert( base.txt, "end", msg5b)
+# tkinsert( base.txt, "end", nl1)
+# tkinsert( base.txt, "end", msg1)
+print(msg1)
 # tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg6)
-tkinsert( base.txt, "end", nl2)
-tkinsert( base.txt, "end", msg7)
+# tkinsert( base.txt, "end", msg2)
+print( msg2)
+# tkinsert( base.txt, "end", nl2)
+# tkinsert( base.txt, "end", msg3)
+print( msg3)
+# tkinsert( base.txt, "end", nl2)
+# tkinsert( base.txt, "end", msg4)
+print( msg4)
+# tkinsert( base.txt, "end", nl2)
+# tkinsert( base.txt, "end", msg5)
+print( msg5)
+# tkinsert( base.txt, "end", nl2)
+# # tkinsert( base.txt, "end", msg5b)
+# # tkinsert( base.txt, "end", nl2)
+# tkinsert( base.txt, "end", msg6)
+print( msg6)
+# tkinsert( base.txt, "end", nl2)
+# tkinsert( base.txt, "end", msg7)
+print( msg7)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of submit fcn
 
 dchelp <- function() {
-	tkconfigure( base.txt, state="normal")
-	nl1 <- paste(" ", "*******************", " ", sep="\n")
+	# tkconfigure( base.txt, state="normal")
+	nl1 <- paste("*******************", sep="")
 help.msg <- paste( " ", "Runs declustering", "",
 "This is a simple function that takes a data set X and declusters",
 "X based on a given threshold and the number of subsequent obs that",
@@ -172,11 +245,15 @@ help.msg <- paste( " ", "Runs declustering", "",
 "where N is the number of exceedances of the threshold and n_c are the number",
 "of clusters found from runs declustering, and on the intervals estimator",
 "due to Ferro and Segers (2003) (see the help file for extremalindex)", "",
-"See Coles (2001) for more information on runs declustering.", sep="\n")
-	tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", help.msg)
-	tkinsert( base.txt, "end", nl1)
-	tkconfigure( base.txt, state="disabled")
+"See Coles (2001) for more information on runs declustering.",
+"See the help file for \'dclust\' (i.e., \'help( dclust)\') as this is the primary ",
+"function utilized.", " ", sep="\n")
+	# tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", help.msg)
+	# tkinsert( base.txt, "end", nl1)
+	# tkconfigure( base.txt, state="disabled")
+	cat( nl1)
+	cat( help.msg)
 	invisible()
 	} # end of lthelp
 
@@ -214,7 +291,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -242,7 +319,7 @@ col.scroll <- tkscrollbar( data.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")
@@ -262,7 +339,7 @@ clustby.listbox <- tklistbox( clustby.frm,
 clustby.scroll <- tkscrollbar( clustby.frm, orient="vert",
                         command=function(...) tkyview( clustby.listbox, ...))
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
         tkinsert( clustby.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
         } else tkinsert( col.listbox, "end", "")

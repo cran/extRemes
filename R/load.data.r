@@ -4,7 +4,6 @@ function(base.txt) {
 # This function loads the data set using tkfilefind to locate it.
 # 
 
-
 ############################
 # Internal functions
 ############################
@@ -12,85 +11,147 @@ function(base.txt) {
 readit <- function() {
 	# This is the name for the new data object in R.
 	save.name <- tclvalue( sname)
-	.ev <- list()
+	extRemesData.cmd <- "extRemesData <- list()"
+	eval( parse( text=extRemesData.cmd))
+	write( extRemesData.cmd, file="extRemes.log", append=TRUE)
 
 	# Data is actually read into R here.
 	hh <- as.logical(as.numeric(tclvalue(head))) 
-	if( tclvalue( file.type)=="common")
-		.ev$data <- read.table(file.name, header=hh, sep=tclvalue(delimiter))
-	else .ev$data <- source( file.name)$value
-
-	if( is.null( dim( .ev$data))) {
-		.ev$data <- cbind(1:length( .ev$data),.ev$data)
-		if( is.null( colnames( .ev$data))) colnames( .ev$data) <- c("obs", "value")
-		else colnames( .ev$data)[1] <- "obs"
+	if( tclvalue( file.type)=="common") {
+		extRemesData.cmd <- paste( "read.table( \"", file.name, "\", header=", hh,
+					", sep=\"", tclvalue(delimiter), "\")", sep="")
+		# extRemesData$data <- read.table(file.name, header=hh, sep=tclvalue(delimiter))
+		extRemesData$data <- eval( parse( text=extRemesData.cmd))
+		extRemesData.cmd <- paste( "extRemesData$data <- ", extRemesData.cmd, sep="")
+		write( extRemesData.cmd, file="extRemes.log", append=TRUE)
 	} else {
-		nc <- dim( .ev$data)[2]
-		if( is.null( colnames( .ev$data))) colnames( .ev$data) <- as.character(1:nc)
+		extRemesData.cmd <- paste( "extRemesData[[\"data\"]] <- source( \"", file.name, "\")$value", sep="")
+		# extRemesData$data <- source( file.name)$value
+		eval( parse( text=extRemesData.cmd))
+                write( extRemesData.cmd, file="extRemes.log", append=TRUE)
+	}
+
+	if( is.null( dim( extRemesData$data))) {
+		nl <- length( extRemesData$data)
+		# extRemesData$data <- cbind( 1:nl, extRemesData$data)
+		extRemesData.cmd <- paste( "extRemesData[[\"data\"]] <- cbind( 1:", nl, ", extRemesData[[\"data\"]])",
+						sep="")
+		eval( parse( text=extRemesData.cmd))
+                write( extRemesData.cmd, file="extRemes.log", append=TRUE)
+		if( is.null( colnames( extRemesData$data))) {
+			colnames.cmd <- "colnames( extRemesData[[\"data\"]]) <- c(\"obs\", \"value\")"
+			# colnames( extRemesData$data) <- c("obs", "value")
+			eval( parse( text=colnames.cmd))
+			write( colnames.cmd, file="extRemes.log", append=TRUE)
+		} else {
+			colnames.cmd <- "colnames( extRemesData[[\"data\"]])[1] <- c(\"obs\", \"value\")"
+			# colnames( extRemesData$data)[1] <- "obs"
+			eval( parse( text=colnames.cmd))
+                        write( colnames.cmd, file="extRemes.log", append=TRUE)
 		}
-	class( .ev) <- "ev.data"
-	.ev$name <- strsplit(file.name,"/")[[1]][length(strsplit(file.name,"/")[[1]])] 
-	.ev$file.path <- file.name
-	if( save.name == "") save.name <- ".ev"
+	} else {
+		nc <- dim( extRemesData$data)[2]
+		if( is.null( colnames( extRemesData$data))) {
+			colnames.cmd <- paste( "colnames( extRemesData[[\"data\"]]) <- paste( \"V\", 1:", nc, ", sep=\"\")",
+						sep="")
+			# colnames( extRemesData$data) <- as.character(1:nc)
+			eval( parse( text=colnames.cmd))
+                        write( colnames.cmd, file="extRemes.log", append=TRUE)
+			}
+		}
+	class.cmd <- "class( extRemesData) <- \"extRemesDataObject\""
+	eval( parse( text=class.cmd))
+	write( class.cmd, file="extRemes.log", append=TRUE)
+	# class( extRemesData) <- "extRemesDataObject"
 
-	# Assign data object the value of 'save.name' in R--default is ".ev".
-	assign( save.name, .ev, pos=".GlobalEnv")
-	.ev$default.ldata <- save.name
+	extRemesData.cmd <- paste( "extRemesData$name <- strsplit( \"", file.name, "\", \"/\")[[1]][ ",
+					length(strsplit(file.name,"/")[[1]]), "]", sep="")
+	# extRemesData$name <- strsplit(file.name,"/")[[1]][length(strsplit(file.name,"/")[[1]])] 
+	eval( parse( text=extRemesData.cmd))
+	write( extRemesData.cmd, file="extRemes.log", append=TRUE)
 
-	mess <- paste("  ", "*****", "Successfully opened file", .ev$name,
-		"  ", "*****", "  ", sep="\n")
-	tkconfigure(base.txt,state="normal")
-	tkinsert(base.txt,"end",mess)
+	extRemesData.cmd <- paste( "extRemesData$file.path <- \"", file.name, "\"", sep="")
+	# extRemesData$file.path <- file.name
+	eval( parse( text=extRemesData.cmd))
+        write( extRemesData.cmd, file="extRemes.log", append=TRUE)
+	if( save.name == "") {
+		save.name <- "extRemesData"
+		saveit <- FALSE
+	} else saveit <- TRUE
+
+	# Assign data object the value of 'save.name' in R--default is "extRemesData".
+	assignCMD <- paste( "assign( \"", save.name, "\", extRemesData, pos=\".GlobalEnv\")", sep="")
+	# assign( save.name, extRemesData, pos=".GlobalEnv")
+	eval( parse( text=assignCMD))
+	write( assignCMD, file="extRemes.log", append=TRUE)
+	extRemesData$default.ldata <- save.name
+	print( paste( "Successfully opened file: ", extRemesData$name, sep=""))
+	# mess <- paste("  ", "*****", "Successfully opened file", extRemesData$name, "  ", "*****", "  ", sep="\n")
+	# tkconfigure(base.txt,state="normal")
+	# tkinsert(base.txt,"end",mess)
 	# Print a sample of the data to the screen (first and last 3 rows).
-	if( dim( .ev$data)[1] > 6) {
-		n <- dim( .ev$data)[1]
-		m <- dim( .ev$data)[2]
-		datanames <- character(0)
-		datasample1 <- datanames
-		datasample2 <- datanames
-		datasample3 <- datanames
-		ellipses <- datanames
-		datasample4 <- datanames
-		datasample5 <- datanames
-		datasample6 <- datanames
-		
-		temp1 <- .ev$data[1,]
-		temp2 <- .ev$data[2,]
-		temp3 <- .ev$data[3,]
-		temp.ellipses <- rep("...", m)
-		tempnl2 <- .ev$data[n-2,]
-		tempnl1 <- .ev$data[n-1,]
-		tempn	<- .ev$data[n,]
-		for( i in 1:m) {
-		datanames <- paste( datanames, colnames( .ev$data)[i],
-					sep="	")
-		datasample1 <- paste( datasample1, temp1[i], sep="	")
-		datasample2 <- paste( datasample2, temp2[i], sep="	")
-		datasample3 <- paste( datasample3, temp3[i], sep="	")
-		ellipses <- paste( ellipses, temp.ellipses[i], sep="	")
-		datasample4 <- paste( datasample4, tempnl2[i], sep="      ")
-                datasample5 <- paste( datasample5, tempnl1[i], sep="      ")
-                datasample6 <- paste( datasample6, tempn[i], sep="      ")
-			} # end of for i loop.
-		nl <- paste(" ", " ", sep="\n")
-		tkinsert( base.txt, "end", datanames)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample1)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample2)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample3)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", ellipses)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample4)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample5)
-		tkinsert( base.txt, "end", nl)
-		tkinsert( base.txt, "end", datasample6)
-		}
-	tkyview.moveto(base.txt,1.0)
-	tkconfigure(base.txt,state="disabled")
+	# print( extRemesData$data[1:3,])
+	# print( paste("...", sep=""))
+	# print( extRemesData$data[(dim( extRemesData$data)[1]-2):dim( extRemesData$data)[1],])
+	msg.cmd <- "print( stats2( extRemesData[[\"data\"]]))"
+	eval( parse( text=msg.cmd))
+	write( msg.cmd, file="extRemes.log", append=TRUE)
+	if( saveit) {
+                cat("\n", "Saving workspace (may take a few moments for large workspaces) ...\n")
+                saveCMD <- "save.image()"
+                eval( parse( text=saveCMD))
+                write( saveCMD, file="extRemes.log", append=TRUE)
+		cat( "\n", "Workspace saved.\n")
+        }
+# 	if( dim( extRemesData$data)[1] > 6) {
+# 		n <- dim( extRemesData$data)[1]
+# 		m <- dim( extRemesData$data)[2]
+# 		datanames <- character(0)
+# 		datasample1 <- datanames
+# 		datasample2 <- datanames
+# 		datasample3 <- datanames
+# 		ellipses <- datanames
+# 		datasample4 <- datanames
+# 		datasample5 <- datanames
+# 		datasample6 <- datanames
+# 		
+# 		temp1 <- extRemesData$data[1,]
+# 		temp2 <- extRemesData$data[2,]
+# 		temp3 <- extRemesData$data[3,]
+# 		temp.ellipses <- rep("...", m)
+# 		tempnl2 <- extRemesData$data[n-2,]
+# 		tempnl1 <- extRemesData$data[n-1,]
+# 		tempn	<- extRemesData$data[n,]
+# 		for( i in 1:m) {
+# 		datanames <- paste( datanames, colnames( extRemesData$data)[i],
+# 					sep="	")
+# 		datasample1 <- paste( datasample1, temp1[i], sep="	")
+# 		datasample2 <- paste( datasample2, temp2[i], sep="	")
+# 		datasample3 <- paste( datasample3, temp3[i], sep="	")
+# 		ellipses <- paste( ellipses, temp.ellipses[i], sep="	")
+# 		datasample4 <- paste( datasample4, tempnl2[i], sep="      ")
+#                 datasample5 <- paste( datasample5, tempnl1[i], sep="      ")
+#                 datasample6 <- paste( datasample6, tempn[i], sep="      ")
+# 			} # end of for i loop.
+# 		nl <- paste(" ", " ", sep="\n")
+# 		tkinsert( base.txt, "end", datanames)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample1)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample2)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample3)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", ellipses)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample4)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample5)
+# 		tkinsert( base.txt, "end", nl)
+# 		tkinsert( base.txt, "end", datasample6)
+# 		}
+# 	tkyview.moveto(base.txt,1.0)
+# 	tkconfigure(base.txt,state="disabled")
 	tkdestroy( tt)
 } # end of readit fcn
 
