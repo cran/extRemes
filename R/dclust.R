@@ -9,7 +9,7 @@ dclust <- function(xdat, u, r, cluster.by=NULL) {
 n <- length( xdat)
 if( r >= n-1) stop("dclust: r is too big!")
 else if( r < 1) stop("dclust: r must be >= 1")
-check <- matrix( NA, nrow=length( xdat), ncol=r+1)
+check <- matrix( NA, nrow=n, ncol=r+1)
 check[,1] <- xdat > u
 if( length( u) == 1) for( i in 2:(r+1)) check[,i] <- c(xdat[i:n] > u, rep( NA, i-1))
 else if( length( u) == n) for( i in 2:(r+1)) check[,i] <- c(xdat[i:n] > u[i:n], rep( NA, i-1))
@@ -21,6 +21,8 @@ if( !is.null( cluster.by)) {
 	nby <- sum( ind)
 	for( i in 1:nby) {
 		clust[pos.ind[i]:n] <- clust[pos.ind[i]:n]+1
+		# The next line might be needed, but I'm not sure.
+		# if( pos.ind[i]-r>=0)
 		check[(pos.ind[i]-r):(pos.ind[i]-1),] <- NA
 		} # end of for 'i' loop.
 	for( j in 1:(n-r)) {
@@ -38,12 +40,25 @@ if( !is.null( cluster.by)) {
 		if( sum( check[(n-r):(n-1),1], na.rm=TRUE)==0 & check[n,1])
 			clust[n] <- clust[n]+1
 	} # end of if else cluster.by NULL or not stmts.
-ncluster <- clust[n]
+ncluster <- length( unique( clust))
 # clust <- factor( clust)
-xdat.dc <- aggregate(xdat, by=list( clust), FUN=max, na.rm=TRUE)[,2]
-ndc <- length( xdat.dc)
-if( length( u) == 1) xdat.dc <- c( xdat.dc, rep( min( xdat, u-1, na.rm=TRUE), n-ndc))
-else xdat.dc <- c( xdat.dc, rep( min( xdat, min(u)-1, na.rm=TRUE), n-ndc))
+xdat.dc <- rep(min(xdat,min(u)-1,na.rm=TRUE),n)
+for( k in clust) {
+	tmp <- xdat
+	tmp[clust != k] <- NA
+	ind.tmp <- tmp == max( tmp, na.rm=TRUE)
+	if( sum( ind.tmp, na.rm=TRUE) > 1) {
+		ck.ind <- (1:length( ind.tmp))[ind.tmp & !is.na(ind.tmp)]
+		ck.ind <- ck.ind[-1]
+		ind.tmp[ck.ind] <- FALSE
+		} # end of if more than one max value stmt.
+	xdat.dc[ (clust == k) & ind.tmp] <- max( tmp, na.rm=TRUE)
+	} # end of for 'k' loop. 
+
+# xdat.dc <- aggregate(xdat, by=list( clust), FUN=max, na.rm=TRUE)[,2]
+# ndc <- length( xdat.dc)
+# if( length( u) == 1) xdat.dc <- c( xdat.dc, rep( min( xdat, u-1, na.rm=TRUE), n-ndc))
+# else xdat.dc <- c( xdat.dc, rep( min( xdat, min(u)-1, na.rm=TRUE), n-ndc))
 out <- list( xdat.dc=xdat.dc, ncluster=ncluster, clust=clust)
 return( out)
 } # end of dclust fcn 

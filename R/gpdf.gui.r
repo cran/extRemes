@@ -385,7 +385,7 @@ top.r <- tkframe(top.frm,borderwidth=2)
 top.l <- tkframe(top.frm,borderwidth=2)
 resp.listbox <-
 	tklistbox(top.l,yscrollcommand=function(...)tkset(resp.scroll,...),
-			selectmode="single",width=15,height=4,exportselection=0)
+			selectmode="single",width=35,height=4,exportselection=0)
 resp.scroll <- tkscrollbar(top.l,orient="vert",
 			command=function(...)tkyview(resp.listbox,...))
 if( is.nothing) {

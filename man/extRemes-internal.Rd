@@ -67,6 +67,7 @@
 \alias{gpdparamCI.gui}
 \alias{plotTS.gui}
 \alias{poisson.gui}
+\alias{scrubber.gui}
 
 \title{
   extRemes internal and secondary functions
@@ -145,6 +146,7 @@ fitsummary.gui(base.txt)
 gpdparamCI.gui(base.txt)
 plotTS.gui(base.txt)
 poisson.gui(base.txt)
+scrubber.gui(base.txt)
 }
 \keyword{internal}
 \keyword{misc}
