@@ -377,7 +377,7 @@ if (is.null(dd$models[[number.of.models+1]])) {
         exportselection = 0)
     data.scroll <- tkscrollbar(data.frm, orient = "vert", command = function(...) tkyview(data.listbox, 
         ...))
-    temp <- ls(all = TRUE, name = ".GlobalEnv")
+    temp <- ls(all.names = TRUE, name = ".GlobalEnv")
     full.list <- character(0)
     is.nothing <- TRUE
     for (i in 1:length(temp)) {

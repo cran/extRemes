@@ -1,7 +1,7 @@
 \name{Flood}
 \alias{Flood}
 \docType{data}
-\title{ United States total economic damage resulting from floods.}
+\title{ United States Total Economic Damage Resulting from Floods}
 \description{
 United States total economic damage (in billions of U.S. dollars) caused by floods by hydrologic year from
 1932-1997.  See Pielke and Downton (2000) for more information.
@@ -26,24 +26,19 @@ damage that results from flooding caused by ranfall and/or snowmelt.  The annual
 from October through September.  Flood damage per capita is computed by dividing the inflation-adjusted losses for each
 hydrological year by the estimated population on 1 July of that year (www.census.gov).  Flood damage per million dollars
 of national wealth uses the net stock of fixed reproducible tangible wealth in millions of current dollars (see Pielke
-and Downton (2000) for more details).
+and Downton (2000) for more details; see also Katz et al. (2002) for analysis).
 }
 \source{
 NWS web site: \url{http://www.nws.noaa.gov/oh/hic}
 }
 \references{ 
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Katz, R. W., Parlange, M. B. and Naveau, P. (2002) Statistics of extremes in hydrology, \emph{Advances in Water Resources}, \bold{25}, 1287--1304.
 
-Katz, Richard W., Parlange, Marc B. and Naveau, Philippe, Statistics of extremes in hydrology, Advances in Water
-	Resources, 25:1287--1304, 2002.
-
-Pielke, Roger A. Jr. and Downton, Mary W., Precipitation and damaging floods: trends in the United States, 1932-97,
-        Journal of Climate, 13 (20):3625--3637, 2000.
+Pielke, R. A. Jr. and Downton, M. W. (2000) Precipitation and damaging floods: trends in the United States, 1932-97, \emph{Journal of Climate}, \bold{13}, (20), 3625--3637.
 }
 \examples{
 data(Flood)
-plot( Flood[,2], Flood[,3], type="l", lwd=2, xlab="hydrologic year", ylab="Total economic damage (billions of U.S. dollars)")
+plot( Flood[,2], Flood[,3], type="l", lwd=2, xlab="hydrologic year",
+    ylab="Total economic damage (billions of U.S. dollars)")
 }
 \keyword{datasets}

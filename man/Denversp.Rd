@@ -22,13 +22,10 @@ Parlange (1995).  Summer precipitation in this region near the eastern edge of t
 of local convective origin (Katz and Parlange (1005)).
 }
 \source{
-Katz, Richard W. and Parlange, Marc B., Generalizations of chain-dependent processes: Application to hourly precipitation,
-	Water Resources Research Vol. 31 No. 5: 1331--1341, May 1995.
+Katz, R. W. and Parlange, M. B. (1995) Generalizations of chain-dependent processes: Application to hourly precipitation, \emph{Water Resources Research} \bold{31}, (5), 1331--1341.
 }
 \references{
-Collander, R.S., Tollerud, E.I., Li, L., and Viront-Lazar, A., Hourly precipitation data and station histories: A research
-	assessment, in Preprints, Eighth Symposium on Meteorological Observations and Instrumentation, pp. 153--158,
-	American Meteorological Society, Boston, 1993.
+Collander, R. S., Tollerud, E. I., Li, L., and Viront-Lazar, A. (1993) Hourly precipitation data and station histories: A research assessment, in \emph{Preprints, Eighth Symposium on Meteorological Observations and Instrumentation, American Meteorological Society}, Boston, 153--158.
 }
 \examples{
 data(Denversp)

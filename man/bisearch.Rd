@@ -1,14 +1,12 @@
 \name{bisearch}
 \alias{bisearch}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Simple bisection search. }
+\title{ Simple Bisection Search. }
 \description{
 Bisection search algorithm to find where a function crosses a particular value.
 }
 \usage{
 bisearch(x1, x2, f, tol = 1e-07, niter = 25, upcross.level = 0)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x1}{ Low-end starting value. }
   \item{x2}{ High-end starting value. }
@@ -29,9 +27,9 @@ bounds on parameter estimates.
   \item{fm }{The difference between the function value at the found crossing and \code{upcross.level}.}
   \item{iter}{Number of iterations used to find the crossing.}
 }
-\references{Fishbane, P.M., Gasiorowicz, S., and S.T. Thornton
-Physics for Scientists and Engineers,
-2d ed. (Extended), Upper Saddle River, New Jersey: Prentice Hall, 1996.}
+\references{
+Fishbane, P. M., Gasiorowicz, S. and Thornton, S. T. (1996) \emph{Physics for Scientists and Engineers}, 2nd ed. (Extended), Upper Saddle River, New Jersey: Prentice Hall.
+}
 \author{ Unknown }
 \seealso{ \code{\link{gev.parameterCI}},\code{\link{gpd.parameterCI}}}
 \examples{

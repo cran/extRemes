@@ -15,21 +15,15 @@ Estimated economic damage (billions USD) caused by hurricanes.
   }
 }
 \details{
-More information on these data can be found in Pielke and Landsea (1998) or Katz (2002).  Also see
-Gilleland et al. (2005) for examples using \pkg{extRemes}.
+More information on these data can be found in Pielke and Landsea (1998) or Katz (2002).  Also see the tutorial at \url{http://www.isse.ucar.edu/extremevalues/evtk.html} for examples using \pkg{extRemes}.
 }
 \source{
 \url{http://sciencepolicy.colorado.edu/pielke/hp_roger/hurr_norm/data.html}
 }
 \references{
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Katz, R. W. (2002) Stochastic modeling of hurricane damage. \emph{Journal of Applied Meteorology}, \bold{41}, 754--762.
 
-Katz, Richard W., Stochastic modeling of hurricane damage. Journal of Applied Meteorology, 41:754--762, 2002.
-
-Pielke, Roger A. and Landsea, CW., Normalized hurricane damages in the United States: 1925-95. Weather
-        and Forecasting, 13 (3):621--631, 1998.
+Pielke, R. A. Jr. and Landsea, C. W. (1998) Normalized hurricane damages in the United States: 1925-95. \emph{Weather and Forecasting}, \bold{13}, (3), 621--631.
 }
 \examples{
 data(damage)

@@ -1,29 +1,24 @@
 \name{gev.parameterCI}
 \alias{gev.parameterCI}
 \alias{gpd.parameterCI}
-\title{ Return level and shape parameter confidence intervals for GEV (or GP) distribution. }
+\title{ Return Level and Shape Parameter Confidence Intervals for GEV (or GP) Distribution. }
 \description{
 Computes confidence intervals for return levels and/or shape parameters of GEV (or GP) using
 the profile likelihood appraoch.
 }
 \usage{
-gev.parameterCI(z, m, rl.xlow, rl.xup, xi.xlow=NULL, xi.xup=NULL, conf = 0.95,
-			nint = 100, rl.only=FALSE, xi.only=FALSE, make.plot=FALSE)
+gev.parameterCI(z, m, rl.xlow=NULL, rl.xup=NULL, xi.xlow=NULL, xi.xup=NULL, conf = 0.95,
+    nint = 100, rl.only=FALSE, xi.only=FALSE, make.plot=FALSE)
 
 gpd.parameterCI(z, m, conf = 0.95, nint = 100, rl.xup=NULL, rl.xlow=NULL,
-			xi.xup=NULL, xi.xlow=NULL, rl.only=FALSE,
-			xi.only=FALSE, make.plot=FALSE)
+    xi.xup=NULL, xi.xlow=NULL, rl.only=FALSE,
+    xi.only=FALSE, make.plot=FALSE)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{z}{ object from \code{gev.fit} or \code{gpd.fit} functions of the \code{ismev} package.}
   \item{m}{ m-year return level for which to calculate confidence interval. }
-  \item{rl.xlow}{ initial guess of lower limit for return level (generally should be lower than actual limit).
-			If NULL, this function will make its own guess--it is recommended to plot the profile
-			likelihood when finding these limits automatically (\code{make.plot}=TRUE).}
-  \item{rl.xup}{ initial guess of upper limit for return level (generally should be higher than actual limit).
-			If NULL, this function will make its own guess--it is recommended to plot the profile
-                        likelihood when finding these limits automatically (\code{make.plot}=TRUE).}
+  \item{rl.xlow}{ initial guess of lower limit for return level (generally should be lower than actual limit).  If NULL, this function will make its own guess--it is recommended to plot the profile likelihood when finding these limits automatically (\code{make.plot}=TRUE).}
+  \item{rl.xup}{ initial guess of upper limit for return level (generally should be higher than actual limit).  If NULL, this function will make its own guess--it is recommended to plot the profile likelihood when finding these limits automatically (\code{make.plot}=TRUE).}
   \item{xi.xlow}{ analogous to rl.xlow, but for shape parameter. }
   \item{xi.xup}{ analogous to rl.xup, but for shape parameter. }
   \item{conf}{ desired confidence. }
@@ -46,19 +41,17 @@ associated chi-square quantile.
   \item{xi}{Shape parameter characteristics--analogous to rl, but no mle component.}
 }
 \references{
-Coles, Stuart (2001).  An Introduction to Statistical Modeling of Extreme Values.
- Springer-Verlag, London.
+Coles, S. (2001) \emph{An Introduction to Statistical Modeling of Extreme Values}, London: Springer-Verlag, 208pp.
 
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Eric Gilleland }
 
 \seealso{ \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag}, \code{gev.prof}, \code{gev.profxi},
 	\code{gpd.prof}, \code{gpd.profxi}}
 \examples{
-# See extRemes tutorial (Gilleland et al. (2005)) for examples using the GUI interface.
+data(ftcanmax)
+fit <- gev.fit( ftcanmax[,"Prec"])
+obj <- gev.parameterCI(fit, m=550, xi.xlow=-0.1, xi.xup=0.5, make.plot=TRUE)
 }
 \keyword{ manip }
 \keyword{ hplot }

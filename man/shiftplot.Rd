@@ -1,8 +1,8 @@
 \name{shiftplot}
 \alias{shiftplot}
-\title{ Create a shift plot between two sets of data.}
+\title{ Shift Plot Between Two Sets of Data}
 \description{
- A shift plot is a plot of the quantiles of a data set 'y' minus those of another data set 'x' against those of 'x'.  Includes 95 percent simultaneous confidence bands.
+ A shift plot is a plot of the quantiles of a data set y minus those of another data set x against those of x.  Includes 95 percent simultaneous confidence bands.
 }
 \usage{
 shiftplot(x, y, pch = 20, xlab = "x Quantiles", ylab = "y Quantiles", main = NULL, ...)
@@ -17,13 +17,13 @@ shiftplot(x, y, pch = 20, xlab = "x Quantiles", ylab = "y Quantiles", main = NUL
   \item{\dots}{ Other optional arguments to plot function.}
 }
 \details{
-The shift plot is a graph of y_q - x_q vs. x_q, where y_q and x_q denote the quantiles of x and y, resp.  95 percent simultaneous confidence bands are calculated per Doksum and Sievers (1976).  The primary usage of this plot is where 'x' is a control group and 'y' is an experimental method; or something similar.  For example, 'x' might represent observations, and 'y' might represent climate model output; or some such.
+The shift plot is a graph of y_q - x_q vs. x_q, where y_q and x_q denote the quantiles of x and y, resp.  95 percent simultaneous confidence bands are calculated per Doksum and Sievers (1976).  The primary usage of this plot is where x is a control group and y is an experimental method; or something similar.  For example, x might represent observations, and y might represent climate model output; or some such.
 }
 \value{
 No value is returned, but a plot is created.
 }
 \references{
-Doksum, K.A. and G.L. Sievers, 1976.  Plotting with confidence: graphical comparisons of two populations.  Biometrika, 63 (3), 421--434.
+Doksum, K. A. and Sievers, G. L. (1976)  Plotting with confidence: graphical comparisons of two populations.  \emph{Biometrika}, \bold{63}, (3), 421--434.
 }
 \author{
 Peter Guttorp

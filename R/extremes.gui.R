@@ -2,7 +2,7 @@
 function () 
 {
 ev.dataexists <- function() {
-	tmp1 <- ls( all=TRUE, pos=".GlobalEnv")
+	tmp1 <- ls( all.names=TRUE, pos=".GlobalEnv")
 	n <- length( tmp1)
 # If a data object of class "extRemesDataObject" exists, will return 1.
 # Otherwise, will return 0.

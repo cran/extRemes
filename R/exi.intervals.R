@@ -1,5 +1,5 @@
 "exi.intervals" <-
-function(z) {
+function(z,blocks=NULL) {
 
   # Description:
   #
@@ -11,8 +11,8 @@ function(z) {
   #
   # Arguments:
   #
-  #   z: logical vector indicating which positions correspond to
-  #      extreme values.
+  #   z: logical vector indicating which positions correspond to extreme values.
+  #   blocks: integer vector defining blocking.
   #
   # Value:
   # 
@@ -44,13 +44,18 @@ function(z) {
   } else {
     nz <- length(z)          # length of sequence
     s <- c(1:nz)[z]          # exceedance times
-    t <- diff(s)             # interexceedance times
-    if(max(t) <= 2) {
-      t1 <- mean(t)
-      t2 <- mean(t^2)
+    if(is.null(blocks)) t <- diff(s)             # interexceedance times
+    else {
+	blocks <- blocks[z]
+	t <- unlist(aggregate(s, by=list(blocks), diff)$x)
+	t <- c(t)
+    }
+    if(max(t,na.rm=TRUE) <= 2) {
+      t1 <- mean(t,na.rm=TRUE)
+      t2 <- mean(t^2,na.rm=TRUE)
     } else {
-      t1 <- mean(t-1)
-      t2 <- mean((t-1)*(t-2))
+      t1 <- mean(t-1,na.rm=TRUE)
+      t2 <- mean((t-1)*(t-2),na.rm=TRUE)
     }
   }
   2*(t1^2)/t2

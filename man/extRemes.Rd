@@ -55,6 +55,8 @@ damage -- Hurricane monetary damage.
 
 Denversp -- Denver precipitation.
 
+FCwx -- data frame giving daily weather data for Fort Collins, Colorado, U.S.A. from 1900 to 1999.
+
 Flood -- R source version of the above mentioned 'Flood.dat' dataset.
 
 FtCoPrec -- Precipitation amounts at one rain gauge in Fort Collins, Colorado.

@@ -1,5 +1,5 @@
 "decluster.intervals" <-
-function(z, ei) {
+function(z, ei, blocks=NULL) {
 
   # Description:
   #
@@ -60,13 +60,18 @@ function(z, ei) {
     r <- 0
   } else {
     s <- c(1:length(z))[z]
-    t <- diff(s)
+    if(is.null(blocks)) t <- diff(s)
+    else {
+	b <- blocks[z]
+	t <- unlist(aggregate(s, by=list(b), diff)$x)
+	t <- c(t)
+    }
     temp <- rev(sort(t))
     nc <- 1 + floor(ei * (sum(z) - 1))
     while((nc > 1) && (temp[nc-1] == temp[nc])) nc <- nc - 1
     r <- temp[nc]
   }
-  out <- decluster.runs(z, r)
+  out <- decluster.runs(z, r, blocks=blocks)
   out$scheme <- "intervals" 
   out
 }

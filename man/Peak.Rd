@@ -1,7 +1,7 @@
 \name{Peak}
 \alias{Peak}
 \docType{data}
-\title{ Salt River peak stream flow.}
+\title{ Salt River Peak Stream Flow}
 \description{
 Peak stream flow data from 1924 through 1999 for the Salt River near Roosevelt, Arizona.
 }
@@ -32,20 +32,18 @@ NOAA Climate Prediction Center (\url{http://www.cpc.ncep.noaa.gov/data/indices})
 Darwin pressures.
 }
 \references{
-Anderson, P.L. and Meerschaert, M.M.  Modeling river flows with heavy tails. Water Resour Res, (34):2271--2280, 1998.
+Anderson, P. L. and Meerschaert, M. M.  (1998) Modeling river flows with heavy tails. \emph{Water Resour Res}, \bold{34}, (9), 2271--2280.
 
-Dettinger, M.D. and Diaz, H.F. Global characteristics of stream flow seasonality and variability. J. Hydrometeorol
- (1):289--310, 2000.
+Dettinger, M. D. and Diaz, H. F. (2000) Global characteristics of stream flow seasonality and variability. \emph{Journal of Hydrometeorology}, \bold{1}, 289--310.
 
-Katz, Richard W., Parlange, Marc B. and Naveau, Philippe. Statistics of extremes in hydrology. Advances in Water
- Resources, (25):1287--1304, 2002.
+Katz, R. W., Parlange, M. B. and Naveau, P. (2002) Statistics of extremes in hydrology. \emph{Advances in Water Resources}, \bold{25}, 1287--1304.
 }
 \examples{
 data(Peak)
 str(Peak)
 # Fig. 9 of Katz et al. (2002) Sec. 5.2.2.
 plot(Peak[,"Year"], Peak[,"Flow"]/1000, type="l", yaxt="n",
-	xlab="Water year (Oct-Sept)", ylab="Annual peak flow (thousand cfs)")
+    xlab="Water year (Oct-Sept)", ylab="Annual peak flow (thousand cfs)")
 axis(2,at=c(0,40,80,120),labels=c("0","40","80","120"))
 }
 \keyword{datasets}

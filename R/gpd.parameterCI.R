@@ -44,7 +44,7 @@ d2 <- (gpdq2(c( z$mle[1]+eps, z$mle[2]), u, la, m) - q)/eps
 d3 <- (gpdq2(c( z$mle[1], z$mle[2]), u, la, m) - q)/eps
 d <- cbind(d1, d2, d3)
 mat <- z$cov
-mat <- matrix(c((la * (1 - la))/z$n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), nc = 3)
+mat <- matrix(c((la * (1 - la))/z$n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), ncol = 3)
 vv <- apply(d, 1, q.form, m = mat)
 if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)
 if( est.rl.xup) rl.xup <- rl.mle + 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)

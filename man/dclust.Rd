@@ -1,6 +1,6 @@
 \name{dclust}
 \alias{dclust}
-\title{ Decluster data by runs declustering. }
+\title{ Decluster Data by Runs Declustering }
 \description{
 Decluster data by assuming that exceedances belong to the same cluster if
 they are separated by fewer than 'r' (run length) values below a given
@@ -21,35 +21,27 @@ dclust(xdat, u, r, cluster.by = NULL, verbose=getOption("verbose"))
 \details{
 This function applies runs declustering to automatically decluster a dataset.
 To ensure that clusters do not cross natural or decided boundaries, use
-the 'cluster.by' option.  That is, suppose data are measured only in the summer,
+the \code{cluster.by} option.  That is, suppose data are measured only in the summer,
 say from June 1 through August 1.  In such a case, it is perhaps not desired to have
 a value from August 1, 2003 and June 1, 2004 in the same cluster.  To account for this,
-create a 'cluster.by' vector defining years in order to keep clusters within years.
+create a \code{cluster.by} vector defining years in order to keep clusters within years.
 For the example of data from June 1 to August 1 (62 days), a vector like
-c(rep(1, 62), rep(2, 62), ..., rep(n, 62)) should be used for the 'cluster.by' argument.
+c(rep(1, 62), rep(2, 62), ..., rep(n, 62)) should be used for the \code{cluster.by} argument.
 
 This function will return a vector of the same length as the original data
-vector, but with maximums from each cluster followed by 'filler' numbers that
-are below the given threshold, 'u'.
+vector, but with maximums from each cluster followed by \dQuote{filler} numbers that
+are below the given threshold, \code{u}.
 
 Missing values are not handled.  The function will still run, but the results
 will be questionable.
 }
 \value{ A list with components:
-  \item{xdat.dc}{Maximums from each cluster with additional filler values below
-	the given threshold 'u' in order to maintain the same length as the
-	original data vector 'xdat'.  This is for compatability with extRemes
-	GUI data object of class ``ev.data".}
+  \item{xdat.dc}{Maximums from each cluster with additional filler values below the given threshold u in order to maintain the same length as the original data vector xdat.  This is for compatability with extRemes GUI data object of class \dQuote{ev.data}.}
   \item{ncluster}{The number of clusters found by runs declustering.}
   \item{clust}{numeric vector giving the clusters.}
 }
 \references{
-Coles, Stuart (2001).  An Introduction to Statistical Modeling of
- Extreme Values.  Springer-Verlag, London.
-
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Coles, S. (2001)  \emph{An Introduction to Statistical Modeling of Extreme Values}.  London: Springer-Verlag, 208pp.
 }
 \author{ Eric Gilleland }
 
@@ -69,6 +61,5 @@ temp[["ncluster"]] # See how many clusters were found.
 temp2 <- dclust(xdat=Tphap[,"MaxT"], u=115, r=3, cluster.by = Tphap[,"Year"])
 temp2[["ncluster"]]
 
-# See Gilleland et al. (2005) for more.
 }
 \keyword{ manip}
