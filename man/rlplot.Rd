@@ -33,9 +33,9 @@ No value returned.  A plot is created.
 Coles, Stuart.  "An introduction to statistical modeling of extreme values",
  Springer-Verlag (London), 2001.
 
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
-     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
-     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
+   Weather and Climate Applications of Extreme Value Statistics.'
+   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Eric Gilleland }
 

@@ -25,8 +25,9 @@ U.S. National Weather Service Forecast office at the Phoenix Sky Harbor Airport.
 Balling, R.C., Jr., Skindlov, J.A. and Phillips, D.H., The impact of increasing summer mean temperatures on
 	extreme maximum and minimum temperatures in Phoenix, Arizona. Journal of Climate, 3:1491--1494, 1990.
 
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for the 'Extremes Toolkit: Weather and Climate
- Applications of Extreme Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
+   Weather and Climate Applications of Extreme Value Statistics.'
+   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 
 Tarleton, Lesley F. and Katz, Richard W., Statistical explanation for trends in extreme summer temperatures
 	at Phoenix, A.Z., Journal of Climate, 8 (6):1704--1708, 1995.

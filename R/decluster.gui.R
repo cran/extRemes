@@ -131,12 +131,14 @@ if( !is.na( as.numeric( tclvalue( threshold.value)))) {
 #	NN <- sum( ind)
 	# out <- dclust( xdat=tmp.data, u=threshold.val, r=r.val, cluster.by=cluster.by.val)
 	print( paste( "Declustering ...", sep=""))
-	print( paste( "This may take a long time for large datasets!", sep=""))
-	out.cmd <- paste( "out <- dclust( xdat=tmp.data, u=", threshold.val, ", r=", r.val,
-			", cluster.by=cluster.by.val)", sep="")
+	# print( paste( "This may take a long time for large datasets!", sep=""))
+	if( !is.null( cluster.by.val) ) out.cmd <- paste( "out <- dclust( xdat=tmp.data, u=", threshold.val, ", r=", r.val,
+	 		", cluster.by=cluster.by.val)", sep="")
+	else out.cmd <- paste( "out <- decluster.runs( z=tmp.data > ", threshold.val, ", r=", r.val, ")", sep="")
 	eval( parse( text=out.cmd))
 	write( out.cmd, file="extRemes.log", append=TRUE)
-	ncluster.cmd <- "ncluster <- out[[\"ncluster\"]]"
+	if( !is.null( cluster.by.val)) ncluster.cmd <- "ncluster <- out[[\"ncluster\"]]"
+	else ncluster.cmd <- "ncluster <- out[[\"nc\"]]"
 	eval( parse( text=ncluster.cmd))
 	write( ncluster.cmd, file="extRemes.log", append=TRUE)
 	nexc.cmd <- paste( "nexc <- sum( tmp.data > ", threshold.val, ", na.rm=TRUE)", sep="")
@@ -145,12 +147,43 @@ if( !is.na( as.numeric( tclvalue( threshold.value)))) {
 	thetar.cmd <- "theta.r <- ncluster/nexc"
 	eval( parse( text=thetar.cmd))
 	write( thetar.cmd, file="extRemes.log", append=TRUE)
-	Ferro.cmd <- paste( "Ferro <- extremalindex( tmp.data, ", threshold.val, ")", sep="")
-	eval( parse( text=Ferro.cmd))
-	write( Ferro.cmd, file="extRemes.log", append=TRUE)
-	tmp.dc.cmd <- "tmp.dc <- out[[\"xdat.dc\"]]"
-	eval( parse( text=tmp.dc.cmd))
-	write( tmp.dc.cmd, file="extRemes.log", append=TRUE)
+	# out2.cmd <- paste( "out2 <- extremalindex( tmp.data, ", threshold.val, ")", sep="")
+	# cat("\n", "Estimating the extremal index ... (please stand by).\n")
+	# out2.cmd <- paste("out2 <- eiAnalyze( x=tmp.data, thresholds=", threshold.val, ")", sep="")
+	# eval( parse( text=out2.cmd))
+	# write( out2.cmd, file="extRemes.log", append=TRUE)
+	if( !is.null( cluster.by.val)) {
+		tmp.dc.cmd <- "tmp.dc <- out[[\"xdat.dc\"]]"
+		eval( parse( text=tmp.dc.cmd))
+		write( tmp.dc.cmd, file="extRemes.log", append=TRUE)
+	} else {
+		tmp.dc.cmd <- "tmp <- as.numeric( tapply( tmp.data[out[[\"s\"]] ], out[[\"cluster\"]], max))"
+		eval( parse( text=tmp.dc.cmd))
+		write( tmp.dc.cmd, file="extRemes.log", append=TRUE)
+		tmp.dc.cmd <- paste("tmp.dc <- rep( min(0,", threshold.val, "-1), length( tmp.data))", sep="")
+		eval( parse( text=tmp.dc.cmd))
+		write( tmp.dc.cmd, file="extRemes.log", append=TRUE)
+		# clust.ind.cmd <- "clust.ind <- numeric(length( tmp.data))+NA"
+		# eval( parse( text=clust.ind.cmd))
+		# write( clust.ind.cmd, file="extRemes.log", append=TRUE)
+		CMD <- paste("xdatu <- tmp.data[ tmp.data > ", threshold.val, "]", sep="")
+		eval( parse( text=CMD))
+		write( CMD, file="extRemes.log", append=TRUE)
+		CMD <- "s <- out[[\"s\"]]"
+		eval( parse( text=CMD))
+		write( CMD, file="extRemes.log", append=TRUE)
+		CMD <- "c <- out[[\"cluster\"]]"
+                eval( parse( text=CMD))
+		write( CMD, file="extRemes.log", append=TRUE)
+		# for( i in 1:max(out$cluster)) {
+#   CMD <- paste( "for( i in 1:max( c)) tmp.dc[ min( s[ xdatu[i==c] == max( xdatu[i==c])])] <- unique( max(xdatu[i==c]))",
+#			sep="")
+CMD <- "for( i in 1:max( c)) tmp.dc[ min(s[ (i==c) & (xdatu == unique( max( xdatu[i==c]))) ])] <- unique( max( xdatu[i==c]))"
+		eval( parse( text=CMD))
+		write( CMD, file="extRemes.log", append=TRUE)
+		# 	} # end of for 'i' loop.
+	} # end of ifelse 'cluster.by.val' stmts.
+
 #c(out$xdat.dc,
 # rep( min( min( tmp.data, na.rm=TRUE), threshold.val-1), M-ncluster))
 if( tclvalue( add.plot.value)==1) {
@@ -188,18 +221,14 @@ write( assignCMD, file="extRemes.log", append=TRUE)
 # nl2 <- paste(" ", " ", sep="\n")
 msg1 <- paste( "declustering performed for:", sep="")
 msg2 <- paste( cols.selected, " and assigned to ", newnames, sep="")
-if( length( threshold.val) == 1) msg3 <- paste( ncluster, " clusters using threshold of ", threshold.val, " and r = ", r.val, sep="")
-else msg3 <- paste( ncluster, " clusters using threshold of ", thresh.name, " and r = ", r.val, sep="")
-msg4 <- paste("Extremal index (theta) estimated from runs declustering: ",
-		round( theta.r, digits=5), sep="")
-msg5 <- paste("Extremal index (theta) estimated from intervals estimator: ",
-		round( Ferro$theta, digits=5), sep="")
-# msg5b <- paste("95% CI for intervals estimator (from bootstrapping): (",
-# 		round( Ferro$CI.theta[1], digits=4), ",",
-# 		round( Ferro$CI.theta[2], digits=4), ")", sep="")
-msg6 <- paste("Estimated run length (Ferro and Segers (2003)): ",
-			Ferro$run.length, sep="")
-msg7 <- Ferro$msg
+if( length( threshold.val) == 1) msg3 <- paste( out$nc, " clusters using threshold of ", threshold.val, " and r = ", r.val, sep="")
+else msg3 <- paste( out$nc, " clusters using threshold of ", thresh.name, " and r = ", r.val, sep="")
+# msg4 <- paste("Extremal index (theta) estimated from runs declustering: ", round( theta.r, digits=5), sep="")
+# msg5 <- paste("Extremal index (theta) estimated from intervals estimator: ", round( out2$ei, digits=5), sep="")
+# msg5b <- paste("95% CI for intervals estimator (from bootstrapping): (", round( out2$ci[,1], digits=4), ",",
+ # 		round( out2$ci[,2], digits=4), ")", sep="")
+# msg6 <- paste("Estimated run length (Ferro and Segers (2003)): ", out2$run.length, sep="")
+# msg7 <- out2$msg
 # tkinsert( base.txt, "end", nl1)
 # tkinsert( base.txt, "end", msg1)
 print(msg1)
@@ -211,18 +240,19 @@ print( msg2)
 print( msg3)
 # tkinsert( base.txt, "end", nl2)
 # tkinsert( base.txt, "end", msg4)
-print( msg4)
+# print( msg4)
 # tkinsert( base.txt, "end", nl2)
 # tkinsert( base.txt, "end", msg5)
-print( msg5)
+# print( msg5)
 # tkinsert( base.txt, "end", nl2)
 # # tkinsert( base.txt, "end", msg5b)
+# print( msg5b)
 # # tkinsert( base.txt, "end", nl2)
 # tkinsert( base.txt, "end", msg6)
-print( msg6)
+# print( msg6)
 # tkinsert( base.txt, "end", nl2)
 # tkinsert( base.txt, "end", msg7)
-print( msg7)
+# print( msg7)
 tkdestroy( base)
 # tkconfigure( base.txt, state="disabled")
 invisible()
@@ -244,7 +274,7 @@ help.msg <- paste( " ", "Runs declustering", "",
 "","Also displays estimates for the extremal index based on both n_c/N,",
 "where N is the number of exceedances of the threshold and n_c are the number",
 "of clusters found from runs declustering, and on the intervals estimator",
-"due to Ferro and Segers (2003) (see the help file for extremalindex)", "",
+"from Ferro and Segers (2003) (see the help file for extremalindex)", "",
 "See Coles (2001) for more information on runs declustering.",
 "See the help file for \'dclust\' (i.e., \'help( dclust)\') as this is the primary ",
 "function utilized.", " ", sep="\n")
