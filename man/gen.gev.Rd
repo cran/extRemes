@@ -1,7 +1,7 @@
 \name{gen.gev}
 \alias{gen.gev}
 \alias{gen.gpd}
-\title{ Simulate data from a generalized extreme value (GEV) (Generalized Pareto (GPD)) distribution. }
+\title{ Simulate data from a generalized extreme value (GEV)}
 \description{
 Generates data from a GEV (GPD) using 'runif' (and 'rexp') function.  May also
 incorporate a linear trend in location parameter of GEV.
@@ -15,7 +15,7 @@ gen.gpd(n,sigma,xi,u)
   \item{p}{ A $1\times 3$ vector indicating the mean, scale and shape of the
 		GEV, respectively. }
   \item{n}{ The sample size to generate.}
-  \item{trend}{ Slope of the trend (if desired). }
+  \item{trend}{ Slope of the location parameter trend (if desired). }
   \item{sigma}{ Scale parameter of GPD.}
   \item{xi}{ Shape parameter of GPD.}
   \item{u}{ Threshold for GPD.}
@@ -37,7 +37,8 @@ Returns a vector of simulated data.
      extreme values", Springer-Verlag (London), 2001. }
 \author{ Functions written by Eric Gilleland and Greg Young.}
 
-\seealso{ From \code{ismev} package: \code{gev.fit}, \code{gev.diag}, \code{gpd.fit}, \code{gpd.diag}}
+\seealso{ From \code{ismev} package: \code{gev.fit}, \code{gev.diag},
+		\code{gpd.fit}, \code{gpd.diag}}
 
 \examples{
 # obtain a GEV with mean, 4, scale 1.5 and shape of -0.1

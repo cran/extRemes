@@ -24,10 +24,10 @@ the intervals estimator described in Ferro and Segers (2003).  It is unbiased
 in the mean and can be used to estimate the number of clusters, which is also
 done by this function.
 }
-\value{
+\value{ A list with components:
   \item{theta }{The intervals estimate of the extremal index (theta).}
   \item{msg }{A message stating whether any interexceedance times were above 2
-	and possible other pertinent information.}
+	and possibly other pertinent information.}
   \item{C}{The estimated number of clusters (handles ties).}
   \item{run.length}{The estimated run length for runs declustering.}
 }

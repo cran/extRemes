@@ -29,7 +29,6 @@
 \alias{SEPTsp}
 \alias{Tphap}
 \alias{YDarwin}
-\alias{extremes.gui}
 \alias{affine.gui}
 \alias{ppfit.gui}
 \alias{gevdiag.gui}
@@ -109,7 +108,6 @@ Rsum
 SEPTsp
 Tphap
 YDarwin
-extremes.gui()
 affine.gui(base.txt)
 ppfit.gui(base.txt)
 gevdiag.gui(base.txt)

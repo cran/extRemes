@@ -82,6 +82,7 @@ plot.gum.fit <- function (x,...)
 
 plot.rlarg.fit <- function (x, ...)
 {
+	z <- x
 	n <- z$r
     z2 <- x
     z2$data <- x$data[, 1]

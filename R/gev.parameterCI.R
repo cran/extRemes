@@ -37,8 +37,8 @@ eps <- 1e-06
 # mat <- z$cov
 # mat <- matrix(c((la * (1 - la))/z$n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), nc = 3)
 # vv <- apply(d, 1, q.form, m = mat)
-        if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*1.96*sqrt(vv)
-        if( est.rl.xup) rl.xup <- rl.mle + 1.5*1.96*sqrt(vv)
+        if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)
+        if( est.rl.xup) rl.xup <- rl.mle + 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)
 
     x <- seq(rl.xlow, rl.xup, length = nint)
     sol <- c(z$mle[2], z$mle[3])
@@ -100,8 +100,8 @@ if( !rl.only) {
 # Now find the limits for the shape parameter.
 # cat("If routine fails (shape parameter), try changing plotting interval", fill = TRUE)
 	xi.mle <- z$mle[3]
-        if( est.xi.xlow) xi.xlow <- xi.mle - 1.5*1.96*z$se[2]
-        if( est.xi.xup) xi.xup <- xi.mle + 1.5*1.96*z$se[2]
+        if( est.xi.xlow) xi.xlow <- xi.mle - 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2]
+        if( est.xi.xup) xi.xup <- xi.mle + 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2]
     v <- numeric(nint)
     x <- seq(xi.xup, xi.xlow, length = nint)
     sol <- c(z$mle[1], z$mle[2])
