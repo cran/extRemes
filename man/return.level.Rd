@@ -2,8 +2,7 @@
 \alias{return.level}
 \title{ Computes m-year return levels for GEV and GPD with confidence bounds. }
 \description{
-Computes confidence limits for m-year return levels for GEV and GPD using
-profile likelihoods and a cubic spline ('splinefun').  It also computes
+Computes confidence limits for m-year return levels for GEV and GPD with
 the confidence levels using the ``delta" method.
 }
 \usage{
@@ -13,7 +12,7 @@ return.level(z, conf = 0.05, rperiods= c(10,100,210,510,810,980), make.plot = TR
   \item{z}{ An object of class "gev.fit" or "gpd.fit" from the \code{gev.fit} or \code{gpd.fit} functions
 	from the \code{ismev} library of Stuart Coles (ported to R by Alec Stephenson).  Note that z
 	must be assigned one of the two classes or nothing will happen.}
-  \item{conf}{ The confidence level for (delta) confidence bounds. Confidence intervals are not 
+  \item{conf}{ The confidence level(s) for (delta) confidence bounds. Confidence intervals are not 
 		trustworthy for return periods beyond the range of the data.  Check skewness of
 		profile likelihood for a given return level--symmetric profile likelihoods imply
 		that the delta method is appropriate.}
@@ -21,11 +20,11 @@ return.level(z, conf = 0.05, rperiods= c(10,100,210,510,810,980), make.plot = TR
   \item{make.plot}{ logical, if 'TRUE' plots the return levels with confidence bounds. }
 }
 \details{
-This function is in part a modification of the functions 'gev.rl' and 'gpd.rl'
-from the ismev library.  It allows for the plotted values to be returned
-(invisibly) as well as other confidence levels besides 97.5\%.
+The function also allows for the plotted values to be returned (invisibly).
 
 Confidence levels are computed using the delta method as described in Coles (2001). 
+
+For the GEV return levels, return periods must be greater than 1 year.
 }
 \value{
 	Creates a plot if 'make.plot' is TRUE and returns a list invisibly with components.
@@ -44,7 +43,7 @@ Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
 }
 \author{ Eric Gilleland }
 
-\seealso{ From the \code{ismev} package: \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag},
+\seealso{ \code{gevrlgradient}, From the \code{ismev} package: \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag},
 	\code{gev.rl}, \code{gpd.rl}}
 
 \examples{
