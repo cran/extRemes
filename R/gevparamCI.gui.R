@@ -127,6 +127,7 @@ if( !xi.only) {
 if( !rl.only) {
 	# msg3 <- paste( "shape parameter range = ", xi.xlow.val, " to ",
 	# 		xi.xup.val, sep="")
+	msg2c <- paste("Estimated (MLE) shape parameter = ", round( fit$mle[3], digits=4), sep="")
 	msg6 <- paste("shape parameter (xi): ", 100*conf.val,
 				"% confidence interval approximately", sep="")
 	msg7 <- paste("(", round( ci$xi$dn, digits=5), ",",
@@ -145,6 +146,9 @@ if( !rl.only) {
 		}
 	if( !rl.only) {
 	# 	tkinsert( base.txt, "end", msg3)
+		tkinsert( base.txt, "end", nl2)
+		tkinsert( base.txt, "end", msg2c)
+		tkinsert( base.txt, "end", nl2)
 		tkinsert( base.txt, "end", nl2)
 		}
 	if( !xi.only) {

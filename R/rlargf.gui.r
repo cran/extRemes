@@ -5,7 +5,7 @@ first.time <- TRUE
     plot.diags <- tclVar(0)
     r.value <- tclVar("")
     mu.link <- tclVar("identity")
-    sig.link <- tclVar("log")
+    sig.link <- tclVar("identity")
     gam.link <- tclVar("identity")
     refresh <- function() {
         tkdelete(resp.listbox, 0, "end")
@@ -163,7 +163,9 @@ first.time <- TRUE
         method.select <- as.numeric(tkcurselection(method.listbox)) + 
             1
         method.value <- method.list[method.select]
-	r.val <- as.numeric( tclvalue( r.value))
+	r.val <- tclvalue( r.value)
+	if( r.val == "") r.val <- length( resp.select)
+	else r.val <- as.numeric( r.val)
 
 number.of.models <- length( dd$models)
 names.of.models <- names( dd$models)

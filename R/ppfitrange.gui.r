@@ -8,7 +8,7 @@ ppfitrange.gui <- function( base.txt) {
 
 umin.value <- tclVar("")
 umax.value <- tclVar("")
-npy.value <- tclVar(365)
+# npy.value <- tclVar(365)
 nint.value <- tclVar("10")
 
 # Internal functions...
@@ -40,7 +40,7 @@ submit <- function() {
 # Obtain argument values entered into gui.
 	umin.val <- as.numeric( tclvalue( umin.value))
 	umax.val <- as.numeric( tclvalue( umax.value))
-	npy.val <- as.numeric( tclvalue( npy.value))
+	# npy.val <- as.numeric( tclvalue( npy.value))
 	nint.val <- as.numeric( tclvalue( nint.value))
 
 # Obtain data to use in 'pp.fitrange' fcn.
@@ -56,7 +56,6 @@ submit <- function() {
 	pp.fitrange(	data=var.val,
 			umin=umin.val,
 			umax=umax.val,
-			npy=npy.val,
 			nint=nint.val)
 
 	msg <- paste( " ", "pp.fitrange executed",
@@ -64,15 +63,15 @@ submit <- function() {
 			"different threshold ranges.", " ", sep="\n")
 	msg2 <- paste( "Current range is: ", umin.val, " to ", umax.val, 
 			" with ", nint.val, " thresholds.", sep="")
-	msg3 <- paste( "Number of obs per year is ", npy.val, sep="")
+	# msg3 <- paste( "Number of obs per year is ", npy.val, sep="")
 	nl1 <- paste( " ", " ", " ", sep="\n")
 
 	tkconfigure( base.txt, state="normal")
 	tkinsert( base.txt, "end", msg)
 	tkinsert( base.txt, "end", msg2)
 	tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", msg3)
-	tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", msg3)
+	# tkinsert( base.txt, "end", nl1)
 
 	tkdestroy( base)
         tkconfigure( base.txt, state="disabled")
@@ -169,11 +168,11 @@ umin.entry <- tkentry( umin.frm, textvariable=umin.value, width=5)
 umax.frm <- tkframe( midright, borderwidth=2, relief="flat")
 umax.entry <- tkentry( umax.frm, textvariable=umax.value, width=5)
 
-npy.frm <- tkframe( midright, borderwidth=2, relief="flat")
-npy.scale <- tkscale( npy.frm, variable = npy.value, tickinterval = 91,
-		length = 250, from = 0, to = 365,
-		label = "Number of obs per year",
-		orient = "horizontal")
+# npy.frm <- tkframe( midright, borderwidth=2, relief="flat")
+# npy.scale <- tkscale( npy.frm, variable = npy.value, tickinterval = 91,
+# 		length = 250, from = 0, to = 365,
+# 		label = "Number of obs per year",
+# 		orient = "horizontal")
 
 nint.frm <- tkframe( midright, borderwidth=2, relief="flat")
 nint.entry <- tkentry( nint.frm, textvariable=nint.value, width=5)
@@ -182,13 +181,13 @@ tkpack( tklabel( umin.frm, text="Minimum Threshold", padx=4), umin.entry,
  		side="left", fill="y", anchor="w")
 tkpack( tklabel( umax.frm, text="Maximum Threshold", padx=4), umax.entry,
  		side="left", fill="y", anchor="w")
-tkpack( npy.scale)
+# tkpack( npy.scale)
 tkpack( tklabel( nint.frm, text="Number of thresholds", padx=4), nint.entry,
  		side="left", fill="y", anchor="w")
 
 tkpack( umin.frm)
 tkpack( umax.frm)
-tkpack( npy.frm)
+# tkpack( npy.frm)
 tkpack( nint.frm)
 
 tkpack( midleft, side="left")

@@ -1,5 +1,5 @@
 Package: extRemes
-Version: 1.1
+Version: 1.12
 Date: March 15 2004
 Title: Extreme value toolkit.
 Author: Eric Gilleland, Rick Katz, Greg Young
@@ -9,6 +9,6 @@ Description: Uses Stuart Coles' (Coles, Stewart, "An introduction to
  statistical modeling of extreme values", Springer-Verlag, London 2001)
  S-plus functions as ported to the R programming language (ismev) by Alec
  Stephenson (http://www.maths.lancs.ac.uk/~stephena/).  This toolkit provides
- GUI windows for pedagogical purposes.
+ a Graphical User Interface (GUI) to ismev for pedagogical purposes.
 License: GPL Version 2 or later. 
 URL: http://www.esig.ucar.edu/extremevalues/evtk.html

@@ -15,9 +15,9 @@ return.level(z, conf = 0.05, rlevels= c(10,100,210,510,810,980),
 	from the \code{ismev} library of Stuart Coles (ported to R by Alec Stephenson).}
   \item{conf}{ The confidence level for confidence bounds. }
   \item{rlevels}{ Return levels at which to compute confidence limits with
-	profile likelihood plots--the rest will be interpolated with a splinefun
-	using the R function \code{spline}}
-  \item{make.plot}{ logical if 'TRUE' plots the return levels with confidence bounds. }
+	profile likelihood plots--the rest will be interpolated with a spline function
+	using the R function \code{splinefun}}
+  \item{make.plot}{ logical, if 'TRUE' plots the return levels with confidence bounds. }
 }
 \details{
 This function is in part a modification of the functions 'gev.rl' and 'gpd.rl'
@@ -31,10 +31,9 @@ many values not given by 'rlevels') and by the delta method described in Coles
 }
 \value{
 	Creates a plot if 'make.plot' is TRUE and returns a list invisibly with components.
-  \item{return.level }{The m-year return levels.}
-  \item{return.period }{The return periods, m.}
-  \item{confidence}{The confidence bounds estimated from the profile
-		likelihood.}
+  \item{return.level}{ The m-year return levels.}
+  \item{return.period}{ The return periods, m.}
+  \item{confidence}{ The confidence bounds estimated from the profile likelihood.}
   \item{confidence.delta}{The confidence bounds computed by the delta method.}
   \item{conf.level}{The confidence level.}
 }

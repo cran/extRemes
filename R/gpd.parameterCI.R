@@ -46,8 +46,8 @@ d <- cbind(d1, d2, d3)
 mat <- z$cov
 mat <- matrix(c((la * (1 - la))/z$n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), nc = 3)
 vv <- apply(d, 1, q.form, m = mat)
-if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*1.96*sqrt(vv)
-if( est.rl.xup) rl.xup <- rl.mle + 1.5*1.96*sqrt(vv)
+if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)
+if( est.rl.xup) rl.xup <- rl.mle + 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*sqrt(vv)
 x <- seq(rl.xlow, rl.xup, length = nint)
 sol <- z$mle[2]
     gpd.plik <- function(a) {
@@ -102,11 +102,12 @@ if( !rl.only) {
 	est.xi.xlow <- is.null( xi.xlow)
 	xdat <- z$data
 	xi.mle <- z$mle[2]
-	if( est.xi.xlow) xi.xlow <- xi.mle - 1.5*1.96*z$se[2]
-	if( est.xi.xup) xi.xup <- xi.mle + 1.5*1.96*z$se[2]
+	if( est.xi.xlow) xi.xlow <- xi.mle - 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2]
+	if( est.xi.xup) xi.xup <- xi.mle + 1.5*qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2]
     u <- z$threshold
     v <- numeric(nint)
-    x <- seq(xi.xup+1.96*z$se[2], xi.xlow-1.96*z$se[2], length = nint)
+    x <- seq(xi.xup+qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2],
+			xi.xlow-qnorm((1-conf)/2, lower.tail=FALSE)*z$se[2], length = nint)
     sol <- z$mle[1]
     gpd.plikxi <- function(a) {
         if (abs(xi) < 10^(-4)) 
