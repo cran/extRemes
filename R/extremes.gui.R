@@ -229,6 +229,13 @@ gpdsimdata <- function() {
                         }
                 } # end of rlplot fcn
 
+	# effective.rlplot <- function() {
+         #        if( ev.dataexists()) {
+          #               effective.rlplot.gui( txt)
+           #              tkyview.moveto( txt, 1)
+            #             }
+             #    } # end of effective.rlplot fcn
+
 	gevparamCI <- function() {
 		if( ev.dataexists()) {
 			gevparamCI.gui( txt)
@@ -251,7 +258,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 1.60")
+    tkwm.title(base, "Extremes Toolkit: version 1.61")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 
@@ -313,6 +320,7 @@ tkadd( plot.menu, "separator")
 tkadd( plot.menu, "command", label="Fit Diagnostics", command=fitdiag)
 tkadd( plot.menu, "command", label="Fit with Histogram", command=histplot)
 tkadd( plot.menu, "command", label="Return Level Plot", command=rlplot)
+# tkadd( plot.menu, "command", label="Effective Return Levels", command=effective.rlplot)
 
 # Analyze menu...
 amenu.but <- tkmenubutton(top.frm, text = "Analyze", relief = "raised", 
