@@ -5,7 +5,7 @@ first.time <- TRUE
     plot.diags <- tclVar(0)
     r.value <- tclVar("")
     mu.link <- tclVar("identity")
-    sig.link <- tclVar("identity")
+    sig.link <- tclVar("log")
     gam.link <- tclVar("identity")
     refresh <- function() {
         tkdelete(resp.listbox, 0, "end")
@@ -276,7 +276,7 @@ if (is.null(dd$models[[number.of.models+1]])) {
     for (i in 1:length(temp)) {
         if (is.null(class(get(temp[i])))) 
             next
-        if ((class(get(temp[i])) == "ev.data")) {
+        if ((class(get(temp[i]))[1] == "ev.data")) {
             tkinsert(data.listbox, "end", paste(temp[i]))
             full.list <- c(full.list, temp[i])
             is.nothing <- FALSE
@@ -336,7 +336,7 @@ tkpack(resp.scroll,side="right",fill="y")
     tkpack(mu.covlist, side = "left")
     tkpack(mu.covscr, side = "right", fill = "y")
     tkpack(tklabel(mu.r, text = "Link:"), side = "left")
-    for (i in c("identity", "exponential")) {
+    for (i in c("identity", "log")) {
         tmp <- tkradiobutton(mu.r, text = i, value = i, variable = mu.link)
         tkpack(tmp, anchor = "w")
     }
@@ -358,7 +358,7 @@ tkpack(resp.scroll,side="right",fill="y")
     tkpack(sig.covlist, side = "left")
     tkpack(sig.covscr, side = "right", fill = "y")
     tkpack(tklabel(sig.r, text = "Link:"), side = "left")
-    for (i in c("identity", "exponential")) {
+    for (i in c("identity", "log")) {
         tmp <- tkradiobutton(sig.r, text = i, value = i, variable = sig.link)
         tkpack(tmp, anchor = "w")
     }
@@ -380,7 +380,7 @@ tkpack(resp.scroll,side="right",fill="y")
     tkpack(gam.covlist, side = "left")
     tkpack(gam.covscr, side = "right", fill = "y")
     tkpack(tklabel(gam.r, text = "Link:"), side = "left")
-    for (i in c("identity", "exponential")) {
+    for (i in c("identity", "log")) {
         tmp <- tkradiobutton(gam.r, text = i, value = i, variable = gam.link)
         tkpack(tmp, anchor = "w")
     }

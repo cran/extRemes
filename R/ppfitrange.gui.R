@@ -1,14 +1,15 @@
-gpdfitrange.gui <- function( base.txt) {
+ppfitrange.gui <- function( base.txt) {
 
 #
-# Function to provide guis for the 'gpd.fitrange' fcn of Stuart Coles.
+# Function to provide guis for the 'pp.fitrange' fcn of Stuart Coles.
 #
 
 # Initialize tcl variables.
 
 umin.value <- tclVar("")
 umax.value <- tclVar("")
-nint.value <- tclVar("")
+npy.value <- tclVar(365)
+nint.value <- tclVar("10")
 
 # Internal functions...
 
@@ -34,14 +35,15 @@ refresh <- function() {
 submit <- function() {
 
 # Function that is executed when the "OK" button is hit.  Actually calls
-# the 'gpd.fitrange' fcn.
+# the 'pp.fitrange' fcn.
 
 # Obtain argument values entered into gui.
 	umin.val <- as.numeric( tclvalue( umin.value))
 	umax.val <- as.numeric( tclvalue( umax.value))
+	npy.val <- as.numeric( tclvalue( npy.value))
 	nint.val <- as.numeric( tclvalue( nint.value))
 
-# Obtain data to use in 'gpd.fitrange' fcn.
+# Obtain data to use in 'pp.fitrange' fcn.
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
@@ -51,17 +53,25 @@ submit <- function() {
 	var.select <- as.numeric( tkcurselection( var.listbox))+1
 	var.val <- dd$data[, var.select]
 
-	gpd.fitrange( var.val, umin.val, umax.val, nint.val)
+	pp.fitrange(	data=var.val,
+			umin=umin.val,
+			umax=umax.val,
+			npy=npy.val,
+			nint=nint.val)
 
-	msg <- paste( "  ", "gpd.fitrange executed",
+	msg <- paste( " ", "pp.fitrange executed",
 			"If error message occurs try",
 			"different threshold ranges.", " ", sep="\n")
-	msg2 <- paste( "Current range: ", umin.val, " to ", umax.val, " with ",
-			nint.val, " intervals.", sep="")
-	nl1 <- paste( " ", " ", sep="\n")
+	msg2 <- paste( "Current range is: ", umin.val, " to ", umax.val, 
+			" with ", nint.val, " thresholds.", sep="")
+	msg3 <- paste( "Number of obs per year is ", npy.val, sep="")
+	nl1 <- paste( " ", " ", " ", sep="\n")
+
 	tkconfigure( base.txt, state="normal")
 	tkinsert( base.txt, "end", msg)
 	tkinsert( base.txt, "end", msg2)
+	tkinsert( base.txt, "end", nl1)
+	tkinsert( base.txt, "end", msg3)
 	tkinsert( base.txt, "end", nl1)
 
 	tkdestroy( base)
@@ -69,10 +79,10 @@ submit <- function() {
 	invisible()
 	} # end of submit fcn
 
-gpdfitrangehelp <- function() {
-	help( gpd.fitrange)
+ppfitrangehelp <- function() {
+	help( pp.fitrange)
 	invisible()
-	} # end of gpdfitrangehelp fcn
+	} # end of ppfitrangehelp fcn
 
 endprog <- function() {
 	tkdestroy( base)
@@ -83,7 +93,7 @@ endprog <- function() {
 #######################
 
 base <- tktoplevel()
-tkwm.title( base, "Fit GPD for threshold ranges")
+tkwm.title( base, "Fit Point Process for threshold ranges")
 
 top.frm <- tkframe( base, borderwidth=2, relief="groove")
 mid.frm <- tkframe( base, borderwidth=2, relief="groove")
@@ -106,7 +116,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i])) == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -123,7 +133,7 @@ tkbind( data.listbox, "<Button-1>", "")
 tkbind( data.listbox, "<ButtonRelease-1>", refresh)
 
 # Middle frame tochoose which columns (vars) of data to use and other args
-# to 'gpd.fitrange' fcn.
+# to 'pp.fitrange' fcn.
 
 midleft <- tkframe( mid.frm, borderwidth=2, relief="groove")
 
@@ -149,7 +159,7 @@ tkpack( tklabel( midleft, text="Select Variable", padx=4), side="top")
 tkpack( var.listbox, side="left")
 tkpack( var.scroll, side="right")
 
-# Other args to 'gpd.fitrange' fcn.
+# Other args to 'pp.fitrange' fcn.
 
 midright <- tkframe( mid.frm, borderwidth=2, relief="groove")
 
@@ -159,6 +169,12 @@ umin.entry <- tkentry( umin.frm, textvariable=umin.value, width=5)
 umax.frm <- tkframe( midright, borderwidth=2, relief="flat")
 umax.entry <- tkentry( umax.frm, textvariable=umax.value, width=5)
 
+npy.frm <- tkframe( midright, borderwidth=2, relief="flat")
+npy.scale <- tkscale( npy.frm, variable = npy.value, tickinterval = 91,
+		length = 250, from = 0, to = 365,
+		label = "Number of obs per year",
+		orient = "horizontal")
+
 nint.frm <- tkframe( midright, borderwidth=2, relief="flat")
 nint.entry <- tkentry( nint.frm, textvariable=nint.value, width=5)
 
@@ -166,11 +182,13 @@ tkpack( tklabel( umin.frm, text="Minimum Threshold", padx=4), umin.entry,
  		side="left", fill="y", anchor="w")
 tkpack( tklabel( umax.frm, text="Maximum Threshold", padx=4), umax.entry,
  		side="left", fill="y", anchor="w")
+tkpack( npy.scale)
 tkpack( tklabel( nint.frm, text="Number of thresholds", padx=4), nint.entry,
  		side="left", fill="y", anchor="w")
 
 tkpack( umin.frm)
 tkpack( umax.frm)
+tkpack( npy.frm)
 tkpack( nint.frm)
 
 tkpack( midleft, side="left")
@@ -180,7 +198,7 @@ tkpack( midright, side="right")
 
 ok.but <- tkbutton( bot.frm, text="OK", command=submit)
 cancel.but <- tkbutton( bot.frm, text="Cancel", command=endprog)
-help.but <- tkbutton( bot.frm, text="Help", command=gpdfitrangehelp)
+help.but <- tkbutton( bot.frm, text="Help", command=ppfitrangehelp)
 
 tkpack( ok.but, cancel.but, side="left")
 tkpack( help.but, side="right")
@@ -188,7 +206,7 @@ tkpack( help.but, side="right")
 # Place bindings on "OK" and "Cancel" so that Return key will execute them.
 tkbind( ok.but, "<Return>", submit)
 tkbind( cancel.but, "<Return>", endprog)
-tkbind( help.but, "<Return>", gpdfitrangehelp)
+tkbind( help.but, "<Return>", ppfitrangehelp)
 
 tkpack( top.frm, side="top")
 tkpack( mid.frm, fill="x")

@@ -20,9 +20,9 @@ submit <- function() {
                 } else stop("fitdiag.gui: Must load a data object!")
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
 	z <- dd$models[[ fit.select]]
-	if( class( z) == "glm" | class( z) == "poi.fit") poi.summ( z)
+	if( class( z)[1] == "glm" | class( z)[1] == "poi.fit") poi.summ( z)
 	else summary( dd$models[[ fit.select]])
-	msg <- paste("See R session window for summary results.")
+	msg <- paste("See R session window for summary results.", " ", sep="\n")
 	tkconfigure( base.txt, state="normal")
 	tkinsert( base.txt, "end", msg)
 	tkconfigure( base.txt, state="disabled")
@@ -37,14 +37,14 @@ summaryhelp <- function( base.txt) {
 endprog <- function() {
 	tkdestroy( base)
 	}
-# Function to plot diagnostic plots for various fits.
+# Function to give fit summaries for various fits.
 
 #####################
 # Frame/button setup.
 #####################
 
 base <- tktoplevel()
-tkwm.title( base, "Diagnostic Plots for Fitted Objects")
+tkwm.title( base, "Fitted Objects Summaries")
 
 top.frm <- tkframe( base, borderwidth=2, relief="groove")
 mid.frm <- tkframe( base, borderwidth=2, relief="groove")
@@ -65,7 +65,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i])) == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "ev.data")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE

@@ -14,6 +14,8 @@ xi.xup.value <- tclVar("")
 conf.value <- tclVar("0.95")
 nint.value <- tclVar("100")
 makeplot <- tclVar(0)
+do.rl <- tclVar(1)
+do.xi <- tclVar(1)
 
 # Internal functions.
 
@@ -31,6 +33,11 @@ refresh <- function() {
 } # end of refresh fcn.
 
 submit <- function() {
+	do.rl.value <- ifelse( as.numeric( tclvalue( do.rl)) == 1, TRUE, FALSE)
+        do.xi.value <- ifelse( as.numeric( tclvalue( do.xi)) == 1, TRUE, FALSE)
+        rl.only <- do.rl.value & !do.xi.value
+        xi.only <- !do.rl.value & do.xi.value
+
 	# Grab the data object and make sure it has a 'gev.fit' component.
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
@@ -46,35 +53,51 @@ submit <- function() {
 		} else {
 			# Collect inputs for fcn args.
 			m.val <- as.numeric( tclvalue( m.value))
-if( tclvalue( rl.xlow.value) == "" | tclvalue( rl.xup.value) == "") {
-	xi.only <- TRUE
-	rl.xlow.val <- numeric(0)
-	rl.xup.val <- numeric(0)
-} else {
-	xi.only <- FALSE
-	rl.xlow.val <- as.numeric( tclvalue( rl.xlow.value))
-	rl.xup.val <- as.numeric( tclvalue( rl.xup.value))
-	}
-if( tclvalue( xi.xlow.value) == "" | tclvalue( xi.xup.value) == "") {
-	rl.only <- TRUE
-	xi.xlow.val <- numeric(0)
-	xi.xup.val <- numeric(0)
-} else {
-	rl.only <- FALSE
-	xi.xlow.val <- as.numeric( tclvalue( xi.xlow.value))
-	xi.xup.val <- as.numeric( tclvalue( xi.xup.value))
-	}
+# if( tclvalue( rl.xlow.value) == "" | tclvalue( rl.xup.value) == "") {
+# 	xi.only <- TRUE
+# 	rl.xlow.val <- numeric(0)
+# 	rl.xup.val <- numeric(0)
+# } else {
+# 	xi.only <- FALSE
+# 	rl.xlow.val <- as.numeric( tclvalue( rl.xlow.value))
+# 	rl.xup.val <- as.numeric( tclvalue( rl.xup.value))
+# 	}
+# if( tclvalue( xi.xlow.value) == "" | tclvalue( xi.xup.value) == "") {
+# 	rl.only <- TRUE
+# 	xi.xlow.val <- numeric(0)
+# 	xi.xup.val <- numeric(0)
+# } else {
+# 	rl.only <- FALSE
+# 	xi.xlow.val <- as.numeric( tclvalue( xi.xlow.value))
+# 	xi.xup.val <- as.numeric( tclvalue( xi.xup.value))
+# 	}
 	conf.val <- as.numeric( tclvalue( conf.value))
 	nint.val <- as.numeric( tclvalue( nint.value))
 	makeplot2 <- ifelse( as.numeric( tclvalue( makeplot))==1, TRUE, FALSE)
 
+	estRLup <- tclvalue(rl.xup.value)
+	if( estRLup == "") estRLup <- NULL
+	else estRLup <- as.numeric( estRLup)
+
+	estRLdn <- tclvalue(rl.xlow.value)
+	if( estRLdn == "") estRLdn <- NULL
+	else estRLdn <- as.numeric( estRLdn)
+		
+	estXIup <- tclvalue(xi.xup.value)
+	if( estXIup == "") estXIup <- NULL
+	else estXIup <- as.numeric( estXIup)
+		
+	estXIdn <- tclvalue(xi.xlow.value)
+	if( estXIdn == "") estXIdn <- NULL
+	else estXIdn <- as.numeric( estXIdn)
+
 			# Here is the actual function call.
 			ci <- gev.parameterCI(fit,
 					m=m.val,
-					rl.xlow=rl.xlow.val,
-					rl.xup=rl.xup.val,
-					xi.xlow=xi.xlow.val,
-					xi.xup=xi.xup.val,
+					rl.xlow=estRLdn,
+					rl.xup=estRLup,
+					xi.xlow=estXIdn,
+					xi.xup=estXIup,
 					conf=conf.val,
 					nint=nint.val,
 					rl.only=rl.only,
@@ -92,8 +115,8 @@ else if( rl.only)
 else if( xi.only) msg1 <- paste( "Estmating CIs for GEV shape parameter (xi).", 
 				sep="")
 if( !xi.only) {
-	msg2 <- paste(  "Return level range = ", rl.xlow.val, " to ",
-			rl.xup.val, sep="")
+	# msg2 <- paste(  "Return level range = ", rl.xlow.val, " to ",
+	# 		rl.xup.val, sep="")
 	msg2b <- paste( "Estimated return level = ", round( est.rl, digits=4),
 			sep="")
 	msg4 <- paste(m.val, "-year return level: ", 100*conf.val,
@@ -102,8 +125,8 @@ if( !xi.only) {
                                 round( ci$rl$up, digits=5), ")", sep="")
 	}
 if( !rl.only) {
-	msg3 <- paste( "shape parameter range = ", xi.xlow.val, " to ",
-			xi.xup.val, sep="")
+	# msg3 <- paste( "shape parameter range = ", xi.xlow.val, " to ",
+	# 		xi.xup.val, sep="")
 	msg6 <- paste("shape parameter (xi): ", 100*conf.val,
 				"% confidence interval approximately", sep="")
 	msg7 <- paste("(", round( ci$xi$dn, digits=5), ",",
@@ -115,13 +138,13 @@ if( !rl.only) {
 	tkinsert( base.txt, "end", msg1)
 	tkinsert( base.txt, "end", nl2)
 	if( !xi.only) {
-		tkinsert( base.txt, "end", msg2)
+	# 	tkinsert( base.txt, "end", msg2)
 		tkinsert( base.txt, "end", nl2)
 		tkinsert( base.txt, "end", msg2b)
                 tkinsert( base.txt, "end", nl2)
 		}
 	if( !rl.only) {
-		tkinsert( base.txt, "end", msg3)
+	# 	tkinsert( base.txt, "end", msg3)
 		tkinsert( base.txt, "end", nl2)
 		}
 	if( !xi.only) {
@@ -191,7 +214,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i])) == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -258,6 +281,14 @@ tkpack( tklabel( m.frm, text="m-year return level", padx=4), m.entry,
 	side="left", fill="x", anchor="w")
 tkpack( m.frm)
 
+# Buttons to indicate which parameters to find CI's for.
+do.frm <- tkframe( mid.frm, borderwidth=2, relief="flat")
+rl.button <- tkcheckbutton(do.frm, text="Return Level", variable=do.rl)
+tkpack( rl.button, side="left")
+xi.button <- tkcheckbutton( do.frm, text="Shape Parameter (xi)", variable=do.xi)
+tkpack( xi.button, side="left")
+tkpack( do.frm)
+
 tkpack( tklabel( rl.xlow.frm, text="Lower limit", padx=4), rl.xlow.entry,
 	side="left")
 tkpack( tklabel( rl.xup.frm, text="Upper limit", padx=4), rl.xup.entry,
@@ -273,8 +304,10 @@ tkpack( xi.xup.frm, side="bottom")
 tkpack( xi.xlow.frm, side="bottom")
 
 # Pack together the search ranges for both return level and shape parameter.
-tkpack( tklabel( rl.range.frm, text="Return Level Search Range", padx=4), side="top")
-tkpack( tklabel( xi.range.frm, text="Shape Parameter (xi) Search Range", padx=4), side="top")
+tkpack( tklabel( rl.range.frm, text="Return Level Search Range", padx=4),
+	tklabel( rl.range.frm, text="(leave blank to try to find automatically)", padx=4), side="top")
+tkpack( tklabel( xi.range.frm, text="Shape Parameter (xi) Search Range", padx=4),
+	tklabel( xi.range.frm, text="(leave blank to try to find automatically)", padx=4), side="top")
 tkpack( rl.range.frm, xi.range.frm, side="left")
 
 tkpack( tklabel( conf.frm, text="Confidence Value", padx=4), conf.entry,

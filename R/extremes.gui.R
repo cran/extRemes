@@ -9,7 +9,7 @@ ev.dataexists <- function() {
 data.exists <- FALSE
 	for( i in 1:n) {
 		if( is.null( class( get( tmp1[i])))) next
-		if( class( get( tmp1[i])) == "ev.data") {
+		if( class( get( tmp1[i]))[1] == "ev.data") {
 			data.exists <- TRUE
 			break
 			}
@@ -223,7 +223,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 0.9")
+    tkwm.title(base, "Extremes Toolkit: version 1.1")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 

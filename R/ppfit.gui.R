@@ -249,6 +249,7 @@ if( number.of.models > 0) for( i in 1:number.of.models) if( class( dd$models[[i]
 names.of.models <- c( names.of.models, paste( "pp.fit", jj+1, sep=""))
 
 # fit the Point process
+ndat <- length( dd$data[,resp.select])
 dd$models[[number.of.models+1]] <-
 	pp.fit(	xdat=dd$data[,resp.select],
 		threshold=threshold.val,
@@ -261,6 +262,7 @@ dd$models[[number.of.models+1]] <-
 		shlink=gam.linker,
 		method=method.value,
 		maxit=maxit.val)
+dd$models[[number.of.models+1]]$rate <- dd$models[[number.of.models+1]]$nexc/ndat
 names( dd$models) <- names.of.models
 class( dd$models[[number.of.models+1]]) <- "pp.fit"
 
@@ -300,21 +302,35 @@ if( is.null(dd$models[[number.of.models+1]])) {
 	 else CONV.msg <- paste("Convergence: ", fit.obj$conv, " (See help for optim for more info).", sep="")
         tkinsert( base.txt, "end", CONV.msg)
         tkinsert( base.txt, "end", nl2)
-        c1 <- cbind( fit.obj$mle, fit.obj$se)
+	tkinsert( base.txt, "end", nl2)
+	Thresh.msg <- paste( paste("Threshold = ", fit.obj$threshold, sep=""),
+				paste("Number of exceedances = ", fit.obj$nexc, sep=""),
+				paste("Exceedance rate (per year) = ", fit.obj$rate*fit.obj$npy, sep=""), sep="\n")
+	tkinsert( base.txt, "end", Thresh.msg)
+	tkinsert( base.txt, "end", nl2)
+	tkinsert( base.txt, "end", nl2)
+	c1 <- cbind( fit.obj$mle, fit.obj$se)
         colnames( c1) <- c( "MLE", "Std. Err.")
-        rnames <- c( paste( "MU: (", links[1], ")	", sep=""))
+	if( tclvalue( mu.link) == "log") rnames <- c( paste( "log Location: ", sep=""))
+	else rnames <- c( paste( "Location (mu): ", sep=""))
+	# rnames <- c( paste( "MU: (", links[1], ")	", sep=""))
         if( !is.null( fit.obj$model[[1]]))
-                rnames <- c(rnames, paste( cov.names[ fit.obj$model[[1]]],
-				": (", links[1], ")	", sep=""))
+                rnames <- c(rnames, paste( cov.names[ fit.obj$model[[1]]], sep=""))
+				# ": (", links[1], ")	", sep=""))
 
-        rnames <- c(rnames, paste("SIGMA: (", links[2], ")	", sep = ""))
+	if( tclvalue( sig.link) == "log") rnames <- c( rnames, paste("log Scale: ", sep=""))
+	else rnames <- c(rnames, paste("Scale (sigma): ", sep=""))
+	# rnames <- c(rnames, paste("SIGMA: (", links[2], ")	", sep = ""))
         if( !is.null( fit.obj$model[[2]]))
-                rnames <- c( rnames, paste( cov.names[ fit.obj$model[[2]]],
-				": (", links[2], ")	", sep=""))
-        rnames <- c(rnames, paste("Xi: (", links[3], ")	", sep = ""))
+                rnames <- c( rnames, paste( cov.names[ fit.obj$model[[2]]], sep=""))
+				# ": (", links[2], ")	", sep=""))
+
+	if( tclvalue( gam.link) == "log") rnames <- c( rnames, paste( "log Shape: ", sep=""))
+	else rnames <- c(rnames, paste("Shape (xi): ", sep=""))
+	# rnames <- c(rnames, paste("Xi: (", links[3], ")	", sep = ""))
         if( !is.null( fit.obj$model[[3]]))
-                rnames <- c(rnames, paste( cov.names[ fit.obj$model[[3]]],
-				": (", links[3], ")	", sep=""))
+                rnames <- c(rnames, paste( cov.names[ fit.obj$model[[3]]], sep=""))
+				# ": (", links[3], ")	", sep=""))
         rownames( c1) <- rnames
 	dd$models[[number.of.models+1]]$parameter.names <- rnames
 	dd$models[[number.of.models+1]]$summary1 <- c1
@@ -403,7 +419,7 @@ is.nothing <- TRUE
 full.list <- character(0)
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i])) == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -506,7 +522,7 @@ tkpack( mu.scroll, side="right", fill="y")
 
 tkpack( tklabel( mu.r, text="Link:"), side="left")
 
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp <- tkradiobutton( mu.r, text=i, value=i, variable=mu.link)
 	tkpack(tmp, anchor="w")
 } # end of for i loop
@@ -536,7 +552,7 @@ tkpack( sig.covscr, side="right",fill="y")
  
 tkpack( tklabel( sig.r,text="Link:"),side="left")
 
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp <- tkradiobutton(sig.r,text=i,value=i,variable=sig.link)
 	tkpack(tmp,anchor="w")
 } # end of for i loop
@@ -565,7 +581,7 @@ tkpack(gam.covlist,side="left")
 tkpack(gam.covscr,side="right",fill="y")
  
 tkpack(tklabel(gam.r,text="Link:"),side="left")
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp <- tkradiobutton(gam.r,text=i,value=i,variable=gam.link)
 	tkpack(tmp,anchor="w")
 } # end of for i loop

@@ -66,13 +66,26 @@ submit <- function() {
       tkinsert( base.txt, "end", mess)
      
       response<-dd$data[,resp.select]
-      trend<-dd$data[,trend.select] 
-      mod.fit <- glm( response~trend, family=poisson)
+	cnames <- colnames( dd$data)[-resp.select]
+	trend<- dd$data[,cnames[trend.select]]
+
+	# Save fit in 'models' component of list.
+number.of.models <- length( dd$models)
+names.of.models <- names( dd$models)
+if( is.null( names.of.models)) names.of.models <- character(0)
+jj <- 0
+if( number.of.models > 0) for( i in 1:number.of.models) if( class( dd$models[[i]])[1] == "glm") jj <- jj+1
+names.of.models <- c( names.of.models, paste( "poisson.fit", jj+1, sep=""))
+
+# fit the Poisson distribution.
+	mod.fit <- glm( response~trend, family=poisson())
+	# Store the fit in the 'models' component of 'ev.data' object.
+	dd$models[[number.of.models+1]] <- mod.fit
 	if( tclvalue( diags.value) == 1) {
 		plot( mod.fit$residuals, type="l")
 		abline(h=0, lty=2)
 		}
-
+names( dd$models) <- names.of.models
 	nl1 <- paste(" ", "**********", " ", sep="\n")
 	nl2 <- paste( " ", " ", sep="\n")
 #	msg1 <- paste( "Call: ", deparse( mod.fit$call), sep="")
@@ -84,7 +97,7 @@ tkinsert( base.txt, "end", paste(".........", " "))
 #	"z-value", "    ", "P(>|z|)", sep=""))
 tkinsert( base.txt, "end", paste(  "Estimate", "    ", "Std. Error", sep=""))
 tkinsert( base.txt, "end", nl2)
-coef.names <- c("Intercept", colnames( dd$data)[trend.select])
+coef.names <- c("Intercept", cnames[trend.select])
 nchar1 <- nchar( coef.names[2])
 if( nchar1 < 9) for( j in 1:(9-nchar1)) coef.names[2] <- paste( coef.names[2], ".", sep="")
 else if( nchar1 > 9) for( j in 1:(nchar1-9)) coef.names[1] <- paste( coef.names[1], ".", sep="")
@@ -134,6 +147,8 @@ msg5 <- paste( "likelihood-ratio (against null model): ", round( lr, digits=4),
 	tkyview.moveto(base.txt,1.0) 
     tkdestroy(base)
     tkconfigure(base.txt,state="disabled") 
+	 if( is.nothing) assign( ".ev", dd, pos=".GlobalEnv")
+        else assign( full.list[ data.select], dd, pos=".GlobalEnv")
 } # end of submit fcn
 
 refresh <- function() {
@@ -216,7 +231,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i])) == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -262,7 +277,7 @@ tkbind( resp.listbox, "<Button-1>", "")
 
   # choose the trend variable
   trend.l<-tkframe( trend.frm, borderwidth=2)
-  trend.list<-tklistbox(trend.l,yscrollcommand=function(...)tkset(trend.covscr,...),selectmode="single",width=15,height=6,exportselection=0)
+  trend.list<-tklistbox(trend.l,yscrollcommand=function(...)tkset(trend.covscr,...),selectmode="multiple",width=15,height=6,exportselection=0)
   trend.covscr <- tkscrollbar(trend.l,orient="vert",command=function(...)tkyview(trend.list,...))
 
 if( is.nothing) {
@@ -271,7 +286,7 @@ if( is.nothing) {
   }
 	} else tkinsert( trend.list, "end", "")
 
-  tkpack(tklabel(trend.l,text="Covariate:",padx=4), side="left")
+  tkpack(tklabel(trend.l,text="Covariate (log link):",padx=4), side="left")
   tkpack(trend.list,side="left")
   tkpack(trend.covscr,side="right",fill="y")
  
