@@ -55,8 +55,7 @@ gum.lik <- function(a) {
         if (p != 0) 
             mu <- xp - a[1]/a[2] * ((-log(1 - p))^(-a[2]) - 1)
         else mu <- xp + a[1]/a[2]
-        if (abs(a[2]) < 10^(-6)) 
-            l <- gum.lik(c(a[1], mu))
+        if (abs(a[2]) < 10^(-6)) l <- gum.lik(c(mu, a[1]))
         else {
             y <- (z$data - mu)/a[1]
             y <- 1 + a[2] * y
