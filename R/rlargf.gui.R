@@ -297,7 +297,7 @@ if (is.null(dd$models[[number.of.models+1]])) {
 
 resp.listbox <-
         tklistbox(top.l,yscrollcommand=function(...)tkset(resp.scroll,...),
-                        selectmode="multiple",width=15,height=4,exportselection=0)
+                        selectmode="multiple",width=35,height=4,exportselection=0)
 resp.scroll <- tkscrollbar(top.l,orient="vert",
                         command=function(...)tkyview(resp.listbox,...))
 

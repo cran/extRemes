@@ -96,6 +96,13 @@ gpdsimdata <- function() {
 			}
 	} # end of trigtrans fcn
 
+	scrubber <- function() {
+		if( ev.dataexists()) {
+                        scrubber.gui(txt)
+                        tkyview.moveto( txt, 1)
+                        }
+	} # end of scrubber function
+
     gevfit <- function() {
         if (ev.dataexists()) {
             gevf.gui(txt)
@@ -223,7 +230,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 1.12")
+    tkwm.title(base, "Extremes Toolkit: version 1.20")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 
@@ -255,6 +262,8 @@ fmenu.but <- tkmenubutton(top.frm, text = "File", relief = "raised",
 	tkadd( TransMenu, "command", label="Trigonometric Transformation",
 							command=trigtrans)
 	tkadd( file.menu, "cascade", label="Transform Data", menu=TransMenu)
+
+	tkadd( file.menu, "command", label="Scrubber", command=scrubber)
 	tkadd( file.menu, "separator")
 	tkadd(file.menu, "command", label = "Exit", command = endprog)
 

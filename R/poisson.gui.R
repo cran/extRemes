@@ -252,7 +252,7 @@ top.l <- tkframe( top.frm,borderwidth=2)
 resp.listbox <- tklistbox( top.l,
 			yscrollcommand=function(...)tkset(resp.scroll,...),
 			selectmode="single",
-			width=15,
+			width=35,
 			height=6,
 			exportselection=0)
 resp.scroll <- tkscrollbar( top.l,orient="vert",
