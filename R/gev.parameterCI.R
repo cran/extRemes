@@ -4,9 +4,42 @@ function (z, m, rl.xlow, rl.xup, xi.xlow=NULL, xi.xup=NULL, conf = 0.95, nint = 
 lmts <- list()
 ma <- -z$nllh
 if( !xi.only) {
+	est.rl.xup <- is.null( rl.xup)
+	est.rl.xlow <- is.null( rl.xlow)
 # cat("If routine fails (return level), try changing plotting interval", fill = TRUE)
     p <- 1/m
     v <- numeric(nint)
+	rl.mle <- gev.ret( z, m)
+        # Try to find a reasonable range of values, within which to search for
+        # the CI, using the delta method.
+eps <- 1e-06
+    a1 <- z$mle
+    a2 <- z$mle
+    a3 <- z$mle
+    a1[1] <- z$mle[1] + eps
+    a2[2] <- z$mle[2] + eps
+    a3[3] <- z$mle[3] + eps
+   # f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5,
+   #     0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	q <- gevq(z$mle, p=p)
+    d1 <- (gevq(a1, p=p) - q)/eps
+    d2 <- (gevq(a2, p=p) - q)/eps
+    d3 <- (gevq(a3, p=p) - q)/eps
+    d <- cbind(d1, d2, d3)
+	mat <- z$cov
+    vv <- apply(d, 1, q.form, m = mat)
+
+# q <- gpdq2( z$mle, u, la, m)
+# d1 <- rep(0, length(q))
+# d2 <- (gpdq2(c( z$mle[1]+eps, z$mle[2]), u, la, m) - q)/eps
+# d3 <- (gpdq2(c( z$mle[1], z$mle[2]), u, la, m) - q)/eps
+# d <- cbind(d1, d2, d3)
+# mat <- z$cov
+# mat <- matrix(c((la * (1 - la))/z$n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), nc = 3)
+# vv <- apply(d, 1, q.form, m = mat)
+        if( est.rl.xlow) rl.xlow <- rl.mle - 1.5*1.96*sqrt(vv)
+        if( est.rl.xup) rl.xup <- rl.mle + 1.5*1.96*sqrt(vv)
+
     x <- seq(rl.xlow, rl.xup, length = nint)
     sol <- c(z$mle[2], z$mle[3])
 
@@ -40,7 +73,7 @@ gum.lik <- function(a) {
         sol <- opt$par
         v[i] <- opt$value
     }
-	rl.mle <- gev.ret( z, m)
+
 	lmts$upcross.level <- ma-0.5*qchisq(conf,1)
 	lmts$rl$mle <- rl.mle
 	sfun <- splinefun(x, -v)
@@ -62,9 +95,13 @@ if( make.plot) {
 } # end of if !xi.only stmt
 
 if( !rl.only) {
+	est.xi.xup <- is.null( xi.xup)
+	est.xi.xlow <- is.null( xi.xlow)
 # Now find the limits for the shape parameter.
 # cat("If routine fails (shape parameter), try changing plotting interval", fill = TRUE)
 	xi.mle <- z$mle[3]
+        if( est.xi.xlow) xi.xlow <- xi.mle - 1.5*1.96*z$se[2]
+        if( est.xi.xup) xi.xup <- xi.mle + 1.5*1.96*z$se[2]
     v <- numeric(nint)
     x <- seq(xi.xup, xi.xlow, length = nint)
     sol <- c(z$mle[1], z$mle[2])

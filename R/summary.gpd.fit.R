@@ -1,6 +1,13 @@
 summary.gpd.fit <- function(object, ...) {
 opt.args <- list(...) # nonsense item for method compatibility.
 z <- object
+cat("\n")
+print( paste("Threshold = ", z$threshold, sep=""))
+cat("\n")
+print( paste("Number of exceedances of threshold = ", z$nexc, sep=""))
+cat("\n")
+print( paste("Exceedance rate (per year)= ", z$rate*z$npy, sep=""))
+cat("\n")
 print( z$summary1)
 print( paste( "Negative log-likelihood: ", z$nllh, sep=""))
 cat( "\n", "Parameter covariance:\n")

@@ -1,5 +1,8 @@
 dclust                  Decluster data by runs declustering.
 extremalindex           Estimate the extremal index (theta)
+extRemes                extRemes -- The Extremes Toolkit: Weather and
+                        Climate Applications of Extreme Value
+                        Statistics
 gen.gev                 Simulate data from a generalized extreme value
                         (GEV) (Generalized Pareto (GPD)) distribution.
 gev.parameterCI         Return level and shape parameter confidence

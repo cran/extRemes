@@ -118,7 +118,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i])) == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "ev.data")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -159,11 +159,11 @@ tkpack( var.frm, side="top")
 
 c.frm <- tkframe( mid.frm, borderwidth=2, relief="flat")
 c.entry <- tkentry( c.frm, textvariable=c, width=4)
-tkpack( tklabel( c.frm, text="c", padx=4), c.entry, side="left")
+tkpack( tklabel( c.frm, text="(X-c", padx=4), c.entry, side="left")
 
 b.frm <- tkframe( mid.frm, borderwidth=2, relief="flat")
 b.entry <- tkentry( b.frm, textvariable=b, width=4)
-tkpack( tklabel( b.frm, text="b", padx=4), b.entry, side="left")
+tkpack( tklabel( b.frm, text=")/b", padx=4), b.entry, side="left")
 tkpack( c.frm, b.frm, side="left")
 
 ok.but <- tkbutton( bot.frm, text="OK", command=affine.trans)

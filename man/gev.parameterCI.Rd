@@ -7,11 +7,11 @@ Computes confidence intervals for return levels and/or shape parameters of GEV (
 the profile likelihood appraoch.
 }
 \usage{
-gev.parameterCI(z, m, rl.xlow, rl.xup, xi.xlow = NULL, xi.xup = NULL, conf = 0.95, nint = 100, rl.only = FALSE, xi.only = FALSE, make.plot = FALSE)
+gev.parameterCI(z, m, rl.xlow, rl.xup, xi.xlow=NULL, xi.xup=NULL, conf = 0.95, nint = 100, rl.only=FALSE, xi.only=FALSE,
+			make.plot=FALSE)
 
-gpd.parameterCI(z, m, rl.xlow, rl.xup, xi.xlow = NULL, xi.xup = NULL,
-    npy = 365, conf = 0.95, nint = 100, rl.only = FALSE, xi.only = FALSE,
-    make.plot = FALSE)
+gpd.parameterCI(z, m, conf = 0.95, nint = 100, rl.xup=NULL, rl.xlow=NULL, xi.xup=NULL, xi.xlow=NULL, rl.only=FALSE,
+			xi.only=FALSE, make.plot=FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -21,7 +21,6 @@ gpd.parameterCI(z, m, rl.xlow, rl.xup, xi.xlow = NULL, xi.xup = NULL,
   \item{rl.xup}{ initial guess of upper limit for return level (generally should be higher than actual limit). }
   \item{xi.xlow}{ analogous to rl.xlow, but for shape parameter. }
   \item{xi.xup}{ analogous to rl.xup, but for shape parameter. }
-  \item{npy}{for GP distn. this is the number of obs. per year.}
   \item{conf}{ Desired confidence. }
   \item{nint}{ Number of values (ret. level and/or shape parameter) to compute confidence for.  }
   \item{rl.only}{ logical if TRUE calculate only the return level confidence intervals. }

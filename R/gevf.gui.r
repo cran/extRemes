@@ -387,7 +387,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class(get( temp[i])) == "ev.data")) {
+	if( (class(get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -454,7 +454,7 @@ tkpack(mu.covscr,side="right",fill="y")
 # tkpack(mu.l,side="left")
 
 tkpack(tklabel(mu.r,text="Link:"),side="left")
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp<-tkradiobutton(mu.r,text=i,value=i,variable=mu.link)
 	tkpack(tmp,anchor="w")
 } # end of for i loop
@@ -484,7 +484,7 @@ tkpack(sig.covscr,side="right",fill="y")
  
 tkpack(tklabel(sig.r,text="Link:"),side="left")
 
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp <- tkradiobutton(sig.r,text=i,value=i,variable=sig.link)
 	tkpack(tmp,anchor="w")
 } # end of for i loop
@@ -513,7 +513,7 @@ tkpack(gam.covlist,side="left")
 tkpack(gam.covscr,side="right",fill="y")
  
 tkpack(tklabel(gam.r,text="Link:"),side="left")
-for (i in c("identity","exponential")) {
+for (i in c("identity","log")) {
 	tmp <- tkradiobutton(gam.r,text=i,value=i,variable=gam.link)
 	tkpack(tmp,anchor="w")
 } # end of for i loop

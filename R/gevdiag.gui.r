@@ -77,7 +77,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i])) == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "ev.data")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE

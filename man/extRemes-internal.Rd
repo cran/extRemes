@@ -12,6 +12,8 @@
 \alias{plot.gum.fit}
 \alias{plot.pp.fit}
 \alias{plot.rlarg.fit}
+\alias{rl.gev.fit}
+\alias{rl.gpd.fit}
 \alias{scatterplot.gui}
 \alias{damage}  
 \alias{Denmint}
@@ -90,6 +92,8 @@ plot.gpd.fit(x, ...)
 plot.gum.fit(x, ...)
 plot.pp.fit(x, ...)
 plot.rlarg.fit(x, ...)
+rl.gev.fit(a, mat, dat)
+rl.gpd.fit(a, u, la, n, npy, mat, dat, xdat)
 scatterplot.gui(base.txt)
 damage
 Denmint
