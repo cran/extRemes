@@ -9,6 +9,7 @@ function( base.txt) {
 
 
 #  Set the tcl variables
+lmom.var <- tclVar(0)
 plot.diags<-tclVar(0)
 threshold.value <- tclVar("")
 npy <- tclVar("365.25")
@@ -115,6 +116,8 @@ submit <- function() {
 	write( covs.cmd, file="extRemes.log", append=TRUE)
 	cur.cov.cols <- 0
 
+	istherecovs <- FALSE
+
 # do the sigma 
    
     # sig.cov.cols<-NULL 
@@ -164,6 +167,8 @@ temp.cols <-
 	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[dat.cols])"
 	eval( parse( text=cov.names.cmd))
 	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+
+	istherecovs <- TRUE
     } else {
 	sig.cov.cols.cmd <- "sig.cov.cols<-NULL"
 	eval( parse( text=sig.cov.cols.cmd))
@@ -218,6 +223,8 @@ temp.cols <-
 	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[ dat.cols])"
 	eval( parse( text=cov.names.cmd))
 	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+
+	istherecovs <- TRUE
     } else {
 	gam.cov.cols.cmd <- "gam.cov.cols<-NULL"
 	eval( parse( text=gam.cov.cols.cmd))
@@ -267,21 +274,117 @@ eval( parse( text=data.cmd))
 write( data.cmd, file="extRemes.log", append=TRUE)
 
 # fit the GPD
-cmd <- paste( "dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]] <- ",
+if( tclvalue(lmom.var)==1) {
+   cmd <- paste( "utmp <- ",  as.numeric( tclvalue( threshold.value)), sep="")
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cmd <- "lmom <- Lmoments( xdata[ xdata>utmp] - utmp)"
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cmd <- "tau2 <- lmom[2]/lmom[1]"
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cmd <- "sigma <- lmom[1]*(1/tau2 - 1)"
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cmd <- "kappa <- 1/tau2 - 2"
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cmd <- "xi <- -kappa"
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   if( !is.null( sig.cov.cols)) {
+      cmd <- paste( "sigma <- c( sigma, rep(0, ", length( sig.cov.cols), "))", sep="")
+      eval( parse( text=cmd))
+      write( cmd, file="extRemes.log", append=TRUE)
+  }
+
+      if( !is.null( gam.cov.cols)) {
+      cmd <- paste( "xi <- c( xi, rep(0, ", length( gam.cov.cols), "))", sep="")
+      eval( parse( text=cmd))
+      write( cmd, file="extRemes.log", append=TRUE)
+   }
+
+   cmd <- paste( "dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]] <- ",
+                "gpd.fit( xdat=xdata, threshold=", as.numeric( tclvalue( threshold.value)), ", npy=",
+                as.numeric( tclvalue( npy)),
+                ", ydat=covs, sigl=sig.cov.cols, siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, ",
+		"siginit=sigma, shinit=xi, ",
+                "method=\"", method.value,"\"", ", maxit=", maxit.val, ", show=FALSE)", sep="")
+   eval( parse( text=cmd))
+   write( cmd, file="extRemes.log", append=TRUE)
+
+   cat("\n", "L-moments estimates for (stationary) GPD are:\n")
+   cat("scale: ", sigma[1], "\n")
+   cat("shape: ", xi[1], "\n")
+   cat("These L-moments estimators were used as initial parameter estimates.\n")
+} else {
+   cmd <- paste( "dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]] <- ",
 		"gpd.fit( xdat=xdata, threshold=", as.numeric( tclvalue( threshold.value)), ", npy=",
 		as.numeric( tclvalue( npy)),
 		", ydat=covs, sigl=sig.cov.cols, siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, ",
 		"method=\"", method.value,"\"", ", maxit=", maxit.val, ", show=FALSE)", sep="")
-# dd$models[[number.of.models+1]] <-
-eval( parse( text=cmd))
-# cmd <- paste( full.list[ data.select], "$models$", names.of.models[number.of.models+1], " <- ", cmd, sep="")
-write( cmd, file="extRemes.log", append=TRUE)
+   # dd$models[[number.of.models+1]] <-
+   eval( parse( text=cmd))
+   # cmd <- paste( full.list[ data.select], "$models$", names.of.models[number.of.models+1], " <- ", cmd, sep="")
+   write( cmd, file="extRemes.log", append=TRUE)
+}
+
+if( !istherecovs) {
+           cmd <- paste( "tmpfit <- dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]", sep="")
+           eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- paste( "utmp <- ", as.numeric( tclvalue( threshold.value)), sep="")
+           eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "tmpn <- sum( xdata > utmp, na.rm=TRUE)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+	   
+	   cmd <- "sigma <- mean( xdata[xdata>utmp] - utmp, na.rm=TRUE)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "Sx <- sum( xdata[xdata>utmp] - utmp, na.rm=TRUE)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "m0 <- tmpn*log( sigma) + Sx/sigma"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "m1 <- tmpfit[[\"nllh\"]]"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+           cmd <- "Dev <- deviancestat( m0, m1, v=1)"
+           eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+           if( Dev$DS > Dev$c.alpha) {
+                cat( "\n", "Likelihood ratio test (5% level) for xi=0 does not accept Exponential hypothesis.\n")
+                cat( "likelihood ratio statistic is ",  Dev$DS, " > ", Dev$c.alpha, " 1 df chi-square critical value.\n")
+           } else {
+                cat( "\n", "Likelihood ratio test (5% level) for xi=0 does not reject Exponential hypothesis.\n")
+                cat( "likelihood ratio statistic is ",  Dev$DS, " < ", Dev$c.alpha, " 1 df chi-square critical value.\n")
+           }
+           cat("\n", "p-value for likelihood-ratio test is ", Dev$p.val, "\n")
+        } # end of if !istherecovs stmts.
+
 
 # class( dd$models[[number.of.models+1]]) <- "gpd.fit"
 # class.cmd <- paste( "class(", full.list[ data.select], "$models$gpd.fit", jj+1, ") <- \"gpd.fit\"", sep="")
-class.cmd <- paste( "class( dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]) <- \"gpd.fit\"", sep="")
-eval( parse( text=class.cmd))
-write( class.cmd, file="extRemes.log", append=TRUE)
+# class.cmd <- paste( "class( dd[[\"models\"]][[\"gpd.fit", jj+1, "\"]]) <- \"gpd.fit\"", sep="")
+# eval( parse( text=class.cmd))
+# write( class.cmd, file="extRemes.log", append=TRUE)
 
 # names( dd$models) <- names.of.models
 # add.new.model.name.cmd <- paste( "names( ", full.list[ data.select], "[[\"models\"]]) <- names.of.models", sep="")
@@ -440,7 +543,9 @@ write( msg.cmd, file="extRemes.log", append=TRUE)
 
 gpdfithelp <- function() {
 	cat("\n", "Invokes the \'ismev\' function \'gpd.fit\'.  ", "\n", "Use \'help( gpd.fit)\' for more help.\n")
-	help( gpd.fit)
+	# help( gpd.fit)
+	cat("\n", "If \'Calculate L-moments\' is selected, then L-moments estimates will be displayed, and\n")
+	cat("they will be used as initial estimates in the MLE optimization routine.\n")
 	} # end of gpdfithelp fcn
 
   endprog<-function() {
@@ -609,8 +714,9 @@ tkpack( gam.l, side="top")
 tkpack( gam.r, side="top", before=gam.l)
 tkpack( tklabel( gam.frm, text="Shape parameter (xi):",padx=4), side="top", before=gam.r)
 
+lmom.but <- tkcheckbutton(top.r,text="Calculate L-moments",variable=lmom.var)
 plot.but<- tkcheckbutton(top.r,text="Plot diagnostics",variable=plot.diags)
-tkpack(plot.but,side="right")
+tkpack(lmom.but, plot.but,side="top")
 
 tkpack(top.l,top.r,side="left")
 

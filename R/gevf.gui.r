@@ -11,6 +11,7 @@ function(base.txt) {
 
 #  Set the tcl variables
 plot.diags<-tclVar(0)
+Lmoments.var<-tclVar(0)
 mu.link<-tclVar("identity")
 sig.link<-tclVar("identity")
 gam.link<-tclVar("identity")
@@ -131,6 +132,8 @@ submit <- function() {
 	# eval( parse( text=cur.cov.cols.cmd))
 	# write( cur.cov.cols.cmd, file="extRemes.log", append=TRUE)
 
+	istherecovs <- FALSE
+
 	# do the mu
 	mu.cov.cols.cmd <- "mu.cov.cols <- NULL"
 	eval( parse( text=mu.cov.cols.cmd))
@@ -179,7 +182,8 @@ print(  paste( "cov.selected = ", cov.selected, sep=""))
 	eval( parse( text=cov.names.cmd))
 # cov.names.cmd <- paste( "cov.names <- c( cov.names, colnames( ", full.list[ data.select], "$data[ dat.cols]))", sep="")
 	write( cov.names.cmd, file="extRemes.log", append=TRUE)
-    }
+	istherecovs <- TRUE
+    } 
 
 
 
@@ -232,6 +236,7 @@ temp.cols <- as.numeric( unlist( strsplit( tclvalue( tkcurselection(sig.covlist)
 	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[dat.cols])"
 	eval( parse( text=cov.names.cmd))
 	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+	istherecovs <- TRUE
     }
 
 
@@ -283,6 +288,7 @@ temp.cols <- as.numeric( unlist( strsplit( tclvalue( tkcurselection(sig.covlist)
 	cov.names.cmd <- "cov.names <- c( cov.names, colnames( dd[[\"data\"]])[dat.cols])"
 	eval( parse( text=cov.names.cmd))
 	write( cov.names.cmd, file="extRemes.log", append=TRUE)
+	istherecovs <- TRUE
     }
 
 
@@ -323,21 +329,113 @@ if( number.of.models > 0) for( i in 1:number.of.models) if( class( dd$models[[i]
 xdata.cmd <- paste( "xdata <- dd[[\"data\"]][, ", resp.select, "]", sep="")
 eval( parse( text=xdata.cmd))
 write( xdata.cmd, file="extRemes.log", append=TRUE)
+
+	# if 'Lmoments.var' is TRUE, then calculate L-moments to use as initial values to MLE fit.
+   if( tclvalue(Lmoments.var)==1) {
+	   cmd <- "lmom <- Lmoments( xdata)"
+	   eval( parse( text=cmd))
+	   write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "tau3 <- lmom[3]/lmom[2]"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "co <- 2/(3+tau3)-log(2)/log(3)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "xi <- -(7.8590*co+2.9554*co^2)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "kappa <- -xi"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "g <- gamma(1+kappa)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "sigma <- (lmom[2]*kappa)/((1-2^(-kappa))*g)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "mu <- lmom[1] - (sigma/kappa)*(1-g)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   if( !is.null( mu.cov.cols)) {
+		cmd <- paste( "mu <- c( mu, rep(0, ", length( mu.cov.cols), "))", sep="")
+		eval( parse( text=cmd))
+		write( cmd, file="extRemes.log", append=TRUE)
+	   }
+	   if( !is.null( sig.cov.cols)) {
+		cmd <- paste( "sigma <- c( sigma, rep(0, ", length( sig.cov.cols), "))", sep="")
+		eval( parse( text=cmd))
+                write( cmd, file="extRemes.log", append=TRUE)
+	   }
+	   if( !is.null( gam.cov.cols)) {
+                cmd <- paste( "xi <- c( xi, rep(0, ", length( gam.cov.cols), "))", sep="")
+                eval( parse( text=cmd))
+                write( cmd, file="extRemes.log", append=TRUE)
+           }
+	   cmd <- paste( "dd[[\"models\"]][[\"gev.fit", jj+1, "\"]] <- ",
+                        "gev.fit( xdat=xdata, ydat=covs, mul=mu.cov.cols, mulink=m.linker, sigl=sig.cov.cols, ",
+                        "siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, muinit=mu, siginit=sigma, shinit=xi, ",
+			"show=FALSE, method=\"", method.value, "\")", sep="")
+        eval( parse( text=cmd))
+        write( cmd, file="extRemes.log", append=TRUE)
+
+	   cat("\n", "L-moments (stationary case) estimates (used to initialize MLE optimization routine):\n")
+	   cat("Location (mu): ", mu[1], "\n")
+	   cat("Scale (sigma): ", sigma[1], "\n")
+	   cat("Shape (xi): ", xi[1], "\n")
+	} else {
 # xdata <- dd$data[, resp.select]
 	cmd <- paste( "dd[[\"models\"]][[\"gev.fit", jj+1, "\"]] <- ",
 			"gev.fit( xdat=xdata, ydat=covs, mul=mu.cov.cols, mulink=m.linker, sigl=sig.cov.cols, ",
-			"siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, method=\"", method.value, "\")", sep="")
+			"siglink=sig.linker, shl=gam.cov.cols, shlink=gam.linker, show=FALSE, method=\"", method.value, "\")",
+			sep="")
 	eval( parse( text=cmd))
 	write( cmd, file="extRemes.log", append=TRUE)
+	} # end of if else L-moments stmts.
+
+	if( !istherecovs) {
+	   cmd <- paste("gev0 <- gum.fit( xdat=xdata, show=FALSE, method=\"", method.value, "\")", sep="")
+	   eval( parse( text=cmd))
+	   write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- paste( "m1 <- dd[[\"models\"]][[\"gev.fit", jj+1, "\"]][[\"nllh\"]]", sep="")
+	   eval( parse( text=cmd))
+	   write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- paste( "m0 <- gev0[[\"nllh\"]]", sep="")
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   cmd <- "Dev <- deviancestat( m0, m1, v=1)"
+	   eval( parse( text=cmd))
+           write( cmd, file="extRemes.log", append=TRUE)
+
+	   if( Dev$DS > Dev$c.alpha) {
+		cat( "\n", "Likelihood ratio test (5% level) for xi=0 does not accept Gumbel hypothesis.\n")
+		cat( "likelihood ratio statistic is ",  Dev$DS, " > ", Dev$c.alpha, " 1 df chi-square critical value.\n")
+	   } else {
+		cat( "\n", "Likelihood ratio test (5% level) for xi=0 does not reject Gumbel hypothesis.\n")
+                cat( "likelihood ratio statistic is ",  Dev$DS, " < ", Dev$c.alpha, " 1 df chi-square critical value.\n")
+	   }
+	   cat("\n", "p-value for likelihood-ratio test is ", Dev$p.val, "\n")
+	} # end of if !istherecovs stmts.
+
 	# dd$models[[number.of.models+1]] <- eval( parse( text=cmd))
 	# cmd <- paste( full.list[ data.select], "$models$gev.fit", jj+1, " <- ", cmd, sep="")
 	# write( cmd, file="extRemes.log", append=TRUE)
 	# names( dd$models) <- names.of.models
 	# class( dd$models[[number.of.models+1]]) <- "gev.fit"
 	# class.cmd <- paste( "class( ", full.list[ data.select], "$models$gev.fit", jj+1, ") <- \"gev.fit\"", sep="")
-	classCMD <- paste( "class( dd[[\"models\"]][[", number.of.models+1, "]]) <- \"gev.fit\"", sep="")
-	eval( parse( text=classCMD))
-	write( classCMD, file="extRemes.log", append=TRUE)
+	# classCMD <- paste( "class( dd[[\"models\"]][[", number.of.models+1, "]]) <- \"gev.fit\"", sep="")
+	# eval( parse( text=classCMD))
+	# write( classCMD, file="extRemes.log", append=TRUE)
 
 if (is.null(dd$models[[number.of.models+1]])) {
 # failure to fit 
@@ -456,7 +554,10 @@ write( assignCMD, file="extRemes.log", append=TRUE)
 gevfithelp <- function() {
 	cat( "\n", "Invokes the \'ismev\' function \'gev.fit\'.\n")
 	cat( "Use \'help( gev.fit)\' for more help.\n")
-	help( gev.fit)
+	cat( "As of extRemes version 1.60, L-moments for the stationary case can be used\n")
+	cat( "to estimate the GEV parameters.  If this button is checked, these estimates\n")
+	cat( "will also be used as initial values in the optimization routine for finding\n")
+	cat( "the ML estimates.\n\n")
 	} # end of gevfithelp fcn
 
   endprog<-function() {
@@ -537,8 +638,11 @@ tkpack(resp.listbox,side="left")
 tkpack(resp.scroll,side="right",fill="y")
 
 plot.but<- tkcheckbutton(top.r,text="Plot diagnostics",variable=plot.diags)
-tkpack(plot.but,side="right")
+Lmoments.but <- tkcheckbutton(top.r,text="Use L-moments with MLE",variable=Lmoments.var)
+tkpack(plot.but,Lmoments.but,side="top")
 tkpack(top.l,top.r,side="left")
+
+
 
 # place binding on resp.listbox to eliminate the response from the 
 # lists of covs.
