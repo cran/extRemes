@@ -39,11 +39,13 @@ if( klaas=="gev.fit") {
     title("Return Level Plot")
     lines(-1/log(f), q)
 	if( add.ci) {
-    		lines(-1/log(f), q + qnorm(1-ci/2) * sqrt(v), col = 4)
-    		lines(-1/log(f), q - qnorm(1-ci/2) * sqrt(v), col = 4)
+    		lines(-1/log(f), upper <- q + qnorm(1-ci/2) * sqrt(v), col = 4)
+    		lines(-1/log(f), lower <- q - qnorm(1-ci/2) * sqrt(v), col = 4)
+		} else {
+		lower <- upper <- NULL
 		}
     points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
-	out <- list( period=-1/log(f), level=q)
+	out <- list( period=-1/log(f), level=q, lower=lower, upper=upper)
 	class( out) <- "extRemes.return"
 } else if( klaas=="gpd.fit") {
     a <- c(la, a)

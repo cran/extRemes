@@ -18,16 +18,20 @@ rlplot(z, ci = 0.05, add.ci = FALSE)
 \details{
 Given a fitted list object from \code{gev.fit} or \code{gpd.fit}--attributed with the class
 "gev.fit" or "gpd.fit", respectively--the return level plot is generated.  Confidence bounds,
-if included, are found by the delta method, which may be wildly inappropriate because the
-return level distribution is generally skewed.  Therefore, if a plot with better estimates of
-the confidence bounds are desired, use \code{add.ci=FALSE}, and use the R function \code{lines}
-to add different bounds (e.g., using values obtained from the \code{gev.parameterCI} or
-\code{gpd.parameterCI} functions).
+if included, are found by the delta method, which is generally appropriate for shorter return
+periods, but not for longer return periods because the return level distribution is generally
+skewed.  Therefore, if a plot with better estimates of the confidence bounds are desired, use
+\code{add.ci=FALSE}, and use the R function \code{lines} to add different bounds (e.g., using
+values obtained from the \code{gev.parameterCI} or \code{gpd.parameterCI} functions).
 
 This function is simply a modification of Stuart Coles' functions \code{gpd.rl} and \code{gev.rl} (Coles, 2001).
 }
 \value{
-No value returned.  A plot is created.
+A plot is created.  If assigned to an object, a list will be returned with the following items.
+   \item{period}{The return periods used for calculating the return levels.}
+   \item{level}{The estimated return level for each return period.}
+   \item{lower}{If add.ci is TRUE, then this is a vector of lower 1-ci confidence bounds.  Otherwise the value is NULL.}
+   \item{upper}{If add.ci is TRUE, then this is a vector of upper 1-ci confidence bounds.  Otherwise the value is NULL.}
 }
 \references{
 Coles, Stuart.  "An introduction to statistical modeling of extreme values",

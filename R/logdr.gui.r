@@ -92,6 +92,12 @@ tmp.ldr.cmd <- paste( "tmp.ldr[ 1:(N-1),] <- log( dd[[\"data\"]][2:N, cols.selec
 eval( parse( text=tmp.ldr.cmd))
 write( tmp.ldr.cmd, file="extRemes.log", append=TRUE)
 
+# Fill in last place (and anywhere else that there is an NA
+# with the average value so that there is not a missing value.
+CMD <- "for( i in 1: dim( tmp.ldr)[2]) tmp.ldr[is.na( tmp.ldr[,i]),i] <- mean(tmp.ldr[,i],na.rm=TRUE)"
+eval( parse( text=CMD))
+write( CMD, file="extRemes.log", append=TRUE)
+
 if( tclvalue(ebase) == 1) newnames <- paste( cnames[temp], ".ldr", sep="")
 else newnames <- paste( cnames[temp], ".", bbext, "ldr", sep="")
 for( i in 1:length( newnames)) {
