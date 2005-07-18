@@ -45,14 +45,20 @@ associated chi-square quantile.
 		likelihood (sfun), and the upper (up) and lower (dn) confidence limits.}
   \item{xi}{Shape parameter characteristics--analogous to rl, but no mle component.}
 }
-\references{ Coles, Stuart (2001).  An Introduction to Statistical Modeling of
-        Extreme Values.  Springer-Verlag, London.}
+\references{
+Coles, Stuart (2001).  An Introduction to Statistical Modeling of Extreme Values.
+ Springer-Verlag, London.
+
+Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
+     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
+     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+}
 \author{ Eric Gilleland }
 
 \seealso{ \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag}, \code{gev.prof}, \code{gev.profxi},
 	\code{gpd.prof}, \code{gpd.profxi}}
 \examples{
-# See extRemes tutorial for examples using the GUI interface.
+# See extRemes tutorial (Gilleland et al. (2005)) for examples using the GUI interface.
 }
 \keyword{ manip }
 \keyword{ hplot }

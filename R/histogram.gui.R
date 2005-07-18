@@ -18,17 +18,27 @@ refresh <- function() {
 submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
                 } else stop("fitdiag.gui: Must load a data object!")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
 	breaks.choices <- c("Sturges", "Scott", "FD")
 	breaks.select <- as.numeric( tkcurselection( breaks.listbox))+1
 	breaks.value <- breaks.choices[ breaks.select]
-	hist( dd$models[[ fit.select]], breaks.method=breaks.value)
+	# hist( dd$models[[ fit.select]], breaks.method=breaks.value)
+	# histCMD <- paste("hist( ", full.list[ data.select], "$models[[", fit.select, "]], breaks.method=\"", breaks.value,
+	# 		"\")", sep="")
+	histCMD <- paste( "hist( dd[[\"models\"]][[ ", fit.select, "]], breaks.method=\"", breaks.value, "\")", sep="")
+	eval( parse( text=histCMD))
+	write( histCMD, file="extRemes.log", append=TRUE)
 	invisible()
 } # end of submit fcn.
 
 histhelp <- function( base.txt) {
+	cat("\n", "Histogram with densities for fitted objects from the \'ismev\' functions:\n")
+	cat( "\'gev.fit\', \'gpd.fit\' and \'pp.fit\'.\n")
+	cat( "See the help files for these functions, and also for the R function \'hist\'.\n")
 	help( hist)
 	} # end of histhelp fcn
 
@@ -63,7 +73,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE

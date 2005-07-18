@@ -41,15 +41,24 @@ submit <- function() {
 	# Grab the data object and make sure it has a 'gev.fit' component.
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
-		dd <- get( full.list[ data.select])
-		} else dd <- .ev
-	fit <- dd$models[[as.numeric( tkcurselection( fit.listbox))+1]]
+		dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+		} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
+
+	# fit <- dd$models[[as.numeric( tkcurselection( fit.listbox))+1]]
+	# fit.cmd <- paste( "fit <- ", full.list[ data.select],
+	# 		"$models[[", as.numeric( tkcurselection( fit.listbox))+1, "]]", sep="")
+	fit.cmd <- paste( "fit <- dd[[\"models\"]][[", as.numeric( tkcurselection( fit.listbox))+1, "]]", sep="")
+	eval( parse( text=fit.cmd))
+	write( fit.cmd, file="extRemes.log", append=TRUE)
 	if( length( fit$mle) != 3) stop("gevprof.gui: No trends in parameters allowed!")
 	if( class( fit) != "gev.fit") {
 		msg <- paste( "************", "Selected fit is not of class gev.fit!",
                         "Must use a fitted GEV object.", "************", sep="\n")
-                tkconfigure( base.txt, state="normal")
-                tkinsert( base.txt, "end", msg)
+		cat( msg)
+                # tkconfigure( base.txt, state="normal")
+                # tkinsert( base.txt, "end", msg)
 		} else {
 			# Collect inputs for fcn args.
 			m.val <- as.numeric( tclvalue( m.value))
@@ -92,18 +101,38 @@ submit <- function() {
 	else estXIdn <- as.numeric( estXIdn)
 
 			# Here is the actual function call.
-			ci <- gev.parameterCI(fit,
-					m=m.val,
-					rl.xlow=estRLdn,
-					rl.xup=estRLup,
-					xi.xlow=estXIdn,
-					xi.xup=estXIup,
-					conf=conf.val,
-					nint=nint.val,
-					rl.only=rl.only,
-					xi.only=xi.only,
-					make.plot=makeplot2)
-			est.rl <- gev.ret( A=fit, m.val)
+# 			ci <- gev.parameterCI(fit,
+# 					m=m.val,
+# 					rl.xlow=estRLdn,
+# 					rl.xup=estRLup,
+# 					xi.xlow=estXIdn,
+# 					xi.xup=estXIup,
+# 					conf=conf.val,
+# 					nint=nint.val,
+# 					rl.only=rl.only,
+# 					xi.only=xi.only,
+# 					make.plot=makeplot2)
+estRLdn <- ifelse( !is.null( estRLdn), estRLdn, "NULL")
+estRLup <- ifelse( !is.null( estRLup), estRLup, "NULL")
+estXIdn <- ifelse( !is.null( estXIdn), estXIdn, "NULL")
+estXIup <- ifelse( !is.null( estXIup), estXIup, "NULL")
+			ci.cmd <- paste( "ci <- gev.parameterCI(fit, m=", m.val,
+                                        ", rl.xlow=", estRLdn,
+                                        ", rl.xup=", estRLup,
+                                        ", xi.xlow=", estXIdn,
+                                        ", xi.xup=", estXIup,
+                                        ", conf=", conf.val,
+                                        ", nint=", nint.val,
+                                        ", rl.only=", rl.only,
+                                        ", xi.only=", xi.only,
+                                        ", make.plot=", makeplot2, ")", sep="")
+			eval( parse( text=ci.cmd))
+			write( ci.cmd, file="extRemes.log", append=TRUE)
+			# est.rl <- gev.ret( A=fit, m.val)
+			estrl.cmd <- paste( "est.rl <- gev.ret( A=fit, ", m.val, ")", sep="")
+			eval( parse( text=estrl.cmd))
+			write( estrl.cmd, file="extRemes.log", append=TRUE)
+
 	nl1 <- paste( " ", "*****", " ", sep="\n")
 	nl2 <- paste( "  ", "  ", sep="\n")
 if( !rl.only & !xi.only)
@@ -133,39 +162,55 @@ if( !rl.only) {
 	msg7 <- paste("(", round( ci$xi$dn, digits=5), ",",
 				round( ci$xi$up, digits=5), ")", sep="")
 	}
-
-	tkconfigure( base.txt, state="normal")
-        tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", msg1)
-	tkinsert( base.txt, "end", nl2)
+	# tkconfigure( base.txt, state="normal")
+        # tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+	# tkinsert( base.txt, "end", msg1)
+	print( msg1)
+	# tkinsert( base.txt, "end", nl2)
+	cat( nl2)
 	if( !xi.only) {
 	# 	tkinsert( base.txt, "end", msg2)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg2b)
-                tkinsert( base.txt, "end", nl2)
+	#	print( msg2)
+	#	tkinsert( base.txt, "end", nl2)
+	#	tkinsert( base.txt, "end", msg2b)
+		print( msg2b)
+        #	tkinsert( base.txt, "end", nl2)
 		}
 	if( !rl.only) {
 	# 	tkinsert( base.txt, "end", msg3)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg2c)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", nl2)
+	#	print( msg3)
+	#	tkinsert( base.txt, "end", nl2)
+	#	tkinsert( base.txt, "end", msg2c)
+		print( msg2c)
+		cat( nl2)
+	#	tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+	#	tkinsert( base.txt, "end", nl2)
 		}
 	if( !xi.only) {
-		tkinsert( base.txt, "end", msg4)
-		tkinsert( base.txt, "end", nl2)
-		tkinsert( base.txt, "end", msg5)
-		tkinsert( base.txt, "end", nl2)
+	#	tkinsert( base.txt, "end", msg4)
+		print( msg4)
+	#	tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+	#	tkinsert( base.txt, "end", msg5)
+		print( msg5)
+	#	tkinsert( base.txt, "end", nl2)
+		cat( nl2)
 		}
 	if( !rl.only) {
-        	tkinsert( base.txt, "end", msg6)
-        	tkinsert( base.txt, "end", nl2)
-        	tkinsert( base.txt, "end", msg7)
-		tkinsert( base.txt, "end", nl1)
+        #	tkinsert( base.txt, "end", msg6)
+		print( msg6)
+        #	tkinsert( base.txt, "end", nl2)
+		cat( nl2)
+        #	tkinsert( base.txt, "end", msg7)
+		print( msg7)
+	#	tkinsert( base.txt, "end", nl1)
+		cat( nl1)
 		}
 	} # end of if else 'gev.fit' present stmt
 	tkdestroy( base)
-        tkconfigure( base.txt, state="disabled")
+        # tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of submit fcn
 
@@ -174,7 +219,7 @@ endprog <- function() {
 	}
 
 gevprofhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	msg1 <- paste("Estimates confidence intervals for m-year return level and shape parameter (xi)",
 	"for fits to the GEV distribution using the profile likelihood functions.",
 	"", "Uses the R function splinefun to estimate the profile likelihood function and",
@@ -183,8 +228,11 @@ gevprofhelp <- function() {
 	"Chi-square (with df=1) distribution.", " ",
 	"For more information please see Coles (2001) and the help file gev.prof and",
 	"gev.profxi; the ismev package functions that find the profile likelihoods.", sep="\n")
-	tkinsert(base.txt, "end", msg1)
-	tkconfigure( base.txt, state="disabled")
+	cat( msg1)
+	# tkinsert(base.txt, "end", msg1)
+	# tkconfigure( base.txt, state="disabled")
+	cat( "\n", "See the help files for the \'ismev\' function \'gev.prof\', and for the ",
+		"\n", "\'extRemes\' function \'gev.parameterCI\' for more help.\n")
 	help( gev.prof)
 	}
 
@@ -218,7 +266,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i]))[1] == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE

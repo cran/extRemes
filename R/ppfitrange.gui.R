@@ -46,17 +46,22 @@ submit <- function() {
 # Obtain data to use in 'pp.fitrange' fcn.
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
-		dd <- get( full.list[ data.select])
-		} else  dd <- .ev
-		# end of if else !is.nothing stmt
+		dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+		} else  dd.cmd <- "dd <- extRemesData"
+		eval( parse( text=dd.cmd))
+		write( dd.cmd, file="extRemes.log", append=TRUE)
 
 	var.select <- as.numeric( tkcurselection( var.listbox))+1
-	var.val <- dd$data[, var.select]
+	# var.val <- dd$data[, var.select]
+	# var.val.cmd <- paste( "var.val <- ", full.list[ data.select], "$data[, ", var.select, "]", sep="")
+	var.val.cmd <- paste( "var.val <- dd[[\"data\"]][, ", var.select, "]", sep="")
+	eval( parse( text=var.val.cmd))
+	write( var.val.cmd, file="extRemes.log", append=TRUE)
 
-	pp.fitrange(	data=var.val,
-			umin=umin.val,
-			umax=umax.val,
-			nint=nint.val)
+	# mainCMD <- paste( "pp.fitrange( data=var.val, umin=", umin.val, ", umax=", umax.val, ", nint=", nint.val, ")",
+	# 		sep="")
+	# eval( parse( text=mainCMD))
+	# write( mainCMD, file="extRemes.log", append=TRUE)
 
 	msg <- paste( " ", "pp.fitrange executed",
 			"If error message occurs try",
@@ -66,19 +71,32 @@ submit <- function() {
 	# msg3 <- paste( "Number of obs per year is ", npy.val, sep="")
 	nl1 <- paste( " ", " ", " ", sep="\n")
 
-	tkconfigure( base.txt, state="normal")
-	tkinsert( base.txt, "end", msg)
-	tkinsert( base.txt, "end", msg2)
-	tkinsert( base.txt, "end", nl1)
-	# tkinsert( base.txt, "end", msg3)
+	# tkconfigure( base.txt, state="normal")
+	# tkinsert( base.txt, "end", msg)
+	cat( nl1) 
+	cat( msg)
+	# tkinsert( base.txt, "end", msg2)
+	cat( msg2)
 	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+	# tkinsert( base.txt, "end", msg3)
+	# cat( msg3)
+	# tkinsert( base.txt, "end", nl1)
+	cat( nl1)
+
+	mainCMD <- paste( "pp.fitrange( data=var.val, umin=", umin.val, ", umax=", umax.val, ", nint=", nint.val, ")",
+                        sep="")
+        eval( parse( text=mainCMD))
+        write( mainCMD, file="extRemes.log", append=TRUE)
 
 	tkdestroy( base)
-        tkconfigure( base.txt, state="disabled")
+        # tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of submit fcn
 
 ppfitrangehelp <- function() {
+	cat( "\n", "Invokes the \'ismev\' function \'pp.fitrange\'.\n")
+	cat( "Use \'help( pp.fitrange)\' for more help.\n")
 	help( pp.fitrange)
 	invisible()
 	} # end of ppfitrangehelp fcn
@@ -115,7 +133,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
 	if( is.null( class( get( temp[i])))) next
-	if( (class( get( temp[i]))[1] == "ev.data")) {
+	if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
 		tkinsert( data.listbox, "end", paste( temp[i]))
 		full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -146,12 +164,12 @@ var.listbox <- tklistbox( midleft,
 var.scroll <- tkscrollbar( midleft, orient="vert",
 			command=function(...) tkyview( var.listbox, ...))
 
-# Insert column names of '.ev' if no other data objects exist.
+# Insert column names of 'extRemesData' if no other data objects exist.
 # Otherwise, begin with no variables.
 if( is.nothing) {
-	for( i in 1:length( colnames( .ev$data)))
+	for( i in 1:length( colnames( extRemesData$data)))
 		tkinsert( var.listbox, "end",
-				paste( colnames( .ev$data)[i]))
+				paste( colnames( extRemesData$data)[i]))
 } else tkinsert( var.listbox, "end", " ")
 
 tkpack( tklabel( midleft, text="Select Variable", padx=4), side="top")

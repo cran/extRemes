@@ -1,4 +1,4 @@
-dclust <- function(xdat, u, r, cluster.by=NULL) {
+dclust <- function(xdat, u, r, cluster.by=NULL, verbose=getOption("verbose")) {
 #
 # Function to decluster a vector of data.
 #
@@ -7,6 +7,10 @@ dclust <- function(xdat, u, r, cluster.by=NULL) {
 # 'r' a single number between 1 and n-1 used to define clusters (see Coles 2001).
 # 'cluster.by' an 'n X 1' vector that definesa base set of clusters to be clustered further.
 n <- length( xdat)
+if( verbose) {
+	print( paste( "This may take a long time for large datasets!"))
+	print( paste( "length of data is ", n, sep=""))
+}
 if( r >= n-1) stop("dclust: r is too big!")
 else if( r < 1) stop("dclust: r must be >= 1")
 check <- matrix( NA, nrow=n, ncol=r+1)
@@ -43,7 +47,9 @@ if( !is.null( cluster.by)) {
 ncluster <- length( unique( clust))
 # clust <- factor( clust)
 xdat.dc <- rep(min(xdat,min(u)-1,na.rm=TRUE),n)
+if( verbose) cat("\n")
 for( k in clust) {
+	if( verbose) cat( k, " ")
 	tmp <- xdat
 	tmp[clust != k] <- NA
 	ind.tmp <- tmp == max( tmp, na.rm=TRUE)
@@ -54,6 +60,7 @@ for( k in clust) {
 		} # end of if more than one max value stmt.
 	xdat.dc[ (clust == k) & ind.tmp] <- max( tmp, na.rm=TRUE)
 	} # end of for 'k' loop. 
+if( verbose) cat("\n")
 
 # xdat.dc <- aggregate(xdat, by=list( clust), FUN=max, na.rm=TRUE)[,2]
 # ndc <- length( xdat.dc)

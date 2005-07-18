@@ -2,7 +2,7 @@ affine.gui <- function(base.txt) {
 
 # This function provides a gui interface for taking an affine transformation of data, 'x'.
 # That is, (x-c)/b, where 'c' and 'b' are constants.  The gui will list all objects of class
-# "ev.data" and the column names of the user selected object.
+# "extRemesDataObject" and the column names of the user selected object.
 #
 # After taking the affine transformation of the selected data, will return a new column with
 # the same column name(s), but with a ".cNbM" extension where 'N' is the value used for 'c' and
@@ -23,7 +23,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data))
 		tkinsert( col.listbox, "end",
@@ -37,52 +37,94 @@ affine.trans <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	} else dd.cmd <- "dd <- extRemesData"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
 
-cols.selected <- character(0)
+# cols.selected.cmd <- "cols.selected <- character(0)"
+# eval( parse( text=cols.selected.cmd))
+# write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+# cols.selected <- character(0)
 
 # Gather column names to add affine transform(s) to end.
-cnames <- colnames( dd$data)
+cnames.cmd <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
 
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
 
 # Make sure a column has been selected.
 if( is.na( temp)) return()
 
-cols.selected <- cnames[temp]
+# for( i in 1:length( temp)) {
+# 	cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, \"", cnames[temp[i]], "\")", sep="")
+# 	eval( parse( text=cols.selected.cmd))
+# 	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+# 	}
+if( length( temp) > 1) {
+	tempos <- character(0)
+	for( i in 1:(length( temp)-1)) tempos <- paste( tempos, temp, ", ", sep="")
+	tempos <- paste( "c( ", tempos, temp[length( temp)], ")", sep="")
+} else tempos <- temp
+cols.selected.cmd <- paste( "cols.selected <- cnames[", tempos, "]", sep="")
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+
 c.value <- as.numeric(tclvalue(c))
 b.value <- as.numeric(tclvalue(b))
-cb <- (dd$data[ ,cols.selected]-c.value)/b.value
+# cb <- (dd$data[ ,cols.selected]-c.value)/b.value
+cb.cmd <- paste( "cb <- (dd[[\"data\"]][, cols.selected] - ", c.value, ")/", b.value, sep="")
+# cb.cmd <- paste( "tmp <- (", full.list[ data.select], "$data[, cols.selected]-", c.value, ")/", b.value, sep="")
+eval( parse( text=cb.cmd))
+write( cb.cmd, file="extRemes.log", append=TRUE)
 
 newnames <- paste( cnames[temp], ".c", c.value, "b", b.value, sep="")
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, cb)
-colnames( dd$data) <- cnames
-assign( full.list[ data.select], dd, pos=".GlobalEnv")
+for( i in 1:length( newnames)) {
+	cnames.cmd <- paste( "cnames <- c( cnames, \"", newnames[i], "\")", sep="")
+	eval( parse( text=cnames.cmd))
+	write( cnames.cmd, file="extRemes.log", append=TRUE)
+	}
+# cnames <- c( cnames, newnames)
+dd.cmd <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], cb)"
+eval( parse( text=dd.cmd))
+write( dd.cmd, file="extRemes.log", append=TRUE)
+colnames.cmd <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnames.cmd))
+write( colnames.cmd, file="extRemes.log", append=TRUE)
+assign.cmd <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+# assign.cmd <- paste(full.list[ data.select], "$data <- cbind( ", full.list[ data.select], "$data, tmp)", sep="")
+eval( parse( text=assign.cmd))
+write( assign.cmd, file="extRemes.log", append=TRUE)
 
-tkconfigure( base.txt, state="normal")
-msg <- paste( "\n", "Affine transformation (x - ", c.value, ")/", b.value, " taken for", "\n",
-		" ", cols.selected, " and assigned to ", newnames, sep="")
-tkinsert( base.txt, "end", msg)
+# tkconfigure( base.txt, state="normal")
+print( paste( "Affine transformation"))
+cat("\n")
+print( paste( "(x - ", c.value, ")/", b.value, sep=""))
+cat("\n")
+print( paste( "taken for: "))
+for( i in 1:length( cols.selected)) print( paste( cols.selected[i]))
+print( paste( " and assigned to "))
+for( i in 1:length( cols.selected)) print( paste( newnames[i]))
+# tkinsert( base.txt, "end", msg)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of affine.trans fcn
 
 affinehelp <- function() {
-	tkconfigure( base.txt, state="normal")
-	help.msg1 <- paste( " ",
-"This is a simple function that takes a data set X and returns the",
-"affine transformation of X.  That is", "  ", sep="\n")
-	help.msg2 <- paste(" ", "(X - c)/b", " ", sep="\n")
-	help.msg3 <- paste( " ", "Returns object of class \"ev.data\" with an extra column in the data",
-			"indicated by a .cNbM extension where N and M are the values of b and c respectively.",
-			" ", sep="\n")
-	tkinsert( base.txt, "end", help.msg1)
-	tkinsert( base.txt, "end", help.msg2)
-	tkinsert( base.txt, "end", help.msg3)
-	tkconfigure( base.txt, state="disabled")
+	# tkconfigure( base.txt, state="normal")
+	print( paste( "This is a simple function that takes a data set X and returns the"))
+	print( paste( "affine transformation of X.  That is"))
+	cat("\n")
+	print( paste("(X - c)/b"))
+	cat("\n")
+	print( paste( "Returns object of class \"extRemesDataObject\" with an extra column in the data"))
+	print( paste("indicated by a .cNbM extension where N and M are the values of b and c respectively."))
+	# tkinsert( base.txt, "end", help.msg1)
+	# tkinsert( base.txt, "end", help.msg2)
+	# tkinsert( base.txt, "end", help.msg3)
+	# tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of affinehelp
 
@@ -118,7 +160,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -146,7 +188,7 @@ col.scroll <- tkscrollbar( var.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")

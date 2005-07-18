@@ -1,5 +1,7 @@
 fitsummary.gui <- function( base.txt) {
 
+closevar <- tclVar(1)
+
 # Refresh fcn 
 refresh <- function() {
 	tkdelete( fit.listbox, 0.0, "end")
@@ -16,21 +18,38 @@ refresh <- function() {
 submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+		eval( parse( text=dd.cmd))
+		write( dd.cmd, file="extRemes.log", append=TRUE)
                 } else stop("fitdiag.gui: Must load a data object!")
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
-	z <- dd$models[[ fit.select]]
-	if( class( z)[1] == "glm" | class( z)[1] == "poi.fit") poi.summ( z)
-	else summary( dd$models[[ fit.select]])
-	msg <- paste("See R session window for summary results.", " ", sep="\n")
-	tkconfigure( base.txt, state="normal")
-	tkinsert( base.txt, "end", msg)
-	tkconfigure( base.txt, state="disabled")
+	z.cmd <- paste( "z <- dd[[\"models\"]][[ ", fit.select, "]]", sep="")
+	eval( parse( text=z.cmd))
+	# z.cmd <- paste( "z <- ", full.list[ data.select], "$models[[", fit.select, "]]", sep="")
+	write( z.cmd, file="extRemes.log", append=TRUE)
+	# if( class( z)[1] == "glm" | class( z)[1] == "poi.fit") {
+		# summaryCMD <- "poi.summ( z)"
+		# eval( parse( text=summaryCMD))
+		# write( z.cmd, file="extRemes.log", append=TRUE)
+	# } else {
+		# summary( dd$models[[ fit.select]])
+	# assign( "z", z, pos=sys.nframe())
+	summaryCMD <- "print( summary( z))"
+	eval( parse( text=summaryCMD))
+	write( summaryCMD, file="extRemes.log", append=TRUE)
+	if( as.numeric( tclvalue( closevar))==1) endprog()
+	# } # end of if else type of fit stmts.
+	# msg <- paste("See R session window for summary results.", " ", sep="\n")
+	# tkconfigure( base.txt, state="normal")
+	# tkinsert( base.txt, "end", msg)
+	# tkconfigure( base.txt, state="disabled")
 #	plot( dd$models[[ fit.select]])
 	invisible()
 } # end of submit fcn.
 
 summaryhelp <- function( base.txt) {
+	cat( "\n", "prints summary information about an object to the console.", "\n")
+	cat( "Use \'help( summary)\' for more information.\n")
 	help( summary)
 	} # end of summaryhelp fcn
 
@@ -48,6 +67,7 @@ tkwm.title( base, "Fitted Objects Summaries")
 
 top.frm <- tkframe( base, borderwidth=2, relief="groove")
 mid.frm <- tkframe( base, borderwidth=2, relief="groove")
+lowermidfrm <- tkframe( base, borderwidth=2, relief="groove")
 bot.frm <- tkframe( base, borderwidth=2, relief="groove")
 
 data.listbox <- tklistbox( top.frm,
@@ -65,7 +85,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE
@@ -94,6 +114,10 @@ tkinsert( fit.listbox, "end", "")
 tkpack( tklabel( mid.frm, text="Select a fit: ", padx=4), side="left")
 tkpack( fit.listbox, fit.scroll, side="left", fill="y")
 
+# Close on execute?
+close.but <- tkcheckbutton( lowermidfrm, text="Close window on execution", variable=closevar)
+tkpack( close.but, fill="x")
+
 # Bottom frame for execution and cancellation.
 
 ok.but <- tkbutton( bot.frm, text="OK", command=submit)
@@ -108,7 +132,7 @@ tkbind( ok.but, "<Return>", submit)
 tkbind( cancel.but, "<Return>", endprog)
 tkbind( help.but, "<Return>", summaryhelp)
 
-tkpack( top.frm, mid.frm, bot.frm, side="top", fill="x")
+tkpack( top.frm, mid.frm, lowermidfrm, bot.frm, side="top", fill="x")
 invisible()
 
 

@@ -24,39 +24,54 @@ submit <- function() {
 	u.val <- as.numeric( tclvalue(u.value))
 	
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-        dd <- get( full.list[ data.select])
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
 	var.select <- as.numeric( tkcurselection( var.listbox))+1
-	xdat <- dd$data[, var.select]
-	var.name <- colnames( dd$data)[ var.select]
+	xdat.cmd <- paste( "xdat <- dd[[\"data\"]][, ", var.select, "]", sep="")
+	eval( parse( text=xdat.cmd))
+	write( xdat.cmd, file="extRemes.log", append=TRUE)
 
-	look <- extremalindex( xdat, u.val)
+	# var.name.cmd <- paste( "var.name <- colnames( dd[[\"data\"]])[ ", var.select, "]", sep="")
+	# eval( parse( text=var.name.cmd))
+	# write( var.name.cmd, file="extRemes.log", append=TRUE)
 
-	tkconfigure( base.txt, state="normal")
+	look.cmd <- paste("look <- extremalindex( xdat, ", u.val, ")", sep="")
+	eval( parse( text=look.cmd))
+	write( look.cmd, file="extRemes.log", append=TRUE)
+	
+	# tkconfigure( base.txt, state="normal")
 	msg1 <- paste("Extremal index estimate: ",
 			round( look$theta, digits=5), sep="")
 	msg2 <- paste("Estimated number of clusters: ", look$C, sep="")
 	msg3 <- paste("Estimated optimal run length (for runs declustering): ",
 			look$run.length, sep="")
 	msg4 <- look$msg
-	nl1 <- paste("","***********","","",sep="\n")
-	nl2 <- paste("","",sep="\n")
-	tkinsert( base.txt, "end", nl1)
-	tkinsert( base.txt, "end", msg1)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg2)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg3)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", msg4)
-	tkinsert( base.txt, "end", nl2)
-	tkinsert( base.txt, "end", nl1)
-	tkconfigure( base.txt, state="disabled")
+	# nl1 <- paste("","***********","","",sep="\n")
+	# nl2 <- paste("","",sep="\n")
+	# tkinsert( base.txt, "end", nl1)
+	# tkinsert( base.txt, "end", msg1)
+	cat( msg1, "\n")
+	# tkinsert( base.txt, "end", nl2)
+	# tkinsert( base.txt, "end", msg2)
+	cat( msg2, "\n")
+# 	tkinsert( base.txt, "end", nl2)
+# 	tkinsert( base.txt, "end", msg3)
+	cat( msg3, "\n")
+# 	tkinsert( base.txt, "end", nl2)
+# 	tkinsert( base.txt, "end", msg4)
+	cat( msg4, "\n")
+# 	tkinsert( base.txt, "end", nl2)
+# 	tkinsert( base.txt, "end", nl1)
+	# tkconfigure( base.txt, state="disabled")
 	tkdestroy( base)
 	invisible()
 	} # end of submit fcn
 
 extindhelp <- function() {
+	cat( "\n", paste( "Invokes the function: \'extremalindex.\'  ",
+				"Use \'help( extremalindex)\' for more help.", " ", sep="\n"))
 	help( extremalindex)
 	invisible()
 	}
@@ -92,7 +107,7 @@ temp <- ls(all=TRUE, name=".GlobalEnv")
 full.list <- character(0)
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		}

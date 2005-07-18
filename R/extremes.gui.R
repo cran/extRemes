@@ -4,12 +4,12 @@ function ()
 ev.dataexists <- function() {
 	tmp1 <- ls( all=TRUE, pos=".GlobalEnv")
 	n <- length( tmp1)
-# If a data object of class "ev.data" exists, will return 1.
+# If a data object of class "extRemesDataObject" exists, will return 1.
 # Otherwise, will return 0.
 data.exists <- FALSE
 	for( i in 1:n) {
 		if( is.null( class( get( tmp1[i])))) next
-		if( class( get( tmp1[i]))[1] == "ev.data") {
+		if( class( get( tmp1[i]))[1] == "extRemesDataObject") {
 			data.exists <- TRUE
 			break
 			}
@@ -23,6 +23,16 @@ if( !data.exists) {
 	return(0)
 	} else return(1)
 } # end of ev.dataexists fcn
+
+	savework <- function() {
+		cat( "\n", "Saving R workspace ...\n")
+		cat( "This may take a few moments if the workspace is large.\n") 
+		saveCMD <- "save.image()"
+		eval( parse( text=saveCMD))
+		write( saveCMD, file="extRemes.log", append=TRUE)
+		cat( "\n", "Workspace saved.\n")
+		invisible()
+	}
 
     endprog <- function() {
         tkdestroy(base)
@@ -96,12 +106,23 @@ gpdsimdata <- function() {
 			}
 	} # end of trigtrans fcn
 
+	DataSummary <- function() {
+		if( ev.dataexists()) {
+			DataSummaryGUI(txt)
+			tkyview.moveto( txt, 1)
+			}
+		} # end of DataSummary fcn.
+
 	scrubber <- function() {
 		if( ev.dataexists()) {
                         scrubber.gui(txt)
                         tkyview.moveto( txt, 1)
                         }
 	} # end of scrubber function
+
+	clearlogfile <- function() {
+		clearlog(txt)
+	} # end of clearlogfile function
 
     gevfit <- function() {
         if (ev.dataexists()) {
@@ -159,12 +180,12 @@ gpdsimdata <- function() {
 		}
 	} # end of plotdata fcn
 
-	plotTS <- function() {
-                if( ev.dataexists()) {
-                plotTS.gui( txt)
-                tkyview.moveto( txt, 1)
-                }
-        } # end of plotTS fcn
+#	plotTS <- function() {
+#                if( ev.dataexists()) {
+#                plotTS.gui( txt)
+#                tkyview.moveto( txt, 1)
+#                }
+#        } # end of plotTS fcn
 
 	mrlplot <- function() {
 		if( ev.dataexists()) {
@@ -230,7 +251,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 1.40")
+    tkwm.title(base, "Extremes Toolkit: version 1.50")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 
@@ -263,7 +284,13 @@ fmenu.but <- tkmenubutton(top.frm, text = "File", relief = "raised",
 							command=trigtrans)
 	tkadd( file.menu, "cascade", label="Transform Data", menu=TransMenu)
 
+	tkadd( file.menu, "separator")
+	tkadd( file.menu, "command", label="Data Summary", command=DataSummary)
+	tkadd( file.menu, "separator")
 	tkadd( file.menu, "command", label="Scrubber", command=scrubber)
+	tkadd( file.menu, "command", label="Clear log file", command=clearlogfile)
+	tkadd( file.menu, "separator")
+	tkadd( file.menu, "command", label="Save", command=savework)
 	tkadd( file.menu, "separator")
 	tkadd(file.menu, "command", label = "Exit", command = endprog)
 
@@ -273,7 +300,7 @@ pmenu.but <- tkmenubutton( top.frm, text="Plot", relief="raised", borderwidth=2)
 plot.menu <- tkmenu( pmenu.but)
 tkconfigure( pmenu.but, menu=plot.menu)
 tkadd( plot.menu, "command", label = "Scatter Plot", command = plotdata)
-tkadd( plot.menu, "command", label = "Time Series", command = plotTS)
+# tkadd( plot.menu, "command", label = "Time Series", command = plotTS)
 tkadd( plot.menu, "command", label="Mean Residual Life Plot", command=mrlplot)
 tkadd( plot.menu, "separator")
 tkadd( plot.menu, "command", label="Fit threshold ranges (GPD)", command=gpdfitrange)
@@ -320,13 +347,14 @@ amenu.but <- tkmenubutton(top.frm, text = "Analyze", relief = "raised",
 	tkpack(fmenu.but, pmenu.but, amenu.but, side = "left")
 
 # Base frame...  (for text messages)
-	txt <- tktext(bottom.frm, bg = "white", font = "courier")
-	scr <- tkscrollbar(bottom.frm, repeatinterval = 5,
-				command = function(...) tkyview(txt, ...))
-	tkconfigure(txt, yscrollcommand = function(...) tkset(scr, 
-	        ...))
+	# txt <- tktext(bottom.frm, bg = "white", font = "courier")
+	txt <- tktext(bottom.frm, bg = "gray", font = "courier")
+	# scr <- tkscrollbar(bottom.frm, repeatinterval = 5,
+	# 			command = function(...) tkyview(txt, ...))
+	# tkconfigure(txt, yscrollcommand = function(...) tkset(scr, ...))
 	tkconfigure(txt, state = "disabled")
 	tkpack(txt, side = "left", fill = "both")
-	tkpack(scr, side = "right", fill = "y")
+	# tkpack(scr, side = "right", fill = "y")
 	tkpack(bottom.frm, side = "bottom")
+	write.extRemesMainMessage( txt=txt)
 } # end of 'extremes.gui' function

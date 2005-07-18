@@ -36,8 +36,14 @@ many values not given by 'rlevels') and by the delta method described in Coles
   \item{confidence.delta}{The confidence bounds computed by the delta method.}
   \item{conf.level}{The confidence level.}
 }
-\references{ Coles, Stuart.  "An Introduction to Statistical Modeling of Extreme Values",
-	Springer 2001.  ISBN: 1852334592}
+\references{
+Coles, Stuart.  "An Introduction to Statistical Modeling of Extreme Values",
+ Springer 2001.  ISBN: 1852334592
+
+Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
+     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
+     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+}
 \author{ Eric Gilleland }
 
 \seealso{ From the \code{ismev} package: \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag},

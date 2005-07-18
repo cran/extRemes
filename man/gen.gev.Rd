@@ -33,8 +33,14 @@ rexp$(n,$ rate=$\frac{1}{\sigma}$ for $\xi = 0$.
 \value{
 Returns a vector of simulated data.
 }
-\references{ Coles, Stuart.  "An introduction to statistical modeling of
-     extreme values", Springer-Verlag (London), 2001. }
+\references{
+Coles, Stuart.  "An introduction to statistical modeling of extreme values",
+ Springer-Verlag (London), 2001.
+
+Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
+     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
+     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+}
 \author{ Functions written by Eric Gilleland and Greg Young.}
 
 \seealso{ From \code{ismev} package: \code{gev.fit}, \code{gev.diag},

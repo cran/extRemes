@@ -2,7 +2,7 @@ negtrans.gui <- function(base.txt) {
 
 # This function provides a gui interface for finding the negative (for mins)
 # transformation of a dataset.  The gui will list all objects of class
-# "ev.data" and the column names of the user selected object.
+# "extRemesDataObject" and the column names of the user selected object.
 # After taking the negative of the selected data, will add a new column to the
 # data object with the extension ".neg" attached to the original column name(s).
 
@@ -18,7 +18,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		data.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ data.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data))
 		tkinsert( col.listbox, "end",
@@ -32,44 +32,79 @@ neg.trans <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
-	} else dd <- .ev
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
+	} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE) 
 
-cols.selected <- character(0)
+cols.selected.cmd <- "cols.selected <- character(0)"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
 
 # Gather column names to add negative transform(s) to end.
-cnames <- colnames( dd$data)
+# cnames <- colnames( dd$data)
+# cnamesCMD <- paste( "cnames <- colnames( ", full.list[ data.select], "$data)", sep="")
+cnamesCMD <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnamesCMD))
+write( cnamesCMD, file="extRemes.log", append=TRUE)
 
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
 
 # Make sure a column has been selected.
 if( length( temp) == 0) return()
 
-cols.selected <- cnames[temp]
+# cols.selected <- cnames[temp]
+for( i in 1:length( temp)) {
+	cols.selected.cmd <- paste( "cols.selected <- c( cols.selected, \"", cnames[temp[i]], "\")", sep="")
+	eval( parse( text=cols.selected.cmd))
+	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
 
-neg <- -dd$data[ ,cols.selected]
+# neg <- -dd$data[ ,cols.selected]
+# negCMD <- paste( "neg <- -", full.list[ data.select], "$data[,cols.selected]", sep="")
+negCMD <- "neg <- -dd[[\"data\"]][, cols.selected]"
+eval( parse( text=negCMD))
+write( negCMD, file="extRemes.log", append=TRUE)
+
 newnames <- paste( cnames[temp], ".neg", sep="")
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, neg)
-colnames( dd$data) <- cnames
-assign( full.list[ data.select], dd, pos=".GlobalEnv")
+# cnames <- c( cnames, newnames)
+for( i in 1:length( newnames)) {
+	cnamesCMD <- paste( "cnames <- c( cnames, \"", newnames[i], "\")", sep="")
+	eval( parse( text=cnamesCMD))
+	write( cnamesCMD, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
+# dd$data <- cbind( dd$data, neg)
+# dataCMD <- paste( full.list[ data.select], "$data <- cbind( ", full.list[ data.select], "$data, neg)", sep="")
+dataCMD <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], neg)"
+eval( parse( text=dataCMD))
+write( dataCMD, file="extRemes.log", append=TRUE)
+# colnames( dd$data) <- cnames
+# colnamesCMD <- paste( "colnames( ", full.list[ data.select], "$data) <- cnames", sep="")
+colnamesCMD <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnamesCMD))
+write( colnamesCMD, file="extRemes.log", append=TRUE)
+assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+eval( parse( text=assignCMD))
+write( assignCMD, file="extRemes.log", append=TRUE)
 
-tkconfigure( base.txt, state="normal")
+# tkconfigure( base.txt, state="normal")
 msg <- paste( "\n", "Negative transformation taken for", "\n",
 		" ", cols.selected, " and assigned to ", newnames, sep="")
-tkinsert( base.txt, "end", msg)
+# tkinsert( base.txt, "end", msg)
+cat( msg)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of neg.trans fcn
 
 neghelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	help.msg1 <- paste( " ",
 "This is a simple function that takes a data set X and returns -X.", "  ",
 			sep="\n")
-	tkinsert( base.txt, "end", help.msg1)
-	tkconfigure( base.txt, state="disabled")
+	# tkinsert( base.txt, "end", help.msg1)
+	cat( help.msg1)
+	# tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of neghelp fcn
 
@@ -105,7 +140,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -131,7 +166,7 @@ col.scroll <- tkscrollbar( mid.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")

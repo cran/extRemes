@@ -31,8 +31,14 @@ done by this function.
   \item{C}{The estimated number of clusters (handles ties).}
   \item{run.length}{The estimated run length for runs declustering.}
 }
-\references{ Ferro, C.A.T. and Segers, J. (2003): Inference for clusters of
-	extreme values, J.R. Statist. Soc. B, 65 (2): 545-556. }
+\references{
+Ferro, C.A.T. and Segers, J. (2003): Inference for clusters of
+ extreme values, J.R. Statist. Soc. B, 65 (2): 545-556.
+
+Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
+     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
+     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+}
 \author{ Eric Gilleland }
 \seealso{ \code{dclust}}
 \examples{
@@ -40,5 +46,7 @@ data( Tphap)
 temp <- -Tphap[,"MinT"]
 look <- extremalindex( temp, -70)
 look
+
+# See Gilleland et al. (2005) for more.
 }
 \keyword{univar}

@@ -1,5 +1,5 @@
 \name{extRemes internal }
-\alias{bisearch}
+\alias{DataSummaryGUI}
 \alias{extremalind.gui}
 \alias{gev.ret}
 \alias{gev.rlci}
@@ -15,25 +15,9 @@
 \alias{plot.rlarg.fit}
 \alias{rl.gev.fit}
 \alias{rl.gpd.fit}
-\alias{rlplot}
 \alias{scatterplot.gui}
-\alias{damage}  
-\alias{Denmint}
-\alias{Denver}
-\alias{Flood}
-\alias{ftcanmax}
-\alias{FtCoPrec}
-\alias{HEAT}
-\alias{Peak}
-\alias{PORTw}
-\alias{Potomac}
-\alias{Rsum}
-\alias{SEPTsp}
-\alias{Tphap}
-\alias{YDarwin}
 \alias{affine.gui}
 \alias{ppfit.gui}
-\alias{gevdiag.gui}
 \alias{ppfitrange.gui}
 \alias{gevf.gui}
 \alias{gpdsim.gui}
@@ -51,13 +35,14 @@
 \alias{load.data}
 \alias{summary.pp.fit}
 \alias{diagnostic.plots}
+\alias{describe2}
 \alias{gevsim.gui}
 \alias{logdr.gui}
+\alias{stats2}
 \alias{summary.rlarg.fit}
 \alias{gevsim.gui}
 \alias{logtrans.gui}
 \alias{trigtrans.gui}
-\alias{gpddiag.gui}
 \alias{mrlplot.gui}
 \alias{view.data}
 \alias{gpdf.gui}
@@ -67,9 +52,9 @@
 \alias{gpdfitrange.gui}
 \alias{fitsummary.gui}
 \alias{gpdparamCI.gui}
-\alias{plotTS.gui}
 \alias{poisson.gui}
 \alias{scrubber.gui}
+\alias{write.extRemesMainMessage}
 
 \title{
   extRemes internal and secondary functions
@@ -81,7 +66,7 @@ Most of the functions control GUI interfaces for the R package ismev.
 }
 
 \usage{
-bisearch(x1, x2, f, tol = 1e-07, niter = 25, upcross.level = 0)
+DataSummaryGUI(base.txt)
 extremalind.gui( base.txt)
 gev.ret(A, b, c, p = 100, ...)
 gev.rlci(z, m, prange = NULL, conf = 0.95, nint = 100)
@@ -97,25 +82,9 @@ plot.pp.fit(x, ...)
 plot.rlarg.fit(x, ...)
 rl.gev.fit(a, mat, dat)
 rl.gpd.fit(a, u, la, n, npy, mat, dat, xdat)
-rlplot(a, u, la, n, npy, mat, dat, xdat, klaas="gpd.fit", ci=0.05, add.ci=FALSE)
 scatterplot.gui(base.txt)
-damage
-Denmint
-Denver
-Flood
-ftcanmax
-FtCoPrec
-HEAT
-Peak
-PORTw
-Potomac
-Rsum
-SEPTsp
-Tphap
-YDarwin
 affine.gui(base.txt)
 ppfit.gui(base.txt)
-gevdiag.gui(base.txt)
 ppfitrange.gui(base.txt) 
 gevf.gui(base.txt) 
 gpdsim.gui(base.txt) 
@@ -133,12 +102,13 @@ summary.gpd.fit(object, ...)
 load.data(base.txt)
 summary.pp.fit(object, ...)
 diagnostic.plots 
+describe2(x)
 gevsim.gui(base.txt) 
 logdr.gui(base.txt) 
+stats2(x, by)
 summary.rlarg.fit(object, ...)
 logtrans.gui(base.txt)
 trigtrans.gui(base.txt)
-gpddiag.gui(base.txt)
 mrlplot.gui(base.txt)
 view.data(base.txt)
 gpdf.gui(base.txt)
@@ -148,9 +118,9 @@ fitdiag.gui(base.txt)
 gpdfitrange.gui(base.txt)
 fitsummary.gui(base.txt)
 gpdparamCI.gui(base.txt)
-plotTS.gui(base.txt)
 poisson.gui(base.txt)
 scrubber.gui(base.txt)
+write.extRemesMainMessage(txt)
 }
 \keyword{internal}
 \keyword{misc}

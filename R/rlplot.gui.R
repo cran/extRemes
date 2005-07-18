@@ -20,30 +20,39 @@ refresh <- function() {
 submit <- function() {
 	if( !is.nothing) {
                 data.select <- as.numeric( tkcurselection( data.listbox))+1
-                dd <- get( full.list[ data.select])
+                dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
                 } else stop("rlplot.gui: Must load a data object!")
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
+
 	fit.select <- as.numeric( tkcurselection( fit.listbox))+1
-# 	rlvl <- as.character( tclvalue( rlevel.value))
-# 	if( rlvl=="") return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)))
-# 	else {
-# 		rlvl <- get( rlvl)
-# 		return.level( dd$models[[ fit.select]], conf=as.numeric(tclvalue(conf.value)),rlevels=rlvl)
-# 		}
-	z <- dd$models[[ fit.select]]
+
+	# z <- dd$models[[ fit.select]]
+	# z.cmd <- paste( "z <- ", full.list[ data.select], "$models[[", fit.select, "]]", sep="")
+	z.cmd <- paste( "z <- dd[[\"models\"]][[ ", fit.select, "]]", sep="")
+	eval( parse( text=z.cmd))
+	write( z.cmd, file="extRemes.log", append=TRUE)
 	ci.val <- as.numeric(tclvalue(conf.value))
-	rlplot(a=z$mle, u=z$threshold, la=z$rate, n=z$n, npy=z$npy, mat=z$cov, dat=z$data, xdat=z$xdata,
-			klaas=class(z), ci=ci.val, add.ci=ifelse( tclvalue(ci)==1, TRUE,FALSE))
+	# rlplot(a=z$mle, u=z$threshold, la=z$rate, n=z$n, npy=z$npy, mat=z$cov, dat=z$data, xdat=z$xdata,
+	# 		klaas=class(z), ci=ci.val, add.ci=ifelse( tclvalue(ci)==1, TRUE,FALSE))
+	# rlplotCMD <- paste( "rlplot( a=z[[\"mle\"]], u=z[[\"threshold\"]], la=z[[\"rate\"]], n=z[[\"n\"]], ",
+	# 	"mat=z[[\"cov\"]], dat=z[[\"data\"]], xdat=z[[\"xdata\"]], klaas=class( z), ",
+	# 	"ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
+	rlplotCMD <- paste( "rlplot( z=z, ci=", ci.val, ", add.ci=", ifelse( tclvalue(ci)==1, TRUE,FALSE), ")", sep="")
+	eval( parse( text=rlplotCMD))
+	write( rlplotCMD, file="extRemes.log", append=TRUE)
 	tkdestroy( base)
 	invisible()
 } # end of submit fcn.
 
 rlhelp <- function() {
-	tkconfigure(base.txt,state="normal")
+	# tkconfigure(base.txt,state="normal")
 	msg1 <- paste("", "Plots the return levels for several return periods.", "",
-			"If desired, confidence bounds may be added using the delta method.",
+			"If desired, confidence bounds may be added using the delta method.", " ",
 			sep="\n")
-	tkinsert(base.txt,"end",msg1)
-	tkconfigure(base.txt,state="disabled")
+	cat( msg1)
+	# tkinsert(base.txt,"end",msg1)
+	# tkconfigure(base.txt,state="disabled")
 	# help( return.level)
 	} # end of rlhelp fcn
 
@@ -79,7 +88,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class( get( temp[i]))[1] == "ev.data")) {
+        if( (class( get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
                 full.list <- c( full.list, temp[i])
                 is.nothing <- FALSE

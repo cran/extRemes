@@ -2,7 +2,7 @@ logdr.gui <- function( base.txt) {
 
 # This function provides a gui interface for finding the log daily returns
 # transformation of a dataset.  The gui will list all objects of class
-# "ev.data" and the column names of the user selected object.
+# "extRemesDataObject" and the column names of the user selected object.
 # After taking the log daily returns of the selected data, will return a new
 # column with the same column name(s), but with a ".ldr" extension.
 
@@ -23,7 +23,7 @@ refresh <- function() {
 	if( !is.nothing) {
 		dd.select <- as.numeric( tkcurselection( data.listbox))+1
 		dd <- get( full.list[ dd.select])
-		} else dd <- .ev
+		} else dd <- extRemesData
 
 	for( i in 1:ncol( dd$data))
 		tkinsert( col.listbox, "end",
@@ -37,9 +37,11 @@ ldr.trans <- function() {
 
 if( !is.nothing) {
 	data.select <- as.numeric( tkcurselection( data.listbox))+1
-	dd <- get( full.list[ data.select])
+	dd.cmd <- paste( "dd <- get( \"", full.list[ data.select], "\")", sep="")
 	ddname <- full.list[ data.select]
-	} else dd <- .ev
+	} else dd.cmd <- "dd <- extRemesData"
+	eval( parse( text=dd.cmd))
+	write( dd.cmd, file="extRemes.log", append=TRUE)
 
 if( tclvalue(ebase) == 1 ) log.b <- exp(1)
 else {
@@ -47,7 +49,9 @@ else {
 	bbext <- deparse( log.b)
 	}
 
-cols.selected <- character(0)
+cols.selected.cmd <- "cols.selected <- character(0)"
+eval( parse( text=cols.selected.cmd))
+write( cols.selected.cmd, file="extRemes.log", append=TRUE)
 
 temp <- as.numeric( tkcurselection( col.listbox)) + 1
 
@@ -55,44 +59,89 @@ temp <- as.numeric( tkcurselection( col.listbox)) + 1
 if( is.na( temp)) return()
 
 # Keep column names for writing new ones.
-cnames <- colnames( dd$data)
+# cnames <- colnames( dd$data)
+# cnames.cmd <- paste( "cnames <- colnames( ", full.list[ data.select], "$data)", sep="")
+cnames.cmd <- "cnames <- colnames( dd[[\"data\"]])"
+eval( parse( text=cnames.cmd))
+write( cnames.cmd, file="extRemes.log", append=TRUE)
 
-cols.selected <- cnames[temp]
-N <- dim( dd$data)[1]
-tmp.ldr <- matrix( NA, nrow=N, ncol=length( cols.selected) )
+for( i in 1:length( temp)) {
+	# cols.selected <- cnames[temp]
+	cols.selected.cmd <- paste(" cols.selected <- c( cols.selected, \"", cnames[ temp[i]], "\")", sep="")
+	eval( parse( text=cols.selected.cmd))
+	write( cols.selected.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
+# N <- dim( dd$data)[1]
+# N.cmd <- paste("N <- dim( ", full.list[ data.select], "$data)[1]", sep="")
+N.cmd <- "N <- dim( dd[[\"data\"]])[1]"
+eval( parse( text=N.cmd))
+write( N.cmd, file="extRemes.log", append=TRUE)
+
+tmp.ldr.cmd <- "tmp.ldr <- matrix( NA, nrow=N, ncol=length( cols.selected) )"
+eval( parse( text=tmp.ldr.cmd))
+write( tmp.ldr.cmd, file="extRemes.log", append=TRUE)
+
 # dd$data[1:(N-1),cols.selected] <-
-tmp.ldr[ 1:(N-1),] <-
-	log( dd$data[2:N,cols.selected], base=log.b) -
-		log( dd$data[1:(N-1),cols.selected], base=log.b)
+# tmp.ldr[ 1:(N-1),] <-
+# 	log( dd$data[2:N,cols.selected], base=log.b) -
+# 		log( dd$data[1:(N-1),cols.selected], base=log.b)
+# tmp.ldr.cmd <- paste( "tmp.ldr <- log( ", full.list[ data.select], "$data[2:N,cols.selected], base=", log.b, ") -",
+# 			" log( ", full.list[ data.select], "$data[1:(N-1),cols.selected], base=", log.b, ")", sep="")
+tmp.ldr.cmd <- paste( "tmp.ldr[ 1:(N-1),] <- log( dd[[\"data\"]][2:N, cols.selected], base=", log.b, ") -",
+			" log( dd[[\"data\"]][1:(N-1), cols.selected], base=", log.b, ")", sep="")
+eval( parse( text=tmp.ldr.cmd))
+write( tmp.ldr.cmd, file="extRemes.log", append=TRUE)
+
 if( tclvalue(ebase) == 1) newnames <- paste( cnames[temp], ".ldr", sep="")
 else newnames <- paste( cnames[temp], ".", bbext, "ldr", sep="")
-cnames <- c( cnames, newnames)
-dd$data <- cbind( dd$data, tmp.ldr)
-colnames( dd$data) <- cnames
-assign( ddname, dd, pos=".GlobalEnv")
-tkconfigure( base.txt, state="normal")
+for( i in 1:length( newnames)) {
+	# cnames <- c( cnames, newnames)
+	cnames.cmd <- paste( "cnames <- c( cnames, \"", newnames[i], "\")", sep="")
+	eval( parse( text=cnames.cmd))
+	write( cnames.cmd, file="extRemes.log", append=TRUE)
+	} # end of for 'i' loop.
+
+# dd$data <- cbind( dd$data, tmp.ldr)
+# newdata.cmd <- paste( full.list[ data.select], "$data <- cbind( ", full.list[ data.select], "$data, tmp.ldr)", sep="")
+newdata.cmd <- "dd[[\"data\"]] <- cbind( dd[[\"data\"]], tmp.ldr)"
+eval( parse( text=newdata.cmd))
+write( newdata.cmd, file="extRemes.log", append=TRUE)
+# colnames( dd$data) <- cnames
+# colnamesCMD <- paste( "colnames( ", full.list[ data.select], "$data) <- cnames", sep="")
+colnamesCMD <- "colnames( dd[[\"data\"]]) <- cnames"
+eval( parse( text=colnamesCMD))
+write( colnamesCMD, file="extRemes.log", append=TRUE)
+assignCMD <- paste( "assign( \"", full.list[ data.select], "\", dd, pos=\".GlobalEnv\")", sep="")
+eval( parse( text=assignCMD))
+write( assignCMD, file="extRemes.log", append=TRUE)
+
+# tkconfigure( base.txt, state="normal")
 msg <- paste( "\n", "log daily return (base= ", round( log.b, digits=6), 
 		") taken for", "\n",
 		" ", cols.selected, " and assigned to ", newnames, sep="")
-tkinsert( base.txt, "end", msg)
+# tkinsert( base.txt, "end", msg)
+cat( msg)
 tkdestroy( base)
-tkconfigure( base.txt, state="disabled")
+# tkconfigure( base.txt, state="disabled")
 invisible()
 	} # end of ldr.trans fcn
 
 ldrhelp <- function() {
-	tkconfigure( base.txt, state="normal")
+	# tkconfigure( base.txt, state="normal")
 	help.msg1 <- paste( " ",
-"This is a simple function that takes an n X 1 data set X and computes the ",
+"This is a simple function that takes an n X 1 data set Y and computes the ",
 	"log (base bb) daily return.  That is:", " ", sep="\n")
 	help.msg2 <- paste("  ",
-"log( X[2:n], base=bb) - log( X[1:(n-1)], base=bb)", " ", sep="\n")
+"log( Y[2:n], base=bb) - log( Y[1:(n-1)], base=bb)", " ", sep="\n")
 	help.msg3 <- paste(" ",
-"Returns an object of class \"ev.data\" ", " ", sep="\n")
-	tkinsert( base.txt, "end", help.msg1)
-	tkinsert( base.txt, "end", help.msg2)
-	tkinsert( base.txt, "end", help.msg3)
-	tkconfigure( base.txt, state="disabled")
+"Returns an object of class \"extRemesDataObject\" ", " ", sep="\n")
+	# tkinsert( base.txt, "end", help.msg1)
+	cat( help.msg1)
+	# tkinsert( base.txt, "end", help.msg2)
+	cat( help.msg2)
+	# tkinsert( base.txt, "end", help.msg3)
+	cat( help.msg3)
+	# tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of ldrhelp fcn
 
@@ -128,7 +177,7 @@ full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
         if( is.null( class( get( temp[i])))) next
-        if( (class(get( temp[i]))[1] == "ev.data")) {
+        if( (class(get( temp[i]))[1] == "extRemesDataObject")) {
                 tkinsert( data.listbox, "end", paste( temp[i]))
         	full.list <- c( full.list, temp[i])
 		is.nothing <- FALSE
@@ -156,7 +205,7 @@ col.scroll <- tkscrollbar( leftmid.frm, orient="vert",
 			command=function(...) tkyview( col.listbox, ...))
 
 if( is.nothing) {
-for( i in 1:ncol( .ev$data))
+for( i in 1:ncol( extRemesData$data))
 	tkinsert( col.listbox, "end", paste( colnames( dd$data)[i]))
 # end of for i loop
 	} else tkinsert( col.listbox, "end", "")
