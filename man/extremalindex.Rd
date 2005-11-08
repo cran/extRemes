@@ -35,9 +35,9 @@ done by this function.
 Ferro, C.A.T. and Segers, J. (2003): Inference for clusters of
  extreme values, J.R. Statist. Soc. B, 65 (2): 545-556.
 
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
-     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
-     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
+   Weather and Climate Applications of Extreme Value Statistics.'
+   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Eric Gilleland }
 \seealso{ \code{dclust}}

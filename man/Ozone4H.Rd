@@ -46,9 +46,9 @@ Fuentes, Montserrat.  Statistical assessment of geographic areas of compliance w
   quality.  Journal of Geophysical Research, 108(D24), 2003.
 
 Gilleland, Eric and Nychka, Douglas. Statistical Models for Monitoring and Regulating Ground-level Ozone,
- Special Issue of Environmetrics, 2005 (to appear).
+   Environmetrics, 16:535--546. 2005.
 
-a) Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for the 'Extremes Toolkit: Weather and Climate
+a) Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit: Weather and Climate
  Applications of Extreme Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 
 b) Gilleland, Eric, Nychka, Douglas, and Schneider, Uli. Spatial models for the distribution of extremes, Applications of

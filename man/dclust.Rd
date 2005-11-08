@@ -47,9 +47,9 @@ will be questionable.
 Coles, Stuart (2001).  An Introduction to Statistical Modeling of
  Extreme Values.  Springer-Verlag, London.
 
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
-     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
-     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
+   Weather and Climate Applications of Extreme Value Statistics.'
+   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Eric Gilleland }
 

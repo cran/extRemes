@@ -3,7 +3,8 @@ function( base.txt) {
 
 #
 # This function provides a gui for Stuart Coles
-# 'pp.fit' function and helpers
+# 'pp.fit' function and helpers (but now uses a modified version
+# called 'fpp').
 #
 
 
@@ -341,7 +342,7 @@ ndatCMD <- "ndat <- length( xdata)"
 eval( parse( text=ndatCMD))
 write( ndatCMD, file="extRemes.log", append=TRUE)
 
-cmd <- paste( "dd[[\"models\"]][[\"pp.fit", jj+1, "\"]] <- fit <- pp.fit( xdat=xdata, threshold=threshold.val, npy=",
+cmd <- paste( "dd[[\"models\"]][[\"pp.fit", jj+1, "\"]] <- fit <- fpp( xdat=xdata, threshold=threshold.val, npy=",
 		as.numeric( tclvalue( npy)),
 		", ydat=covs, mul=mu.cov.cols, mulink=mu.linker, sigl=sig.cov.cols, siglink=sig.linker, ",
 		"shl=gam.cov.cols, shlink=gam.linker, method=\"", method.value, "\", maxit=",
@@ -400,17 +401,17 @@ print( CONV.msg)
         # tkinsert( base.txt, "end", nl2)
 	# tkinsert( base.txt, "end", nl2)
 	ulen <- length( fit$threshold)
-	if( ulen == 1) print( paste("Threshold = ", fit$threshold, sep=""))
-	else {
-		print( paste( "Threshold = "))
-		if( ulen>3) {
-			print( fit$threshold[1:3])
-			cat( paste( "..."))
-			print( fit$threshold[(ulen-2):ulen])
-		} else print( fit$threshold)
-	}
-	print( paste("Number of exceedances = ", fit$nexc, sep=""))
-	print( paste("Exceedance rate (per year) = ", fit$rate*fit$npy, sep=""))
+# 	if( ulen == 1) print( paste("Threshold = ", fit$threshold, sep=""))
+# 	else {
+# 		print( paste( "Threshold = "))
+# 		if( ulen>3) {
+# 			print( fit$threshold[1:3])
+# 			cat( paste( "..."))
+# 			print( fit$threshold[(ulen-2):ulen])
+# 		} else print( fit$threshold)
+# 	}
+# 	print( paste("Number of exceedances = ", fit$nexc, sep=""))
+	# print( paste("Exceedance rate (per year) = ", fit$rate*fit$npy, sep=""))
 	# tkinsert( base.txt, "end", Thresh.msg)
 	# tkinsert( base.txt, "end", nl2)
 	# tkinsert( base.txt, "end", nl2)
@@ -491,9 +492,10 @@ print( CONV.msg)
 } # end of submit fcn
 
 ppfithelp <- function() {
-	cat("\n", "Invokes the \'ismev\' function \'pp.fit\'.\n")
-	cat( "Use \'help( pp.fit)\' for more help.\n")
-	help( pp.fit)
+	cat("\n", "Invokes \'fpp\', a modification of the \'ismev\' function \'pp.fit\'.\n")
+	cat( "Use \'help( pp.fit)\' and \'help(fpp)\' for more information.\n")
+	# help( pp.fit)
+	invisible()
 	} # end of ppfithelp fcn
 
 endprog<-function() {
@@ -581,7 +583,7 @@ tkpack(resp.scroll,side="right",fill="y")
 
 plot.but<- tkcheckbutton(top.r,text="Plot diagnostics",variable=plot.diags)
 tkpack(param.frm, plot.but,side="left")
-tkpack(top.l,top.r,side="left")
+tkpack(top.l,top.r,side="top")
 
 # place binding on resp.listbox to eliminate the response from the 
 # lists of covs.

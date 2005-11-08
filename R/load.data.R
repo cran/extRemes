@@ -2,7 +2,10 @@
 function(base.txt) {
 #
 # This function loads the data set using tkfilefind to locate it.
-# 
+#
+
+## Need to change the commands in this function so that the executed
+## command is exactly identical to the command written to "extRemes.log". 
 
 ############################
 # Internal functions

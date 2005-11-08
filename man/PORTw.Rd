@@ -13,14 +13,14 @@ New York (PORTw) and Spring for Sept-Iles, Quebec (SEPTsp).
   A data frame with 68 observations on the following 16 variables.
   \describe{
     \item{Year}{a numeric vector giving the year.}
-    \item{MTMAX}{a numeric vector giving the mean maximum temperatures (degrees centigrade) over a given period.}
-    \item{MTMIN}{a numeric vector giving the mean minimum temperatures (degrees centigrade). over a given period}
-    \item{STDTMAX}{a numeric vector giving the standard deviations of maximum temperatures (degrees centigrade)
-			over a given period.}
+    \item{MTMAX}{a numeric vector giving the mean maximum temperatures (degrees centigrade) over a one month period.}
+    \item{MTMIN}{a numeric vector giving the mean minimum temperatures (degrees centigrade). over a one month period.}
+    \item{STDTMAX}{a numeric vector giving the standard deviations of maximum temperatures (degrees centigrade) over a
+			one month period.}
     \item{STDMIN}{a numeric vector giving the standard deviations of minimum temperatures (degrees centigrade)
-			over a given period.}
-    \item{TMX1}{a numeric vector giving the maximum temperature (degress centigrade).}
-    \item{TMN0}{a numeric vector giving the minimum temperature (degress centigrade).}
+			over a one month period.}
+    \item{TMX1}{a numeric vector giving the maximum temperature (degrees centigrade) over a one month period.}
+    \item{TMN0}{a numeric vector giving the minimum temperature (degrees centigrade) over a one month period.}
     \item{MDTR}{a numeric vector giving the mean diurnal temperature range (degrees centigrade).}
     \item{AOindex}{a numeric vector giving the Atlantic Oscillation index (see Thompson and Wallace (1998)).}
   }
@@ -32,7 +32,7 @@ See Wettstein and Mearns (2002) for a much more detailed explanation of the abov
 National Oceanic and Atmospheric Administration/National Climate Data Center (NOAA/NCDC).
 }
 \references{
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for the 'Extremes Toolkit: Weather and Climate
+Gilleland, Eric, and Katz, Richard W., Tutorial for the 'Extremes Toolkit: Weather and Climate
  Applications of Extreme Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 
 Thompson, D.W.J. and Wallace, J.M. The Arctic Oscillation signature in the wintertime geopotential height and temperature

@@ -22,9 +22,9 @@ Gilleland et al. (2005) for examples using \pkg{extRemes}.
 \url{http://sciencepolicy.colorado.edu/pielke/hp_roger/hurr_norm/data.html}
 }
 \references{
-Gilleland, Eric, Katz, Richard W. and Young, Greg. Tutorial for
-     the 'Extremes Toolkit: Weather and Climate Applications of Extreme
-     Value Statistics.' \url{http://www.assessment.ucar.edu/toolkit}, 2005.
+Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
+   Weather and Climate Applications of Extreme Value Statistics.'
+   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 
 Katz, Richard W., Stochastic modeling of hurricane damage. Journal of Applied Meteorology, 41:754--762, 2002.
 
