@@ -179,7 +179,7 @@ if( !rl.only) {
 		cat( nl2)
 		}
 		} # end of if else 'gpd.fit' present stmt
-	tkdestroy( base)
+	# tkdestroy( base)
         # tkconfigure( base.txt, state="disabled")
 	invisible()
 	} # end of submit fcn
