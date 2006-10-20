@@ -27,7 +27,7 @@ been using it for a very long time including meteorology, hydrology, finance and
 Example Datasets:
 
 There are several example datasets included with this toolkit.  In each case, it is possible to load these datasets
-into R using the \code{data} function.  Use the \code{as.extRemesDataObject} function to coerce this data to the form
+into R using the \code{data} function.  Use the \code{as.extRemesDataObject} function to coerce these data to the form
 that the GUI windows can recognize when loading data in this way.  Generally, it is possible to load all of these
 datasets using the GUI windows (File --> Read Data --> browse to data and select --> choose R source --> OK).  The
 example datasets will be in the data directory of the \pkg{extRemes} file structure.  It is not necessary to unzip

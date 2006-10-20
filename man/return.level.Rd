@@ -7,13 +7,13 @@ profile likelihoods and a cubic spline ('splinefun').  It also computes
 the confidence levels using the ``delta" method.
 }
 \usage{
-return.level(z, conf = 0.05, rlevels= c(10,100,210,510,810,980), make.plot = TRUE)
+return.level(z, conf = 0.05, rperiods= c(10,100,210,510,810,980), make.plot = TRUE)
 }
 \arguments{
   \item{z}{ An object of class "gev.fit" or "gpd.fit" from the \code{gev.fit} or \code{gpd.fit} functions
 	from the \code{ismev} library of Stuart Coles (ported to R by Alec Stephenson).}
   \item{conf}{ The confidence level for confidence bounds. }
-  \item{rlevels}{ Return levels at which to compute confidence limits with
+  \item{rperiods}{ Return periods at which to compute confidence limits with
 	profile likelihood plots--the rest will be interpolated with a spline function
 	using the R function \code{splinefun}}
   \item{make.plot}{ logical, if 'TRUE' plots the return levels with confidence bounds. }

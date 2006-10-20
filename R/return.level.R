@@ -1,4 +1,4 @@
-return.level <- function(z, conf=0.05, rlevels= c(10,100,210,510,810,980),
+return.level <- function(z, conf=0.05, rperiods= c(10,100,210,510,810,980),
 				make.plot=TRUE) {
 #
 # Function to compute the return levels and confidence intervals.
@@ -18,7 +18,7 @@ a1[1] <- a[1] + eps
 a2[2] <- a[2] + eps
 a3[3] <- a[3] + eps
 kappa <- qnorm(conf/2, lower.tail=FALSE)
-nx <- length( rlevels)
+nx <- length( rperiods)
 cl <- 1-conf
 if( class(z) == "gev.fit") {
 	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5,
@@ -36,9 +36,9 @@ if( class(z) == "gev.fit") {
 	options( error=expression(NULL))
 	for( i in 1:nx) {
 		cat(i, " ")
-		if( rlevels[i] <= 100)
-		temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1], rl.xup=yl[2], m=rlevels[i], conf=cl, rl.only=TRUE))
-		else temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1]*1.25, rl.xup=yl[2]*1.5,m=rlevels[i], conf=cl,
+		if( rperiods[i] <= 100)
+		temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1], rl.xup=yl[2], m=rperiods[i], conf=cl, rl.only=TRUE))
+		else temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1]*1.25, rl.xup=yl[2]*1.5,m=rperiods[i], conf=cl,
 						rl.only=TRUE))
 		if( class(temp) != "try-error") {
 				conf.low[i] <- temp$rl$dn
@@ -51,12 +51,12 @@ if( class(z) == "gev.fit") {
 	ind.low <- !is.na( conf.low)
 	ind.up <- !is.na( conf.up)
 	if( sum( ind.low) > 3) {
-		low.sfun <- splinefun( rlevels[ind.low], conf.low[ind.low])
-		conf2[,1] <- low.sfun( rlevels)
+		low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
+		conf2[,1] <- low.sfun( rperiods)
 		}
 	if( sum( ind.up) > 3) {
-		up.sfun <- splinefun( rlevels[ind.up], conf.up[ind.up])
-		conf2[,2] <- up.sfun( rlevels)
+		up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
+		conf2[,2] <- up.sfun( rperiods)
 		}
 	if( make.plot) {
 		if( any( is.na( yl))) yl <- range( q, na.rm=TRUE)
@@ -68,8 +68,8 @@ if( class(z) == "gev.fit") {
 		lines(-1/log(f), q)
 		lines(-1/log(f[ind.f]), (q + kappa * sqrt(v))[ind.f], col = "blue")
 		lines(-1/log(f[ind.f]), (q - kappa * sqrt(v))[ind.f], col = "blue")
-		lines( rlevels, conf2[,1], col="blue")
-		lines( rlevels, conf2[,2], col="blue")
+		lines( rperiods, conf2[,1], col="blue")
+		lines( rperiods, conf2[,2], col="blue")
 		points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
 		} # end of if make.plot stmt
 	out$return.level <- q
@@ -105,14 +105,14 @@ if( class(z) == "gev.fit") {
 		options( error=expression(NULL))
 		for( i in 1:nx) {
 			cat(i, " ")
-			if( rlevels[i] <= 100) temp <- try( gpd.parameterCI(	z=z,
-										m=rlevels[i],
+			if( rperiods[i] <= 100) temp <- try( gpd.parameterCI(	z=z,
+										m=rperiods[i],
 										rl.xlow=yl[1],
 										rl.xup=yl[2],
 										conf=cl,
 										rl.only=TRUE))
 			else temp <- try( gpd.parameterCI(	z=z,
-								m=rlevels[i],
+								m=rperiods[i],
 								rl.xlow=yl[1]*1.25,
 								rl.xup=yl[2]*1.5,
 								conf=cl,
@@ -128,12 +128,12 @@ if( class(z) == "gev.fit") {
 		ind.low <- !is.na( conf.low)
 		ind.up <- !is.na( conf.up)
 		if( sum( ind.low) > 3) {
-			low.sfun <- splinefun( rlevels[ind.low], conf.low[ind.low])
-			conf2[,1] <- low.sfun( rlevels)
+			low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
+			conf2[,1] <- low.sfun( rperiods)
 			}
 		if( sum( ind.up) > 3) {
-			up.sfun <- splinefun( rlevels[ind.up], conf.up[ind.up])
-			conf2[,2] <- up.sfun( rlevels)
+			up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
+			conf2[,2] <- up.sfun( rperiods)
 			}
 		if( make.plot) {
 			if( any( is.na( yl))) yl <- range( q, na.rm=TRUE)
@@ -145,8 +145,8 @@ if( class(z) == "gev.fit") {
 			indy <- m[q>u-1]/npy < 10
 		lines((m[q > u - 1]/npy)[indy], (q[q > u - 1] + kappa * sqrt(v)[q > u - 1])[indy], col = "blue")
 		lines((m[q > u - 1]/npy)[indy], (q[q > u - 1] - kappa * sqrt(v)[q > u - 1])[indy], col = "blue")
-			lines( rlevels, conf2[,1], col="blue")
-			lines( rlevels, conf2[,2], col="blue")
+			lines( rperiods, conf2[,1], col="blue")
+			lines( rperiods, conf2[,2], col="blue")
         # points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
 			nl <- n - length(dat) + 1
 			sdat <- sort(xdat)

@@ -42,7 +42,7 @@ submit <- function() {
 	eval( parse( text=var.name.cmd))
 	write( var.name.cmd, file="extRemes.log", append=TRUE)
 
-	mrlplotCMD <- paste("mrl.plot( var.val, conf=, ", conf.val, ", nint=", nint.val, ")", sep="")
+	mrlplotCMD <- paste("mrl.plot( var.val, conf= ", conf.val, ", nint=", nint.val, ")", sep="")
 	eval( parse( text=mrlplotCMD))
 	write( mrlplotCMD, file="extRemes.log", append=TRUE)
 
