@@ -5,7 +5,7 @@
 \description{
 Hourly precipitation (mm) for Denver, Colorado in the month of July from 1949 to 1990.
 }
-\usage{data(Denver)}
+\usage{data(Denversp)}
 \format{
   A data frame with 31247 observations on the following 4 variables.
   \describe{
