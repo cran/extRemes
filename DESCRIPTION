@@ -1,5 +1,5 @@
 Package: extRemes
-Version: 1.55
+Version: 1.56
 Date: March 15 2004
 Title: Extreme value toolkit.
 Author: Eric Gilleland, Rick Katz, Greg Young
@@ -12,4 +12,4 @@ Description: Uses Stuart Coles' (Coles, Stewart, "An introduction to
  a Graphical User Interface (GUI) to ismev for pedagogical purposes.
 License: GPL Version 2 or later. 
 URL: http://www.assessment.ucar.edu/toolkit/
-Packaged: Mon Apr  9 09:59:18 2007; ericg
+Packaged: Wed Dec  5 14:06:20 2007; ericg

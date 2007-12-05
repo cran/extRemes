@@ -21,8 +21,10 @@ kappa <- qnorm(conf/2, lower.tail=FALSE)
 nx <- length( rperiods)
 cl <- 1-conf
 if( class(z) == "gev.fit") {
-	f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5,
+	if( is.null( rperiods)) {
+	   f <- c(seq(0.01, 0.09, by = 0.01), 0.1, 0.2, 0.3, 0.4, 0.5,
 			0.6, 0.7, 0.8, 0.9, 0.95, 0.99, 0.995, 0.999)
+	} else f <- exp(-1/rperiods)
 	q <- gevq(a, 1 - f)
 	d1 <- (gevq(a1, 1 - f) - q)/eps
 	d2 <- (gevq(a2, 1 - f) - q)/eps
@@ -30,34 +32,34 @@ if( class(z) == "gev.fit") {
 	d <- cbind(d1, d2, d3)
 	v <- apply(d, 1, q.form, m = mat)
 	yl <- c(min(dat, q), max(dat, q))
-	conf.low <- numeric(nx)+NA
-	conf.up <- conf.low
-	cat("\n", "Please be patient, this may take a few seconds.  Loop is 1 to ", nx, "\n")
-	options( error=expression(NULL))
-	for( i in 1:nx) {
-		cat(i, " ")
-		if( rperiods[i] <= 100)
-		temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1], rl.xup=yl[2], m=rperiods[i], conf=cl, rl.only=TRUE))
-		else temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1]*1.25, rl.xup=yl[2]*1.5,m=rperiods[i], conf=cl,
-						rl.only=TRUE))
-		if( class(temp) != "try-error") {
-				conf.low[i] <- temp$rl$dn
-				conf.up[i] <- temp$rl$up
-				}
-		} # end of for 'i' loop.
-	options( error=NULL)
-	cat("\n")
-	conf2 <- matrix(NA, nrow=nx, ncol=2)
-	ind.low <- !is.na( conf.low)
-	ind.up <- !is.na( conf.up)
-	if( sum( ind.low) > 3) {
-		low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
-		conf2[,1] <- low.sfun( rperiods)
-		}
-	if( sum( ind.up) > 3) {
-		up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
-		conf2[,2] <- up.sfun( rperiods)
-		}
+	# conf.low <- numeric(nx)+NA
+	# conf.up <- conf.low
+	# cat("\n", "Please be patient, this may take a few seconds.  Loop is 1 to ", nx, "\n")
+	# options( error=expression(NULL))
+	# for( i in 1:nx) {
+	# 	cat(i, " ")
+	# 	if( rperiods[i] <= 100)
+	# 	temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1], rl.xup=yl[2], m=rperiods[i], conf=cl, rl.only=TRUE))
+	# 	else temp <- try( gev.parameterCI( z=z, rl.xlow=yl[1]*1.25, rl.xup=yl[2]*1.5,m=rperiods[i], conf=cl,
+	# 					rl.only=TRUE))
+	# 	if( class(temp) != "try-error") {
+	# 			conf.low[i] <- temp$rl$dn
+	# 			conf.up[i] <- temp$rl$up
+	# 			}
+	# 	} # end of for 'i' loop.
+	# options( error=NULL)
+	# cat("\n")
+	# conf2 <- matrix(NA, nrow=nx, ncol=2)
+	# ind.low <- !is.na( conf.low)
+	# ind.up <- !is.na( conf.up)
+	# if( sum( ind.low) > 3) {
+	# 	low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
+	# 	conf2[,1] <- low.sfun( rperiods)
+	# 	}
+	# if( sum( ind.up) > 3) {
+	# 	up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
+	# 	conf2[,2] <- up.sfun( rperiods)
+	# 	}
 	if( make.plot) {
 		if( any( is.na( yl))) yl <- range( q, na.rm=TRUE)
 		plot(-1/log(f), q, log = "x", type = "n", xlim = c(0.1, 1000),
@@ -68,16 +70,16 @@ if( class(z) == "gev.fit") {
 		lines(-1/log(f), q)
 		lines(-1/log(f[ind.f]), (q + kappa * sqrt(v))[ind.f], col = "blue")
 		lines(-1/log(f[ind.f]), (q - kappa * sqrt(v))[ind.f], col = "blue")
-		lines( rperiods, conf2[,1], col="blue")
-		lines( rperiods, conf2[,2], col="blue")
+	# 	lines( rperiods, conf2[,1], col="blue")
+	# 	lines( rperiods, conf2[,2], col="blue")
 		points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
 		} # end of if make.plot stmt
 	out$return.level <- q
 	out$return.period <- -1/log(f)
 	conf3 <- cbind( q-kappa*sqrt(v), q+kappa*sqrt(v))
-	colnames( conf2) <- c("lower", "upper")
-	colnames( conf3) <- colnames( conf2)
-	out$confidence <- conf2
+	# colnames( conf2) <- c("lower", "upper")
+	colnames( conf3) <- c("lower", "upper")
+	# out$confidence <- conf2
 	out$confidence.delta <- conf3
 	invisible(out)
 	} else if( class(z) == "gpd.fit") {
@@ -88,8 +90,11 @@ if( class(z) == "gev.fit") {
 		npy <- z$npy
 		xdat <- z$xdata
 
-		jj <- seq(-1, 3.75 + log10(npy), by = 0.1)
-		m <- c(1/la, 10^jj)
+		if( is.null( rperiods)) {
+		   jj <- seq(-1, 3.75 + log10(npy), by = 0.1)
+		   m <- c(1/la, 10^jj)
+		} else m <- rperiods*npy
+		
 		q <- gpdq2(a[2:3], u, la, m)
 		d1 <- (gpdq2(a1[2:3], u, la, m) - q)/eps
 		d2 <- (gpdq2(a2[2:3], u, la, m) - q)/eps
@@ -99,42 +104,42 @@ if( class(z) == "gev.fit") {
 				2], 0, mat[2, 1], mat[2, 2]), nc = 3)
 		v <- apply(d, 1, q.form, m = mat)
 		yl <- c(u, max(xdat, q[q > u - 1] + kappa * sqrt(v)[q > u - 1],na.rm=TRUE))
-		conf.low <- numeric(nx)+NA
-		conf.up <- conf.low
-		cat("\n", "Please be patient, this may take a few seconds.  Loop is 1 to ",nx, "\n")
-		options( error=expression(NULL))
-		for( i in 1:nx) {
-			cat(i, " ")
-			if( rperiods[i] <= 100) temp <- try( gpd.parameterCI(	z=z,
-										m=rperiods[i],
-										rl.xlow=yl[1],
-										rl.xup=yl[2],
-										conf=cl,
-										rl.only=TRUE))
-			else temp <- try( gpd.parameterCI(	z=z,
-								m=rperiods[i],
-								rl.xlow=yl[1]*1.25,
-								rl.xup=yl[2]*1.5,
-								conf=cl,
-								rl.only=TRUE))
-			if( class(temp) != "try-error") {
-				conf.low[i] <- temp$rl$dn
-				conf.up[i] <- temp$rl$up
-				}
-			} # end of for 'i' loop.  
-		options( error=NULL)
-		cat("\n")
-		conf2 <- matrix(NA, nrow=nx, ncol=2)
-		ind.low <- !is.na( conf.low)
-		ind.up <- !is.na( conf.up)
-		if( sum( ind.low) > 3) {
-			low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
-			conf2[,1] <- low.sfun( rperiods)
-			}
-		if( sum( ind.up) > 3) {
-			up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
-			conf2[,2] <- up.sfun( rperiods)
-			}
+		# conf.low <- numeric(nx)+NA
+		# conf.up <- conf.low
+		# cat("\n", "Please be patient, this may take a few seconds.  Loop is 1 to ",nx, "\n")
+		# options( error=expression(NULL))
+# 		for( i in 1:nx) {
+# 			cat(i, " ")
+# 			if( rperiods[i] <= 100) temp <- try( gpd.parameterCI(	z=z,
+# 										m=rperiods[i],
+# 										rl.xlow=yl[1],
+# 										rl.xup=yl[2],
+# 										conf=cl,
+# 										rl.only=TRUE))
+# 			else temp <- try( gpd.parameterCI(	z=z,
+# 								m=rperiods[i],
+# 								rl.xlow=yl[1]*1.25,
+# 								rl.xup=yl[2]*1.5,
+# 								conf=cl,
+# 								rl.only=TRUE))
+# 			if( class(temp) != "try-error") {
+# 				conf.low[i] <- temp$rl$dn
+# 				conf.up[i] <- temp$rl$up
+# 				}
+# 			} # end of for 'i' loop.  
+# 		options( error=NULL)
+# 		cat("\n")
+# 		conf2 <- matrix(NA, nrow=nx, ncol=2)
+# 		ind.low <- !is.na( conf.low)
+# 		ind.up <- !is.na( conf.up)
+# 		if( sum( ind.low) > 3) {
+# 			low.sfun <- splinefun( rperiods[ind.low], conf.low[ind.low])
+# 			conf2[,1] <- low.sfun( rperiods)
+# 			}
+# 		if( sum( ind.up) > 3) {
+# 			up.sfun <- splinefun( rperiods[ind.up], conf.up[ind.up])
+# 			conf2[,2] <- up.sfun( rperiods)
+# 			}
 		if( make.plot) {
 			if( any( is.na( yl))) yl <- range( q, na.rm=TRUE)
 			plot(m/npy, q, log = "x", type = "n", xlim = c(0.1, max(m)/npy),
@@ -145,8 +150,8 @@ if( class(z) == "gev.fit") {
 			indy <- m[q>u-1]/npy < 10
 		lines((m[q > u - 1]/npy)[indy], (q[q > u - 1] + kappa * sqrt(v)[q > u - 1])[indy], col = "blue")
 		lines((m[q > u - 1]/npy)[indy], (q[q > u - 1] - kappa * sqrt(v)[q > u - 1])[indy], col = "blue")
-			lines( rperiods, conf2[,1], col="blue")
-			lines( rperiods, conf2[,2], col="blue")
+		#	lines( rperiods, conf2[,1], col="blue")
+		#	lines( rperiods, conf2[,2], col="blue")
         # points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
 			nl <- n - length(dat) + 1
 			sdat <- sort(xdat)
@@ -155,9 +160,9 @@ if( class(z) == "gev.fit") {
 	out$return.level <- q
 	out$return.period <- m/npy
 	conf3 <- cbind( q[q>u-1]-kappa*sqrt(v)[q>u-1], q[q>u-1]+kappa*sqrt(v)[q>u-1])
-	colnames( conf2) <- c("lower", "upper")
-	colnames( conf3) <- colnames( conf2)
-	out$confidence <- conf2
+	# colnames( conf2) <- c("lower", "upper")
+	colnames( conf3) <- c("lower", "upper")
+	# out$confidence <- conf2
 	out$confidence.delta <- conf3
 	invisible(out)
 	} # end of what class is z stmts

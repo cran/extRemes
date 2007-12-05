@@ -11,11 +11,13 @@ return.level(z, conf = 0.05, rperiods= c(10,100,210,510,810,980), make.plot = TR
 }
 \arguments{
   \item{z}{ An object of class "gev.fit" or "gpd.fit" from the \code{gev.fit} or \code{gpd.fit} functions
-	from the \code{ismev} library of Stuart Coles (ported to R by Alec Stephenson).}
-  \item{conf}{ The confidence level for confidence bounds. }
-  \item{rperiods}{ Return periods at which to compute confidence limits with
-	profile likelihood plots--the rest will be interpolated with a spline function
-	using the R function \code{splinefun}}
+	from the \code{ismev} library of Stuart Coles (ported to R by Alec Stephenson).  Note that z
+	must be assigned one of the two classes or nothing will happen.}
+  \item{conf}{ The confidence level for (delta) confidence bounds. Confidence intervals are not 
+		trustworthy for return periods beyond the range of the data.  Check skewness of
+		profile likelihood for a given return level--symmetric profile likelihoods imply
+		that the delta method is appropriate.}
+  \item{rperiods}{ Return periods at which to compute confidence limits.}
   \item{make.plot}{ logical, if 'TRUE' plots the return levels with confidence bounds. }
 }
 \details{
@@ -23,16 +25,12 @@ This function is in part a modification of the functions 'gev.rl' and 'gpd.rl'
 from the ismev library.  It allows for the plotted values to be returned
 (invisibly) as well as other confidence levels besides 97.5\%.
 
-Confidence levels are computed using both the profile likelihood method (for
-return levels given by 'rlevels') with a cubic spline (to interpolate for
-many values not given by 'rlevels') and by the delta method described in Coles
-(2001). 
+Confidence levels are computed using the delta method as described in Coles (2001). 
 }
 \value{
 	Creates a plot if 'make.plot' is TRUE and returns a list invisibly with components.
   \item{return.level}{ The m-year return levels.}
   \item{return.period}{ The return periods, m.}
-  \item{confidence}{ The confidence bounds estimated from the profile likelihood.}
   \item{confidence.delta}{The confidence bounds computed by the delta method.}
   \item{conf.level}{The confidence level.}
 }
