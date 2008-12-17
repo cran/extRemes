@@ -251,7 +251,7 @@ gpdsimdata <- function() {
 	} # end of fitsummary fcn
 
     base <- tktoplevel()
-    tkwm.title(base, "Extremes Toolkit: version 1.57")
+    tkwm.title(base, "Extremes Toolkit: version 1.58")
     top.frm <- tkframe(base, borderwidth = 2)
     bottom.frm <- tkframe(base, borderwidth = 2)
 
