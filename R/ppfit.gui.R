@@ -3,8 +3,7 @@ function( base.txt) {
 
 #
 # This function provides a gui for Stuart Coles
-# 'pp.fit' function and helpers (but now uses a modified version
-# called 'fpp').
+# 'pp.fit' function and helpers
 #
 
 
@@ -342,7 +341,7 @@ ndatCMD <- "ndat <- length( xdata)"
 eval( parse( text=ndatCMD))
 write( ndatCMD, file="extRemes.log", append=TRUE)
 
-cmd <- paste( "dd[[\"models\"]][[\"pp.fit", jj+1, "\"]] <- fit <- fpp( xdat=xdata, threshold=threshold.val, npy=",
+cmd <- paste( "dd[[\"models\"]][[\"pp.fit", jj+1, "\"]] <- fit <- pp.fit( xdat=xdata, threshold=threshold.val, npy=",
 		as.numeric( tclvalue( npy)),
 		", ydat=covs, mul=mu.cov.cols, mulink=mu.linker, sigl=sig.cov.cols, siglink=sig.linker, ",
 		"shl=gam.cov.cols, shlink=gam.linker, method=\"", method.value, "\", maxit=",
@@ -492,8 +491,10 @@ print( CONV.msg)
 } # end of submit fcn
 
 ppfithelp <- function() {
-	cat("\n", "Invokes \'fpp\', a modification of the \'ismev\' function \'pp.fit\'.\n")
-	cat( "Use \'help( pp.fit)\' and \'help(fpp)\' for more information.\n")
+	cat("\n", "Invokes \'pp.fit\', a function from the \'ismev\' function \'pp.fit\'.\n")
+	cat("Make sure you are using ismev version 1.32 or later as two bug fixes have been made\n")
+	cat("concerning this function.\n\n")
+	cat( "Use \'help( pp.fit)\' for more information.\n")
 	# help( pp.fit)
 	invisible()
 	} # end of ppfithelp fcn
