@@ -67,33 +67,51 @@ submit <- function() {
 			eval( parse( text=dd.cmd))
 			write( dd.cmd, file="extRemes.log", append=TRUE)
 		} else {
-			if( length( fit.select) > 1) {
-				fitsos <- character(0)
-				for( i in 1:(length( fit.select)-1)) fitsos <- paste( fitsos, fit.select[i], ", ", sep="")
-				fitsos <- paste( "c( ", fitsos, ", ", fit.select[ length( fit.select)], ")", sep="")
-			} else fitsos <- fit.select
-			# tmp.names <- names( dd$models)[-fit.select]
-			tmpCMD <- paste( "tmp.names <- names( dd[[\"models\"]])[ -", fitsos, "]", sep="")
-			eval( parse( text=tmpCMD))
-			write( tmpCMD, file="extRemes.log", append=TRUE)
-			tmpCMD <- "tmp <- list()"
-			eval( parse( text=tmpCMD))
-			write( tmpCMD, file="extRemes.log", append=TRUE)
-			# for( i in 1:length( tmp.names)) if( !any( i == fit.select)) tmp[[i]] <- dd$models[[i]]
-			for( i in 1:length( tmp.names)) {
-				if( !any( i == fit.select))
-				tmpCMD <- paste( "tmp[[", i, "]] <- dd[[\"models\"]][[", i, "]]", sep="")
-				eval( parse( text=tmpCMD))
-				write( tmpCMD, file="extRemes.log", append=TRUE)
-				} # end of for 'i' loop.
-			tmpCMD <- "names( tmp) <- tmp.names"
-			eval( parse( text=tmpCMD))
-			write( tmpCMD, file="extRemes.log", append=TRUE)
-			dd.cmd <- "dd[[\"models\"]] <- tmp"
-			eval( parse( text=dd.cmd))
-			write( dd.cmd, file="extRemes.log", append=TRUE)
-			} # end of if else remove all models stmt.
-		} # end of if any models selected or not stmt.
+		cat("\n", "Sorry, this feature no longer available.  May remove all fits only.\n")
+		do.it <- FALSE
+		if( do.it) {
+		if( length( fit.select) > 1) {
+		   fitsos <- character(0)
+		   for( i in 1:(length( fit.select)-1)) fitsos <- paste( fitsos, fit.select[i], ", ", sep="")
+		   fitsos <- paste( "c( ", fitsos, fit.select[ length( fit.select)], ")", sep="")
+		} else fitsos <- fit.select
+
+		tmpCMD <- paste( "tmp.names <- names( dd[[\"models\"]])[ -", fitsos, "]", sep="")
+		eval( parse( text=tmpCMD))
+		write( tmpCMD, file="extRemes.log", append=TRUE)
+
+		tmpCMD <- "tmp <- list()"
+		eval( parse( text=tmpCMD))
+		write( tmpCMD, file="extRemes.log", append=TRUE)
+
+		cmd <- "tmp2 <- dd[[\"models\"]]"
+		eval( parse( text=cmd))
+                write( cmd, file="extRemes.log", append=TRUE)
+
+		for( i in 1:length( tmp.names)) {
+		   tmpCMD <- paste( "tmp[[", i, "]] <- tmp2[[\"", tmp.names[i], "\"]]", sep="")
+		   eval( parse( text=tmpCMD))
+		   write( tmpCMD, file="extRemes.log", append=TRUE)
+		} # end of for 'i' loop.
+
+		tmpCMD <- "names( tmp) <- tmp.names"
+		eval( parse( text=tmpCMD))
+		write( tmpCMD, file="extRemes.log", append=TRUE)
+
+		cmd <- "dd[[\"models\"]] <- NULL"
+		eval( parse( text=cmd))
+		write( cmd, file="extRemes.log", append=TRUE)
+
+		cmd <- "dd[[\"models\"]] <- list()"
+		eval( parse( text=cmd))
+                write( cmd, file="extRemes.log", append=TRUE)
+
+		dd.cmd <- "dd[[\"models\"]] <- tmp"
+		eval( parse( text=dd.cmd))
+		write( dd.cmd, file="extRemes.log", append=TRUE)
+		} # end of if 'do.it' stmts.
+	   } # end of if else remove all models stmt.  
+	} # end of if any models selected or not stmt.
 	assignCMD <- paste( "assign( \"", data.name, "\", dd, pos=\".GlobalEnv\")", sep="")
 	eval( parse( text=assignCMD))
 	write( assignCMD, file="extRemes.log", append=TRUE)

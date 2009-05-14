@@ -16,8 +16,6 @@ gevrlgradient(z, p)
   \item{p}{ Vector of 1/p return periods (e.g., if block maxima are annual maxima, and the 20-year return level is desired,
 		then use p=1/20). }
 }
-\details{
-}
 \value{
 A '3 X np' matrix whose columns give the (three) gradient values for each return period.
 }
