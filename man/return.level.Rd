@@ -43,8 +43,7 @@ Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
 }
 \author{ Eric Gilleland }
 
-\seealso{ \code{gevrlgradient}, From the \code{ismev} package: \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag},
-	\code{gev.rl}, \code{gpd.rl}}
+\seealso{ \code{gevrlgradient}, \code{gev.effective.rl}, From the \code{ismev} package: \code{gev.fit}, \code{gpd.fit}, \code{gev.diag}, \code{gpd.diag}, \code{gev.rl}, \code{gpd.rl}}
 
 \examples{
 # Must have the 'ismev' package loaded.
