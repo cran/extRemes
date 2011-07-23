@@ -33,8 +33,12 @@ for( iu in 1:nu) {
 		zb <- boot.sequence(mat[[1]], mat[[2]], u) > u
 		eib[iu,ib] <- exi.intervals(zb)
 	} # end of for 'ib' loop.
+	eib[ eib > 1] <- 1
+	eib[ eib < 0] <- 0
 	ci[iu,] <- quantile(eib[iu,], c((1-conf)/2,(1+conf)/2))
 } # end of for 'iu' loop.
+ei[ ei > 1] <- 1
+ei[ ei < 0] <- 0
 if( plot & length( thresholds) > 1) {
 	plot( thresholds, ei, type="l", xlab="Thresholds", ylab="Extremal index", ylim=c(0,1))
 	if( !is.null( names( thresholds))) axis(3, at=thresholds, labels=names( thresholds))
