@@ -121,8 +121,7 @@ rl.gpd.fit <- function (a, u, la, n, npy, mat, dat, xdat)
     d2 <- (gpdq2(a2[2:3], u, la, m) - q)/eps
     d3 <- (gpdq2(a3[2:3], u, la, m) - q)/eps
     d <- cbind(d1, d2, d3)
-    mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1,
-        2], 0, mat[2, 1], mat[2, 2]), nc = 3)
+    mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), ncol = 3)
     v <- apply(d, 1, q.form, m = mat)
     plot( m/npy, q, log = "x", type = "n", xlim = c(0.1, max(m)/npy),
         ylim = c(u, max(xdat, q[q > u - 1] + 1.96 * sqrt(v)[q >

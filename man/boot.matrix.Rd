@@ -1,6 +1,5 @@
 \name{boot.matrix}
 \alias{boot.matrix}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Boot Matrices. }
 \description{
 Set up matrices for bootstrapping sequences of extreme values.
@@ -8,7 +7,6 @@ Set up matrices for bootstrapping sequences of extreme values.
 \usage{
 boot.matrix(x, y)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ Output from \code{decluster.runs} or \code{decluster.intervals}. }
   \item{y}{ Vector of observations. }
@@ -21,7 +19,7 @@ This function merely formats the information needed by \code{boot.sequence} to i
   \item{comp1 }{inter-exceedance times}
   \item{comp2 }{Data values in 'y' corresponding to the exceedances in each cluster.}
 }
-\author{ Chris Ferro }
+\author{ Chris Ferro, C.A.T.Ferro \dQuote{at} exeter.ac.uk }
 \note{ Maintained by Eric Gilleland. }
 
 \seealso{ \code{\link{boot.sequence}}, \code{\link{decluster.intervals}}, \code{\link{decluster.runs}} }

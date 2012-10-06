@@ -9,6 +9,7 @@ out <- list()
 out$conf.level <- conf
 eps <- 1e-06
 a <- z$mle
+if(class(z) == "gum.fit") a <- c(a,0)
 mat <- z$cov
 dat <- z$data
 a1 <- a
@@ -45,7 +46,7 @@ if( class(z) == "gev.fit") {
 		plot( xp, q, log = "x", type = "n", xlim = c(0.1, 1000),
 			ylim = yl, xlab = "Return Period",
 			ylab = "Return Level", xaxt="n")
-		axis(1, at=c(0.1, 1, 10, 100, 1000), labels=c("0.1", "1", "10", "100", "1000"))
+		axis(1, at=rperiods, labels=as.character(rperiods))
 		lines(xp, q)
 		lines(xp, (q + kappa * sqrt(v)), col = "blue")
 		lines(xp, (q - kappa * sqrt(v)), col = "blue")
@@ -59,6 +60,31 @@ if( class(z) == "gev.fit") {
 	# out$confidence <- conf2
 	out$confidence.delta <- conf3
 	invisible(out)
+	} else if(class(z) == "gum.fit") {
+	   if( is.null( rperiods)) rperiods <- seq(1.1,1000,,200)
+	   if( any( rperiods <= 1)) stop("return.level: this function presently only supports return periods >= 1")
+	   yp <- -log(1-1/rperiods)
+	   q <- a[1] - a[2]*log(yp)
+	   d <- cbind(1, -log(yp))
+	   v <- apply(d, 1, q.form, m = mat)
+	   if(make.plot) {
+		yl <- c(min(dat, q, na.rm=TRUE), max(dat, q, na.rm=TRUE))
+		xp <- 1/yp
+		 plot( xp, q, log = "x", type = "n", xlim = c(0.1, 1000),
+                        ylim = yl, xlab = "Return Period",
+                        ylab = "Return Level", xaxt="n")
+		axis(1, at=rperiods, labels=as.character(rperiods))
+                lines(xp, q)
+                lines(xp, (q + kappa * sqrt(v)), col = "blue")
+                lines(xp, (q - kappa * sqrt(v)), col = "blue")
+                points(-1/log((1:length(dat))/(length(dat) + 1)), sort(dat))
+	   }
+	   out$return.level <- q
+           out$return.period <- rperiods
+           conf3 <- cbind( q-kappa*sqrt(v), q+kappa*sqrt(v))
+           colnames( conf3) <- c("lower", "upper")
+           out$confidence.delta <- conf3
+           invisible(out)
 	} else if( class(z) == "gpd.fit") {
 		u <- z$threshold
 		la <- z$rate
@@ -84,8 +110,7 @@ if( class(z) == "gev.fit") {
 		# d3 <- (gpdq2(a3[2:3], u, la, m) - q)/eps
 		# d <- cbind(d1, d2, d3)
 		d <- gpdrlgradient(z,m)
-		mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1,
-				2], 0, mat[2, 1], mat[2, 2]), nc = 3)
+		mat <- matrix(c((la * (1 - la))/n, 0, 0, 0, mat[1, 1], mat[1, 2], 0, mat[2, 1], mat[2, 2]), ncol = 3)
 		v <- apply(d, 2, q.form, m = mat)
 		yl <- c(u, max(xdat, q[q > u - 1] + kappa * sqrt(v)[q > u - 1],na.rm=TRUE))
 		# conf.low <- numeric(nx)+NA

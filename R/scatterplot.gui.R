@@ -131,7 +131,7 @@ data.listbox <- tklistbox( top.frm,
 data.scroll <- tkscrollbar( top.frm, orient="vert",
                         command=function(...) tkyview( data.listbox, ...))
 
-temp <- ls(all=TRUE, name=".GlobalEnv")
+temp <- ls(all.names=TRUE, name=".GlobalEnv")
 is.nothing <- TRUE
 full.list <- character(0)
 for( i in 1:length( temp)) {

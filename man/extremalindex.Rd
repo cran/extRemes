@@ -1,17 +1,15 @@
 \name{extremalindex}
 \alias{extremalindex}
-\title{ Estimate the extremal index (theta) }
+\title{ Estimate the Extremal Index (theta) }
 \description{
-Estimates the extremal index based on the intervals estimator due to
-Ferro and Segers (2003).
+Estimates the extremal index based on the intervals estimator due to Ferro and Segers (2003).
 }
 \usage{
 extremalindex(xdat, u)
 }
 \arguments{
-  \item{xdat}{ n X 1 numeric vector of the data. }
-  \item{u}{ User defined threshold.  May be a single number or a numeric n X 1
-	vector.}
+  \item{xdat}{ numeric vector of the data. }
+  \item{u}{ User defined threshold.  May be a single number or a numeric vector of same length as \code{xdat}.}
 }
 \details{
 The extremal index is a useful indicator of how much clustering of exceedances
@@ -32,12 +30,8 @@ done by this function.
   \item{run.length}{The estimated run length for runs declustering.}
 }
 \references{
-Ferro, C.A.T. and Segers, J. (2003): Inference for clusters of
- extreme values, J.R. Statist. Soc. B, 65 (2): 545-556.
+Ferro, C. A. T. and Segers, J. (2003) Inference for clusters of extreme values. \emph{Journal of the Royal Statistical Society B}, \bold{65}, (2), 545--556.
 
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Eric Gilleland }
 \seealso{ \code{dclust}}
@@ -47,6 +41,5 @@ temp <- -Tphap[,"MinT"]
 look <- extremalindex( temp, -70)
 look
 
-# See Gilleland et al. (2005) for more.
 }
 \keyword{univar}

@@ -15,5 +15,5 @@ citHeader("To cite package 'extRemes' in publications use:")
 	      number = 2,
 	      pages = "13--14", 
               textVersion =
-              paste("Gilleland, E. and R. W. Katz, 2011: New software to analyze how extremes change over time. ",
+              paste("Gilleland, E. and Katz, R. W. (2011) New software to analyze how extremes change over time. ",
                     "Eos, 92(2), 13--14", sep=""))

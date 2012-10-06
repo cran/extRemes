@@ -1,34 +1,26 @@
 \name{decluster.runs}
 \alias{decluster.runs}
 \alias{decluster.intervals}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Declustering Extremes}
 \description{
 Performs runs/intervals declustering.
 }
 \usage{
-decluster.runs(z, r)
-decluster.intervals(z, ei)
+decluster.runs(z, r, blocks = NULL)
+decluster.intervals(z, ei, blocks = NULL)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{z}{ Logical vector indicating which positions correspond to extreme values. }
   \item{r}{ Integer run length. }
   \item{ei}{ Estimate of the extremal index. }
+  \item{blocks}{numeric of length \code{z} giving blocks across which inter-exceedance times should not be computed.  For example, if data cover only summer months across several years, it may not make sense to allow interexceedance times to carry over across years.}
 }
 \details{
 Runs declustering:
-Extremes separated by fewer than `r' non-extremes belong
-to the same cluster. Setting `r' < 1 causes each extreme
-to form a separate cluster.
+Extremes separated by fewer than \code{r} non-extremes belong to the same cluster. Setting \code{r} < 1 causes each extreme to form a separate cluster.
 
 Intervals declustering:
-Extremes separated by fewer than `r' non-extremes belong
-to the same cluster, where `r' is the `nc'-th largest
-interexceedance time and `nc', the number of clusters,
-is estimated from the extremal index, `ei', and the times
-between extremes. Setting `ei' = 1 causes each extreme to
-form a separate cluster.
+Extremes separated by fewer than \code{r} non-extremes belong to the same cluster, where \code{r} is the nc-th largest interexceedance time and nc, the number of clusters, is estimated from the extremal index, \code{ei}, and the times between extremes. Setting \code{ei} = 1 causes each extreme to form a separate cluster.
 }
 \value{
 A list containing
@@ -41,13 +33,13 @@ A list containing
   \item{t}{Vector of times between extremes.}
   \item{inter}{Vector of intercluster time indicators (logical).}
   \item{intra}{Vector of intracluster time indicators (logical).}
+  \item{blocks}{Same as the argument passed in.}
 }
-\references{ Smith RL (1989) Extreme value analysis of environmental time
-  series: an application to trend detection in ground-level ozone.
-  Statistical Science 4, 367-393.
+\references{
+Smith, R. L. (1989) Extreme value analysis of environmental time series: an application to trend detection in ground-level ozone.  \emph{Statistical Science}, \bold{4}, 367--393.
 
- Ferro CAT and Segers J (2003) Inference for clusters of extreme
-  values. Journal of the Royal Statistical Society B 65, 545-556.}
+ Ferro, C. A. T. and Segers, J. (2003) Inference for clusters of extreme values. \emph{Journal of the Royal Statistical Society B}, \bold{65}, 545--556.
+}
 \author{ Chris Ferro }
 \note{ Maintained by Eric Gilleland. }
 
@@ -65,5 +57,15 @@ z <- x > u
 exi.intervals(z)
 tmp1 <- decluster.runs(z, 1)
 tmp2 <- decluster.intervals( z, exi.intervals(z))
+
+data(FCwx)
+x <- FCwx$MxT # Fort Collins, Colorado daily maximum temperature series (degrees Fahrenheit).
+y <- FCwx$Year # corresponding years.
+id <- is.element(FCwx$Mn,7:8) # July and August time points.
+x <- x[id]
+y <- y[id]
+exi.intervals(x>93.5, blocks=y)
+tmp1 <- decluster.runs(x>93.5, 1, blocks=y)
+tmp2 <- decluster.intervals(x>93.5, 0.555, blocks=y)
 }
-\keyword{ misc }% at least one, from doc/KEYWORDS
+\keyword{ misc }

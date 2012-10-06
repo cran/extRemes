@@ -1,18 +1,16 @@
 \name{gen.gev}
 \alias{gen.gev}
 \alias{gen.gpd}
-\title{ Simulate data from a generalized extreme value (GEV)}
+\title{ Simulate Data from a Generalized Extreme Value (GEV) Distribution}
 \description{
-Generates data from a GEV (GPD) using 'runif' (and 'rexp') function.  May also
-incorporate a linear trend in location parameter of GEV.
+Generates data from a GEV (GPD) distribution function.  May also incorporate a linear trend in location parameter of GEV.
 }
 \usage{
 gen.gev(p, n, trend = NULL)
 gen.gpd(n,sigma,xi,u)
 }
-%- maybe also `usage' for other objects documented here.
 \arguments{
-  \item{p}{ A 1 X 3 vector indicating the mean, scale and shape of the GEV, respectively. }
+  \item{p}{ A length 3 vector indicating the mean, scale and shape of the GEV, respectively. }
   \item{n}{ The sample size to generate.}
   \item{trend}{ Slope of the location parameter trend (if desired). }
   \item{sigma}{ Scale parameter of GPD.}
@@ -21,24 +19,24 @@ gen.gpd(n,sigma,xi,u)
 }
 \details{
 Value returned (with no trend) is derived from the follwing formula (GEV).
-mu + sigma (X**(-xi - 1))*xi, where X is a uniform random
-variable.
+
+mu + sigma (X**(-xi - 1))*xi,
+
+where X is a uniform random variable.
 
 For GPD the formula is:
+
 sigma/xi * ((1-runif(n))**(-xi-1) for xi != 0 and
-rexp(n, rate=1/sigma for xi = 0.
+
+rexp(n, rate=1/sigma) for xi = 0.
 
 }
 \value{
 Returns a vector of simulated data.
 }
 \references{
-Coles, Stuart.  "An introduction to statistical modeling of extreme values",
- Springer-Verlag (London), 2001.
+Coles, S.  (2001) \emph{An introduction to statistical modeling of extreme values}, London: Springer-Verlag.
 
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
 }
 \author{ Functions written by Eric Gilleland and Greg Young.}
 

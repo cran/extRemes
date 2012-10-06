@@ -537,7 +537,7 @@ data.scroll <- tkscrollbar( data.frm, orient="vert",
 # initialize variables for data list.
 # 'temp' is list of everything in global environment.
 # 'full.list' will be list of all objects in '.GlobalEnv' of class "extRemesDataObject".
-temp <- ls(all=TRUE, name=".GlobalEnv")
+temp <- ls(all.names=TRUE, name=".GlobalEnv")
 is.nothing <- TRUE
 full.list <- character(0)
 for( i in 1:length( temp)) {

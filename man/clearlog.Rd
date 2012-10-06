@@ -1,14 +1,12 @@
 \name{clearlog}
 \alias{clearlog}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Clear file extRemes.log }
+\title{ Clear File extRemes.log }
 \description{
 Overwrites the file extRemes.log with the date and time that the file is cleared.
 }
 \usage{
 clearlog(base.txt)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{base.txt}{ Unused argument for compatibility with GUI windows. }
 }
@@ -27,4 +25,4 @@ cleared/created.
 }
 \author{ Eric Gilleland }
 
-\keyword{ misc }% at least one, from doc/KEYWORDS
+\keyword{ misc }

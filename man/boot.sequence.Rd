@@ -1,17 +1,15 @@
 \name{boot.sequence}
 \alias{boot.sequence}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Bootstrap a sequence. }
+\title{ Bootstrap a Sequence. }
 \description{
 Bootstrap a sequence of exceedances.
 }
 \usage{
 boot.sequence(tmat, ymat, u)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{tmat}{ Output from \code{boot.matrix} ('iet' component). }
-  \item{ymat}{ Output from \code{boot.matrix} ('ce' component. }
+  \item{tmat}{ Output from \code{boot.matrix} (\sQuote{iet} component). }
+  \item{ymat}{ Output from \code{boot.matrix} (\sQuote{ce} component. }
   \item{u}{ Threshold above which the sequences of exceedances are to be bootstrapped.}
 }
 \details{
@@ -20,14 +18,15 @@ as identified in the original data. Clusters of exceedances
 and inter-exceedance times within clusters are resampled as
 single entities; inter-exceedance times between clusters are
 resampled independently. The values of non-exceedances are set
-equal to the threshold `u'.
+equal to the threshold \code{u}.
 }
 \value{
-	Vector of exceedances above 'u'.
+	Vector of exceedances above the threshold.
 }
-\references{ Ferro CAT and Segers J. (2003). Inference for clusters of extreme values.  Journal of
-   the Royal Statistical Society B 65:545--556.}
-\author{ Chris Ferro }
+\references{
+Ferro, C. A. T. and Segers, J. (2003) Inference for clusters of extreme values.  \emph{Journal of the Royal Statistical Society B}, \bold{65}, 545--556.
+}
+\author{ Chris Ferro, C.A.T.Ferro \dQuote{at} exeter.ac.uk }
 \note{ Maintained by Eric Gilleland. }
 
 \section{Warning }{The bootstrapped sequence can be longer than the original sequence.}
@@ -57,4 +56,4 @@ if( dec[["par"]] != 0) {
    conf.int <- quantile( eib, c((1-0.95)/2,(1+0.95)/2))
 } # end of if run length not zero stmt.
 }
-\keyword{ misc }% at least one, from doc/KEYWORDS
+\keyword{ misc }

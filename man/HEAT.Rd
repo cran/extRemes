@@ -1,7 +1,7 @@
 \name{HEAT}
 \alias{HEAT}
 \docType{data}
-\title{ Summer maximum and minimum temperature in Phoenix, Arizona.}
+\title{ Summer Maximum and Minimum Temperature: Phoenix, Arizona}
 \description{
 Summer maximum and minimum temperature (degrees Fahrenheit) for July through August 1948 through 1990 at
 Sky Harbor airport in Phoenix, Arizona.
@@ -22,15 +22,9 @@ Data is Summer maximum and minimum temperature for the months of July through Au
 U.S. National Weather Service Forecast office at the Phoenix Sky Harbor Airport.
 }
 \references{
-Balling, R.C., Jr., Skindlov, J.A. and Phillips, D.H., The impact of increasing summer mean temperatures on
-	extreme maximum and minimum temperatures in Phoenix, Arizona. Journal of Climate, 3:1491--1494, 1990.
+Balling, R. C., Jr., Skindlov, J. A. and Phillips, D. H. (1990) The impact of increasing summer mean temperatures on extreme maximum and minimum temperatures in Phoenix, Arizona. \emph{Journal of Climate}, \bold{3}, 1491--1494.
 
-Gilleland, Eric and Katz, Richard W. Tutorial for the 'Extremes Toolkit:
-   Weather and Climate Applications of Extreme Value Statistics.'
-   \url{http://www.assessment.ucar.edu/toolkit}, 2005.
-
-Tarleton, Lesley F. and Katz, Richard W., Statistical explanation for trends in extreme summer temperatures
-	at Phoenix, A.Z., Journal of Climate, 8 (6):1704--1708, 1995.
+Tarleton, L. F. and Katz, R. W. (1995) Statistical explanation for trends in extreme summer temperatures at Phoenix, A.Z. \emph{Journal of Climate}, \bold{8}, (6), 1704--1708.
 }
 \examples{
 data(HEAT)

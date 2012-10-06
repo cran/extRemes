@@ -1,5 +1,5 @@
 "gev.parameterCI" <-
-function (z, m, rl.xlow, rl.xup, xi.xlow=NULL, xi.xup=NULL, conf = 0.95, nint = 100, rl.only=FALSE, xi.only=FALSE, make.plot=FALSE) 
+function (z, m, rl.xlow=NULL, rl.xup=NULL, xi.xlow=NULL, xi.xup=NULL, conf = 0.95, nint = 100, rl.only=FALSE, xi.only=FALSE, make.plot=FALSE) 
 {
 lmts <- list()
 ma <- -z$nllh

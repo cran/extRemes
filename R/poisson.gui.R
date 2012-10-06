@@ -134,7 +134,7 @@ names.of.models <- c( names.of.models, paste( "poisson.fit", jj+1, sep=""))
 
 # fit the Poisson distribution.
 	mod.fit.cmd <- "mod.fit <- glm( response~trend, family=poisson())"
-	eval( parse( tex=mod.fit.cmd))
+	eval( parse( text=mod.fit.cmd))
 	write( mod.fit.cmd, file="extRemes.log", append=TRUE)
 
 	# Put the fit in the 'models' component of 'extRemesDataObject' object.
@@ -315,7 +315,7 @@ data.listbox <- tklistbox( data.frm,
 data.scroll <- tkscrollbar( data.frm, orient="vert",
 			command=function(...) tkyview( data.listbox, ...))
 
-temp <- ls( all=TRUE, name=".GlobalEnv")
+temp <- ls( all.names=TRUE, name=".GlobalEnv")
 full.list <- character(0)
 is.nothing <- TRUE
 for( i in 1:length( temp)) {
