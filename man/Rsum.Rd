@@ -37,6 +37,7 @@ plot(	Rsum[,"Year"], Rsum[,"TDam"]/1000, type="h", xlab="Year",
 	ylim=c(0,80), lwd=2)
 
 # Reproduce Fig. 2 of Katz (2002).
-plot(Rsum[,"Year"],Rsum[,"Ct"],type="h", xlab="Year", ylab="Number of Hurricanes", ylim=c(0,5), lwd=2)
+plot(Rsum[,"Year"],Rsum[,"Ct"],type="h", xlab="Year",
+    ylab="Number of Hurricanes", ylim=c(0,5), lwd=2)
 }
 \keyword{datasets}

@@ -6,8 +6,6 @@ exportPattern(".")
 
 # Import all packages listed as Imports or Depends
 import(
-  tcltk,
-  ismev,
-  Lmoments
+  Lmoments, distillery, car
 )
 
