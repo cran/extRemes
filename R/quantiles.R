@@ -24,8 +24,8 @@ qqnorm <-
 	if(make.plot) {
            if(is.null(args$xlim)) plot(q, y, xlim = range(l, q, u, na.rm = TRUE), xlab = xlab, ylab = ylab, pch = pch, ...)
 	   else plot(q, y, xlab = xlab, ylab = ylab, pch = pch, ...)
-           lines(l, y, col = "darkgray")
-           lines(u, y, col = "darkgray")
+           lines(l, y, lty = 2, col = "darkgray")
+           lines(u, y, lty = 2, col = "darkgray")
 	}
 	out <- data.frame(lower=l, upper=u, qnorm=q, data=y)
 	invisible(out)
@@ -53,22 +53,22 @@ qqplot <-
         yl <- qy(p - K/sqrt(M))
         yu <- qy(p + K/sqrt(M))
 	if(make.plot) {
-           if(is.null(args$xlim) & is.null(args$ylim)) plot(x, yq, pch = pch, xlim = range(x), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
+           if(is.null(args$xlim) && is.null(args$ylim)) plot(x, yq, pch = pch, xlim = range(x), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
 	   else if(is.null(args$xlim)) plot(x, yq, pch = pch, xlim = range(x), xlab = xlab, ylab = ylab, ...)
 	   else if(is.null(args$ylim)) plot(x, yq, pch = pch, ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
 	   else plot(x, yq, pch = pch, xlab = xlab, ylab = ylab, ...)
-           lines(x, yl, col = "gray")
-           lines(x, yu, col = "gray")
+           lines(x, yl, lty = 2, col = "gray")
+           lines(x, yu, lty = 2, col = "gray")
 	   abline(0,1, lty=2, col="darkorange")
 	}
 	if(regress) {
 	   fit <- lm(y~x, data=data.frame(x=x, y=yq))
 	   if(make.plot) {
-		lines(x, predict(fit), col="darkblue", lty=3)
-		legend("bottomright", legend=c("1-1 line", "regression line", "95% confidence bands"), col=c("darkorange","darkblue","gray"), lty=c(2,3,1), bty="n")
+		lines(x, predict(fit), col="grey", lty=1)
+		legend("topleft", legend=c("1-1 line", "regression line", "95% confidence bands"), col=c("darkorange","grey","gray"), lty=c(2,1,2), bty="n")
 	   }
 	   out$regression <- fit
-	} else if(make.plot) legend("bottomright", legend=c("1-1 line", "95% confidence bands"), col=c("darkorange","gray"), lty=c(2,1), bty="n")
+	} else if(make.plot) legend("bottomright", legend=c("1-1 line", "95% confidence bands"), col=c("darkorange","gray"), lty=c(2,2), bty="n")
 	out$qdata <- data.frame(x=x, y=yq, lower=yl, upper=yu)
 	class(out) <- "qqplot"
 	invisible(out)
@@ -88,34 +88,34 @@ plot.qqplot <- function(x, ...) {
    yq <- x$qdata$y
    yl <- x$qdata$lower
    yu <- x$qdata$upper
-   if(is.null(args$xlab) & is.null(args$ylab)) {
-      if(is.null(args$xlim) & is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
+   if(is.null(args$xlab) && is.null(args$ylab)) {
+      if(is.null(args$xlim) && is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
       else if(is.null(args$xlim)) plot(z, yq, xlim = range(z), xlab = xlab, ylab = ylab, ...)
       else if(is.null(args$ylim)) plot(z, yq, ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ylab = ylab, ...)
       else plot(z, yq, xlab = xlab, ylab = ylab, ...)
    } else if(is.null(args$xlab)) {
-      if(is.null(args$xlim) & is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ...)
+      if(is.null(args$xlim) && is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ...)
       else if(is.null(args$xlim)) plot(z, yq, xlim = range(z), xlab = xlab, ...)
       else if(is.null(args$ylim)) plot(z, yq, ylim = range(yq, yl, yu, na.rm = TRUE), xlab = xlab, ...)
       else plot(z, yq, xlab = xlab, ...)
    } else if(is.null(args$ylab)) {
-      if(is.null(args$xlim) & is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), ylab = ylab, ...)
+      if(is.null(args$xlim) && is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), ylab = ylab, ...)
       else if(is.null(args$xlim)) plot(z, yq, xlim = range(z), ylab = ylab, ...)
       else if(is.null(args$ylim)) plot(z, yq, ylim = range(yq, yl, yu, na.rm = TRUE), ylab = ylab, ...)
       else plot(z, yq, ylab = ylab, ...)
    } else {
-      if(is.null(args$xlim) & is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), ...)
+      if(is.null(args$xlim) && is.null(args$ylim)) plot(z, yq, xlim = range(z), ylim = range(yq, yl, yu, na.rm = TRUE), ...)
       else if(is.null(args$xlim)) plot(z, yq, xlim = range(z), ...)
       else if(is.null(args$ylim)) plot(z, yq, ylim = range(yq, yl, yu, na.rm = TRUE), ...)
       else plot(z, yq, ...)
    }
-   lines(z, yl, col = "gray")
-   lines(z, yu, col = "gray")
+   lines(z, yl, lty = 2, col = "gray")
+   lines(z, yu, lty = 2, col = "gray")
    abline(0,1, lty=2, col="darkorange")
    if(!is.null(x$regression)) {
 	fit <- x$regression
-	lines(z, predict(fit), col="darkblue", lty=3, lwd=1.5)
-        legend("bottomright", legend=c("1-1 line", "regression line", "95% confidence bands"), col=c("darkorange","darkblue","gray"), lty=c(2,3,1), bty="n")
+	lines(z, predict(fit), col="grey", lty=1, lwd=1.5)
+        legend("bottomright", legend=c("1-1 line", "regression line", "95% confidence bands"), col=c("darkorange","grey","gray"), lty=c(2,1,2), bty="n")
    } else legend("bottomright", legend=c("1-1 line", "95% confidence bands"), col="darkorange", lty=c(2,1), bty="n")
    invisible(x)
 } # end of 'plot.qqplot' function.
