@@ -586,10 +586,35 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
             if(is.null(density.args)) yd <- density(yd)
             else yd <- do.call("density", c(list(yd), density.args))
 
+	    if(is.element(type, c("primary","density"))) xd <- seq(min(yd$x, na.rm=TRUE), max(yd$x, na.rm=TRUE),,100)
+            else xd <- seq(min(yh, na.rm=TRUE), max(yh, na.rm=TRUE),,100)
+            if(is.element(model, c("PP", "Gumbel", "Weibull", "Frechet"))) mod2 <- "GEV"
+            else if(is.element(model, c("Pareto", "Frechet", "Beta", "Exponential"))) mod2 <- "GP"
+            else mod2 <- model
+
+	    if(tform) {
+
+                mu <- 0
+                sig <- 1
+                xi <- 0
+                u2 <- 0
+
+            } else {
+
+                mu <- loc
+                sig <- scale
+                xi <- shape
+                u2 <- u[1]
+                # if(model=="PP") sig <- sig + xi * (u2 - loc)
+
+            }
+
+            yd2 <- devd(xd, loc=mu, scale=sig, shape=xi, threshold=u2, type=mod2)
+            # lines(xd, yd2, lty=2, col="blue", lwd=1.5)
             
             if(is.null(args$ylim)) {
 
-              yld <- range(yd$y, finite=TRUE)
+              yld <- range(c(yd$y, yd2), finite=TRUE)
               yld[1] <- min(yld[1], 0)
               # yld[2] <- max(yld[2]+0.5, 1)
 
@@ -1001,6 +1026,7 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
     if(is.element(type, c("primary","trace"))) mtext(deparse(x$call), line=0.5, outer=TRUE)
     if(type=="trace") invisible(hold)
     else invisible()
+
 } # end of 'plot.fevd.mle' function.
 
 erlevd <- function(x, period=100) {

@@ -15,7 +15,7 @@ devd(x, loc = 0, scale = 1, shape = 0, threshold = 0, log = FALSE,
 
 pevd(q, loc = 0, scale = 1, shape = 0, threshold = 0, lambda = 1, 
     npy, type = c("GEV", "GP", "PP", "Gumbel", "Frechet", "Weibull", 
-        "Exponential", "Beta", "Pareto"), lower.tail = TRUE)
+        "Exponential", "Beta", "Pareto"), lower.tail = TRUE, log.p = FALSE)
 
 qevd(p, loc = 0, scale = 1, shape = 0, threshold = 0,
     type = c("GEV", "GP", "PP", "Gumbel", "Frechet", "Weibull", "Exponential", "Beta",
@@ -32,7 +32,7 @@ revd(n, loc = 0, scale = 1, shape = 0, threshold = 0,
   \item{lambda}{Event frequency base rate.  Currently not used.  PP model is converted to equivalent GEV df.}
   \item{loc, scale, shape}{location, scale and shape parameters.  Each may be a vector of same length as \code{x} (\code{devd} or length \code{n} for \code{revd}.  Must be length 1 for \code{pevd} and \code{qevd}.}
   \item{threshold}{numeric giving the threshold for the GP df.  May be  a vector of same length as \code{x} (\code{devd} or length \code{n} for \code{revd}.  Must be length 1 for \code{pevd} and \code{qevd}.}
-  \item{log}{logical; if TRUE, probabilites p are given as log(p).}
+  \item{log, log.p}{logical; if TRUE, probabilites p are given as log(p).}
   \item{lower.tail}{logical; if TRUE (default), probabilities are P[X <= x] otherwise, P[X > x].}
   \item{type}{character; one of "GEV" or "GP" describing whether to use the GEV or GP.}
 }

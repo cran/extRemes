@@ -71,7 +71,7 @@ devd <- function(x, loc=0, scale=1, shape=0, threshold=0, log=FALSE, type=c("GEV
 
 pevd <- function(q, loc=0, scale=1, shape=0, threshold=0, lambda=1, npy,
 		    type=c("GEV", "GP", "PP", "Gumbel", "Frechet", "Weibull", "Exponential", "Beta", "Pareto"),
-		    lower.tail=TRUE) {
+		    lower.tail=TRUE, log.p = FALSE) {
 
    type <- match.arg(type)
    type <- tolower(type)
@@ -83,25 +83,74 @@ pevd <- function(q, loc=0, scale=1, shape=0, threshold=0, lambda=1, npy,
    else if(is.element(type, c("exponential", "beta","pareto"))) type <- "gp"
 
    if(type == "pp") {
+
 	scale <- scale - shape * (threshold - loc)
 	type <- "gev"
+
    }
 
    if(is.element(type, c("gev","gumbel","frechet","weibull"))) {
+
 	q <- (q - loc)/scale
-	if(shape==0 || type=="gumbel") p <- exp(-exp(-q))
-	else p <- exp(-pmax(1 + shape*q, 0)^(-1/shape))
+
+	if(!log.p) {
+
+	    if(shape==0 || type=="gumbel") p <- exp(-exp(-q))
+	    else p <- exp(-pmax(1 + shape*q, 0)^(-1/shape))
+
+	} else {
+
+	    if(lower.tail) {
+
+	        if(shape==0 || type=="gumbel") p <- -exp(-q)
+                else p <- -pmax(1 + shape * q, 0)^(-1/shape)
+
+	    } else {
+
+		if(shape==0 || type=="gumbel") p <- log(1 - exp(-exp(-q)))
+                else p <- log(1 - exp(-pmax(1 + shape*q, 0)^(-1/shape)))
+
+	    }
+
+	}
+
    } else if(is.element(type, c("gp","exponential","beta","pareto"))) {
+
 	q <- pmax(q - threshold, 0)/scale
-	if(shape==0 || type=="exponential") p <- 1 - exp(-q)
-	else p <- 1 - pmax(1 + shape*q, 0)^(-1/shape)
-   } else if(type=="pp") {
-	# lam <- 1 - exp(-(1 + shape*(threshold - loc)/scale)^(-1/shape)/npy)
-	scale <- scale + shape*(threshold - loc)
-	z <- pmax(1 + shape*(q - threshold)/scale, 0)
-	p <- 1 - (z^(-1/shape))
+
+	if(!log.p) {
+
+	    if(shape==0 || type=="exponential") p <- 1 - exp(-q)
+	    else p <- 1 - pmax(1 + shape*q, 0)^(-1/shape)
+
+	} else {
+
+	    if(!lower.tail) {
+
+	        if(shape==0 || type=="exponential") p <- log(1 - exp(-q))
+                else p <- log(1 - pmax(1 + shape*q, 0)^(-1/shape))
+
+	    } else {
+
+		if(shape==0 || type=="exponential") p <- -q
+                else p <- (-1 / shape) * log( pmax(1 + shape*q, 0))
+
+	    }
+
+	}
+
    } else stop("pevd: invalid type argument.")
-   if(!lower.tail) p <- 1 - p
+
+#  else if(type=="pp") {
+#
+# 	lam <- 1 - exp(-(1 + shape*(threshold - loc)/scale)^(-1/shape)/npy)
+#	scale <- scale + shape*(threshold - loc)
+#	z <- pmax(1 + shape*(q - threshold)/scale, 0)
+#	p <- 1 - (z^(-1/shape))
+#
+#   } 
+
+   if(!lower.tail && !log.p) p <- 1 - p
    names(p) <- NULL
    return(p)
 

@@ -29,7 +29,7 @@ optional arguments to the \code{trans} function.  In the case of \code{relative.
 }
 }
 \details{
-This is the tail dependence test described in Reiss and Thomas (2007) section 13.3.  It is, unusually, a test whose null hypothesis is that the two random variables, X and Y, are dependent.  So, for example, if a significance level alpha = 0.01 test is desired, then the null huypothesis (dependence) is accepted for values of the statistic with p-values less than 0.01.
+This is the tail dependence test described in Reiss and Thomas (2007) section 13.3.  It is, unusually, a test whose null hypothesis is that the two random variables, X and Y, are dependent.  So, for example, if a significance level alpha = 0.01 test is desired, then the null huypothesis (dependence) is rejected for values of the statistic with p-values less than 0.01.
 
 To do the test, the variables must first be transformed to the left lower quadrant.  Following Reiss and Thomas (2007), the default is to transform the data by means of the sample distribution functions (df's), u = Fhat_n(x) and v = Fhat_n(y) (i.e., using the function \code{relative.rank}).  This yields random variables between 0 and 1, and subsequently they are shifted to be between -1 and 0 (this is done by \code{taildep.test} so should not be done by the \code{trans} function).
 

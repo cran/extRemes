@@ -1,5 +1,5 @@
 Package: extRemes
-Version: 2.0-0
+Version: 2.0-1
 Date: 22 October 2012
 Title: Extreme Value Analysis
 Author: Eric Gilleland
@@ -8,7 +8,7 @@ Depends: R (>= 2.10.0), Lmoments, distillery, car
 Description: Functions for performing extreme value analysis.
 License: GPL (>= 2)
 URL: http://www.assessment.ucar.edu/toolkit/
-Packaged: 2014-01-24 20:08:40 UTC; ericg
+Packaged: 2014-06-03 17:03:02 UTC; ericg
 NeedsCompilation: no
 Repository: CRAN
-Date/Publication: 2014-01-24 22:37:48
+Date/Publication: 2014-06-03 19:35:01

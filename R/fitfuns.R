@@ -694,36 +694,53 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	}
 
 	if(is.null(priorFun) || find.priorParams) {
+
 	    if(is.null(priorFun)) priorFun <- "fevdPriorDefault"
+
 	    if(find.priorParams) {
+
 		xtemp <- x
 		class(xtemp) <- "mle"
 		if(verbose) cat("\n", "Finding MLE to obtain prior means and variances.\n")
 		if(missing(data)) {
+
 		    if(missing(span)) hold <- initializer(xtemp, u=threshold, use.phi=use.phi, type=out$type, time.units=time.units, period.basis=period.basis, blocks=blocks)
 		    else hold <- initializer(xtemp, u=threshold, use.phi=use.phi, type=out$type, span=span, time.units=time.units, period.basis=period.basis, blocks=blocks)
+
 		} else {
+
 		    if(missing(span)) hold <- initializer(xtemp, data=data, u=threshold, u.fun=threshold.fun, loc.fun=location.fun, sc.fun=scale.fun, sh.fun=shape.fun,
 					    use.phi=use.phi, type=out$type, time.units=time.units, period.basis=period.basis, blocks=blocks)
 		    else hold <- initializer(xtemp, data=data, u=threshold, u.fun=threshold.fun, loc.fun=location.fun, sc.fun=scale.fun, sh.fun=shape.fun,
                                             use.phi=use.phi, type=out$type, span=span, time.units=time.units, period.basis=period.basis, blocks=blocks)
+
 		}
+
 		if(is.null(priorParams)) priorParams <- list(m=hold[1:np], v=rep(10,np))
 		else if(is.null(priorParams$m)) priorParams$m <- hold[1:np]
 		else if(is.null(priorParams$v)) priorParams$v <- rep(10, np)
+
 	    } # end of if 'priorParams' is not provided by user.
+
 	} # end of if 'priorFun' is not provided by user.
 
 	out$priorFun <- priorFun
 	out$priorParams <- priorParams
 
 	if(is.null(proposalFun)) {
+
 	    proposalFun <- "fevdProposalDefault"
 	    if(is.null(proposalParams)) proposalParams <- list(sd=rep(0.1,np))
+
 	} # end of if 'proposalFun' not supplied by user stmts.
 
 	out$proposalFun <- proposalFun
 	out$proposalParams <- proposalParams
+
+	# Eric 05/30/14
+	chain.info <- matrix(NA, iter, np + 2)
+	colnames(chain.info) <- c(loc.names, sc.names, sh.names, "loglik", "prior")
+	chain.info[2:iter, 1:np] <- 0
 
 	res <- matrix(NA, iter, np+1)
 	res[,np+1] <- 0
@@ -748,6 +765,9 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	if(verbose) cat("\n", "Finding prior df value of initial parameter values.\n")
 	p.i <- do.call(priorFun, c(list(theta=theta.i), priorParams))
 
+	chain.info[1, np + 1] <- ll.i
+	chain.info[1, np + 2] <- p.i
+
 	if(verbose) cat("\n", "Beginning the MCMC iterations (", iter, " total iterations)\n")
 	for(i in 2:iter) {
 
@@ -758,9 +778,13 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	    acc <- 0
 
 	    for(j in ord) {
-		par.star <- do.call(proposalFun, c(list(p=theta.i[j], ind=j), proposalParams))
 
-		theta.star[j] <- par.star
+		# par.star <- do.call(proposalFun, c(list(p=theta.i[j], ind=j), proposalParams))
+
+		# theta.star[j] <- par.star
+
+		par.star <- do.call(proposalFun, c(list(p=theta.i, ind=j), proposalParams))
+		theta.star[j] <- par.star[j]
 
 		if(!missing(data)) ll.star <- -oevd(p=theta.star, o=out, des=designs, x=x, data=data, u=threshold, span=span, npy=npy, phi=use.phi, blocks=blocks) # CJP
         	else ll.star <- -oevd(p=theta.star, o=out, des=designs, x=x, u=threshold, span=span, npy=npy, phi=use.phi, blocks=blocks)
@@ -770,16 +794,26 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 		look <- will.accept(ll.i=ll.i, prior.i=p.i, ll.star=ll.star, prior.star=prior.star, log=TRUE)
 
 		if(look$accept) {
+
 		    p.i <- prior.star
 		    ll.i <- ll.star
 		    theta.i <- theta.star
 		    acc <- acc+1
+		    chain.info[i, j] <- 1
+
 		}
+
 	    } # end of inner 'j' loop.
+
 	    res[i,] <- c(theta.i, acc)
+	    chain.info[i, (np+1):(np+2)] <- c(ll.i, p.i)
+
 	} # end of for 'i' loop.
+
 	if(verbose) cat("\n", "Finished MCMC iterations.\n")
 	out$results <- res
+	out$chain.info <- chain.info
+
     } else stop("fevd: invalid method argument.")
 
     out$initial.results <- inout
@@ -985,17 +1019,22 @@ parcov.fevd <- function(x) {
 } # end of 'parcov.fevd' function.
 
 distill.fevd <- function(x, ...) {
+
     if(x$method=="GMLE") newcl <- "fevd.mle"
     else newcl <- tolower(x$method)
     class(x) <- paste("fevd.", newcl, sep="")
     UseMethod("distill",x)
+
 } # end of 'distill.fevd' function.
 
 distill.fevd.lmoments <- function(x, ...) {
+
     return(x$results)
+
 } # end of 'distill.fevd.lmoments' function.
 
 distill.fevd.bayesian <- function(x, cov=TRUE, FUN="mean", burn.in=499, ...) {
+
     f <- match.fun(FUN)
     p <- x$results
     np <- dim(p)[2] - 1
@@ -1003,26 +1042,37 @@ distill.fevd.bayesian <- function(x, cov=TRUE, FUN="mean", burn.in=499, ...) {
     pnames <- colnames(p)
 
     if(is.element("log.scale", pnames)) {
+
 	id <- pnames == "log.scale"
 	p[,"log.scale"] <- exp(p[,"log.scale"])
 	pnames[id] <- "scale"
 	colnames(p) <- pnames
+
     }
 
     if(burn.in != 0) {
+
 	n <- dim(p)[1] 
 	if(missing(burn.in)) if(burn.in <= 2 * n - 1) burn.in <- floor(n/4)
 	else if(burn.in <= n - 1) stop("distill: number of MCMC iterations too small compared to burn.in")
 	p <- p[-(1:burn.in),]
+
     }
-    out <- apply(p, 2, f, ...)
+
+    if(FUN == "mean") out <- colMeans(p, na.rm = TRUE)
+    else if(FUN == "postmode" || FUN == "mode") out <- postmode(x, burn.in = burn.in, ...)
+    else out <- apply(p, 2, f, ...)
 
     if(cov) {
+
 	cov.theta <- cov(p)
 	out <- c(out, c(cov.theta))
 	names(out) <- c(pnames, paste(pnames[rep(1:np,np)], pnames[rep(1:np,each=np)], sep="."))
+
     }
+
     return(out)
+
 } # end of 'distill.fevd.bayesian' function.
 
 distill.fevd.mle <- function(x, cov=TRUE, ...) {
@@ -1050,10 +1100,12 @@ distill.fevd.mle <- function(x, cov=TRUE, ...) {
 } # end of 'distill.fevd.mle' function.
 
 summary.fevd <- function(object, ...) {
+
     if(object$method == "GMLE") newcl <- "mle"
     else newcl <- tolower(object$method)
     class(object) <- paste("fevd.", newcl, sep="")
     UseMethod("summary", object)
+
 } # end of 'summary.fevd' function.
 
 summary.fevd.lmoments <- function(object, ...) {
@@ -1074,10 +1126,25 @@ summary.fevd.lmoments <- function(object, ...) {
 } # end of 'summary.fevd.lmoments' function.
 
 summary.fevd.bayesian <- function(object, FUN="mean", burn.in=499, ...) {
+
     x <- object
     a <- list(...)
     if(!is.null(a$silent)) silent <- a$silent
     else silent <- FALSE
+
+    np <- dim(x$results)[2] - 1
+
+    if(!is.na(burn.in) && !is.null(burn.in) && burn.in > 0) {
+
+	ll <- x$chain.info[-(1:burn.in), np + 1]
+	mth <- colMeans(x$results[-(1:burn.in), -(np + 1)], na.rm = TRUE)
+
+    } else {
+
+	ll <- x$chain.info[, np + 1]
+	mth <- colMeans(x$results[, -(np + 1)], na.rm = TRUE)
+
+    } # end of if else 'burn.in' stmts.
 
     const <- is.fixedfevd(x)
 
@@ -1092,15 +1159,18 @@ summary.fevd.bayesian <- function(object, FUN="mean", burn.in=499, ...) {
     out <- list()
     out$par <- ci(x, type="parameter", FUN=FUN, burn.in=burn.in)
     # if(const) out$rl <- ci(x, return.period=c(2,20,100), FUN=FUN, burn.in=burn.in)
-    out$acceptance.rate <- colMeans(matrix(x$results[,"new"] > 0,ncol=1))
+    pdim <- dim(x$results)
+    # out$acceptance.rate <- colMeans(x$results[2:pdim[1], -pdim[2]] != x$results[1:(pdim[1] - 1), -pdim[2] ])
+    out$acceptance.rate <- colMeans(x$chain.info[, 2:(pdim[2] - 1)], na.rm = TRUE)
+
     if(!silent) {
-	cat("\n", "Acceptance Rate (for any accepted new parameter in an iteration) = ", out$acceptance.rate, "\n")
+	cat("\n", "Acceptance Rates:\n")
+	print(out$acceptance.rate)
 	print(out$par)
 	# if(const) print(out$rl)
     }
 
     cov.theta <- distill(x, FUN=FUN, burn.in=burn.in)
-    np <- dim(x$results)[2] - 1
     cov.theta <- matrix(cov.theta[(np + 1):length(cov.theta)], np, np)
     colnames(cov.theta) <- rownames(cov.theta) <- colnames(x$results)[1:np]
     if(!silent) {
@@ -1116,21 +1186,31 @@ summary.fevd.bayesian <- function(object, FUN="mean", burn.in=499, ...) {
     if(x$data.name[2] == "") data <- NULL
     else data <- datagrabber(x, response=FALSE)
 
-    np <- length(out$par)
     if(is.element(x$type, c("GEV", "Gumbel", "Weibull", "Frechet"))) n <- x$n
     else n <- sum(y > x$threshold)
 
     nllh <- oevd(p=out$par, o=x, des=designs, x=y, data=data, u=x$threshold, span=x$span, npy=x$npy, phi=x$par.models$log.scale, blocks=x$blocks)  # CJP
     out$nllh <- nllh
-    out$AIC <- 2 * nllh + 2 * np
-    out$BIC <- 2 * nllh + np * log(n)
+    # out$AIC <- 2 * nllh + 2 * np
+    if(FUN == "postmode" || FUN == "mode") out$BIC <- 2 * nllh + np * log(n)
+    Dev <- -2 * ll
+    Dbar <- mean(Dev, na.rm = TRUE)
+    Dmth <- -2 * oevd(p=mth, o=x, des=designs, x=y, data=data, u=x$threshold, span=x$span, npy=x$npy, phi=x$par.models$log.scale, blocks=x$blocks)
+
+    pd <- Dbar - Dmth
+
+    out$DIC <- Dmth + 2 * pd
 
     if(!silent) {
-	cat("\n", "AIC =", out$AIC, "\n")
-        cat("\n", "BIC =", out$BIC, "\n")
+
+# 	cat("\n", "AIC =", out$AIC, "\n")
+ #        cat("\n", "BIC =", out$BIC, "\n")
+	cat("\n", "DIC = ", out$DIC, " (Note: DIC is only valid if posterior parameter distribution is multivariate normal)\n")
+
     }
 
     invisible(out)
+
 } # end of 'summary.fevd.bayesian' function.
 
 summary.fevd.mle <- function(object, ...) {
@@ -2092,10 +2172,13 @@ will.accept <- function( ll.i, prior.i, ll.star, prior.star, log=TRUE) {
 } # end of 'will.accept' function.
 
 fevdPriorDefault <- function(theta, m, v, log=TRUE) {
+
     np <- length(theta)
     dfun <- function(th) dnorm(th[1], mean=th[2], sd=th[3], log=log)
+
     if(length(m)==1) m <- rep(m, np)
     else if(length(m) != np) stop("fevdPriorDefault: m must have length 1 or same as number of parameters.")
+
     if(length(v)==1) v <- rep(v, np)
     else if(length(v) != np) stop("fevdPriorDefault: v must have length 1 or same as number of parameters.")
 
@@ -2103,20 +2186,31 @@ fevdPriorDefault <- function(theta, m, v, log=TRUE) {
     res <- apply(th, 1, dfun)
     if(log) return(sum(res))
     else return(prod(res))
+
 } # end of 'fevdPriorDefault' function.
 
 fevdProposalDefault <- function(p, ind, ...) {
+
     a <- list(...)
+
     if(!is.null(a$mean)) {
-	if(length(a$mean) > 1) m <- a$mean[ind]
-	else m <- a$mean
+
+	#if(length(a$mean) > 1) m <- a$mean[ind]
+	#else m <- a$mean
+	m <- a$mean
+
     } else m <- 0
+
     if(!is.null(a$sd)) {
-	if(length(a$sd) > 1) s <- a$sd[ind]
-	else s <- a$sd 
+
+	# if(length(a$sd) > 1) s <- a$sd[ind]
+	# else s <- a$sd 
+	s <- a$sd
+
     } else s <- 0.1
     
-    return(p + rnorm(1, mean=m, sd=s))
+    return(p + rnorm(length(p), mean=m, sd=s))
+
 } # end of 'fevdProposalDefault' function.
 
 fpois <- function(x, na.action = na.fail, ...) {

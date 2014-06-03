@@ -267,7 +267,7 @@ cannot be produced.
 
 Summaries and Printing:
 
-\code{summary} and \code{print} method functions are available, and give different information depending on the estimation method used.  However, in each case, the parameter estimates are printed to the screen.  \code{summary} returns some useful output (similar to distill, but in a list format).  The \code{print} method function need not be called as one can simply type the name of the \code{fevd} fitted object and return to execute the command (see examples below).
+\code{summary} and \code{print} method functions are available, and give different information depending on the estimation method used.  However, in each case, the parameter estimates are printed to the screen.  \code{summary} returns some useful output (similar to distill, but in a list format).  The \code{print} method function need not be called as one can simply type the name of the \code{fevd} fitted object and return to execute the command (see examples below).  The deviance information criterion (DIC) is calculated for the Bayesian estimation method as DIC = D(mean(theta)) + 2 * pd, where pd = mean(D(theta)) - D(mean(theta)), and D(theta) = -2 * log-likelihood evaluated at teh parameter values given by theta.  The means are taken over the posterior MCMC sample.  The default estimation method for the parameter values from the MCMC sample is to take the mean of the sample (after removing the first burn.in samples).  A good alternative is to set the \code{FUN} argument to \dQuote{postmode} in order to obtain the posterior mode of the sample.
 
 Using Blocks to Reduce Computation in PP Fitting:
 
@@ -310,6 +310,8 @@ weights must be constant within each block.
     \item{results}{If L-moments are used, then this is a simple vector of length equal to the number of parameters of the model.  For MLE/GMLE, this is a list object giving the output from \code{optim} (in particular, the par component is a vector giving the parameter estimates).  For Bayesian estimation, this is a matrix whose rows give the results for each iteration of the MCMC simulations.  The columns give the parameters, as well as an additional last column that gives the number of parameters that were updated at each iteration.}
     \item{priorFun, priorParams}{These are only present for GMLE and Bayesian estimation methods.  They give the prior df and optional arguments used in the estimation.}
     \item{proposalFun, proposalParams}{These are only present for Bayesian estimation, and they give the proposal function used along with optional arguments.}
+    \item{chain.info}{If estimation method is \dQuote{Bayesian}, then this component is a matrix whose first several columns give 0 or 1 for each parameter at each iteration, where 0 indicates that the parameter was not updated and 1 that it was.  The first row is NA for these columns.  the last two columns give the likelihood and prior values for the current parameter values.}
+    \item{chain.info}{matrix whose first n columns give a one or zero depending on whether the parameter was updated or not, resp.  The last two columns give the log-likelihood and prior values associated with the parameters of that sample.}
     \item{blocks}{Present only if \code{blocks} is supplied as an
     argument. Will contain the input information and computed
     block-level information for use in post-processing the model object,
@@ -318,12 +320,12 @@ weights must be constant within each block.
 \code{print}: Does not return anything.  Information is printed to the screen.
 
 
-\code{summary}: Depending on the estimation method, either a numeric vector giving the parameter estimates (\dQuote{Lmoments}) or a list object (all other estimation methods) is returned invisibly, and if \code{silent} is FALSE (default), then summary information is printed to the screen.  List components include:
+\code{summary}: Depending on the estimation method, either a numeric vector giving the parameter estimates (\dQuote{Lmoments}) or a list object (all other estimation methods) is returned invisibly, and if \code{silent} is FALSE (default), then summary information is printed to the screen.  List components may include:
 
     \item{par, se.theta}{numeric vectors giving the parameter and standard error estimates, resp.}
     \item{cov.theta}{matrix giving the parameter covariances.}
     \item{nllh}{number giving the value of the negative log-likelihood.}
-    \item{AIC, BIC}{numbers giving the Akaike Information Criterion (AIC, Akaike, 1974) and the Bayesian Information Criterion (BIC, Schwarz, 1978), resp.}
+    \item{AIC, BIC, DIC}{numbers giving the Akaike Information Criterion (AIC, Akaike, 1974), the Bayesian Information Criterion (BIC, Schwarz, 1978), and/or the Deviance Information Criterion, resp.}
 }
 
 \references{
