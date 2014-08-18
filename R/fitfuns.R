@@ -1205,7 +1205,7 @@ summary.fevd.bayesian <- function(object, FUN="mean", burn.in=499, ...) {
 
 # 	cat("\n", "AIC =", out$AIC, "\n")
  #        cat("\n", "BIC =", out$BIC, "\n")
-	cat("\n", "DIC = ", out$DIC, " (Note: DIC is only valid if posterior parameter distribution is multivariate normal)\n")
+	cat("\n", "DIC = ", out$DIC, "\n")
 
     }
 

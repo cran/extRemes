@@ -123,14 +123,14 @@ function to be called to handle missing values.  Generally, this should remain a
 A list with named components matching exactly any arguments that the user wishes to specify to \code{optim}, which is used only for MLE and GMLE methods.  By default, the \dQuote{BFGS} method is used along with \code{grlevd} for the gradient argument.  Generally, the \code{grlevd} function is used for the \code{gr} option unless the user specifies otherwise, or the optimization method does not take gradient information.
 }
   \item{priorFun}{
-character naming a prior df to use for methods GMLE and Bayesian.  The default for GMLE (not including Gumbel or Exponential types) is to use the one suggested by Martin and Stedinger (2000, 2001) on the shape parameter; a beta df on -0.5 to 0.5 with parameters \code{p} and \code{q}, but note that the parameterization here is different, so that actually the roles of these parameters are reversed from the paper.  Must take \code{x} as its first argument for \code{method} \dQuote{GMLE}.  Optional arguments for the default function are \code{p} and \code{q} (see details section).
+character naming a prior df to use for methods GMLE and Bayesian.  The default for GMLE (not including Gumbel or Exponential types) is to use the one suggested by Martins and Stedinger (2000, 2001) on the shape parameter; a beta df on -0.5 to 0.5 with parameters \code{p} and \code{q}.  Must take \code{x} as its first argument for \code{method} \dQuote{GMLE}.  Optional arguments for the default function are \code{p} and \code{q} (see details section).
 
 The default for Bayesian estimation is to use normal distribution functions.  For Bayesian estimation, this function must take \code{theta} as its first argument.
 
 Note: if this argument is not NULL and \code{method} is set to \dQuote{MLE}, it will be changed to \dQuote{GMLE}.
 }
   \item{priorParams}{
-named list containing any prior df parameters (where the list names are the same as the function argument names).  Default for GMLE (assuming the default function is used) is to use \code{q} = 6 and \code{p} = 9.
+named list containing any prior df parameters (where the list names are the same as the function argument names).  Default for GMLE (assuming the default function is used) is to use \code{q} = 6 and \code{p} = 9.  Note that in the Martins and Stedinger (2000, 2001) papers, they use a different EVD parametrization than is used here such that a positive shape parameter gives the upper bounded distribution instead of the heavy-tail one (as emloyed here).  To be consistent with these papers, \code{p} and \code{q} are reversed inside the code so that they have the same interpretation as in the papers.
 
 Default for Bayesian estimation is to use ML estimates for the means of each parameter (may be changed using \code{m}, which must be a vector of same length as the number of parameters to be estimated (i.e., if using the default prior df)) and a standard deviation of 10 for all other parameters (again, if using the default prior df, may be changed using \code{v}, which must be a vector of length equal to the number of parameters).
 }
@@ -213,7 +213,7 @@ For MLE/GMLE, two (in the case of PP, three) initial estimates are calculated al
 
 1.  L-moment estimates.
 
-2.  Let m=mean(xdat) and s=sqrt(6*var(xdat))/pi.  Then, initial values assigend for the lcoation parameter when either \code{initial} is NULL or the location component of \code{initial} is NULL, are m - 0.57722 * s.  When \code{initial} or the scale component of \code{initial} is NULL, the initial value for the scale parameter is taken to be s, and when \code{initial} or its shape component is NULL, the initial value for the shape parameter is taken to be 1e-8 (because these initial estimates are moment-based estimates for the Gumbel df, so the initial value is taken to be near zero).
+2.  Let m = mean(xdat) and s = sqrt(6 * var(xdat)) / pi.  Then, initial values assigend for the lcoation parameter when either \code{initial} is NULL or the location component of \code{initial} is NULL, are m - 0.57722 * s.  When \code{initial} or the scale component of \code{initial} is NULL, the initial value for the scale parameter is taken to be s, and when \code{initial} or its shape component is NULL, the initial value for the shape parameter is taken to be 1e-8 (because these initial estimates are moment-based estimates for the Gumbel df, so the initial value is taken to be near zero).
 
 3.  In the case of PP, which is often the most difficult model to fit, MLEs are obtained for a GP model, and the resulting parameter estimates are converted to those of the approximately equivalent PP model.
 

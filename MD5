@@ -1,11 +1,11 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-0193389f126dce5db666659f8869734b *DESCRIPTION
+66ed038cb21090c45601837dced80fcc *DESCRIPTION
 f1b839875becb4e5fb917043c19c47d1 *NAMESPACE
 d908c357dd33978b584f52bf0cc16947 *R/BayesFactor.R
 6d6614c995ecf499682cc1a6e7b4fdb5 *R/dependence.R
-5a50c8515a458255a5d6d7aca9e149dc *R/distfuns.R
+8018aea4be6d23707df25ecfe5b1a5eb *R/distfuns.R
 6267d390e2d121f17180c204c86f42fe *R/fitdiagnostics.R
-e8080bc1297e462e93bb2f249d5fb7eb *R/fitfuns.R
+e817247a9e04623fb3e77202ca2b23c5 *R/fitfuns.R
 9e9662fbeadfd879b344a66303821007 *R/misc.R
 314edece9316c9e0d622bf47d9483bbb *R/postpred.R
 d2be8397db1af7fa07c7ec3c4881793b *R/quantiles.R
@@ -53,7 +53,7 @@ ad5555ca9d7d9f06d8a6b104f9c472d5 *man/devd.Rd
 6fee441045ab444944427638dcda1bf7 *man/extRemes-internal.Rd
 13becc9ca05b3de0a713d2e8e7a0ebf4 *man/extRemes-package.Rd
 e9b2d80d8b5ce9736283ec5e1af42834 *man/extremalindex.Rd
-31391d693bba69ea9357acb22f0afa24 *man/fevd.Rd
+aa24790e8b0105d2beee182df7a93c3c *man/fevd.Rd
 feea3b20535dd5822be0a22c4b716e2b *man/findAllMCMCpars.Rd
 60954f7317481d847bfdd9ca5d23f3b8 *man/findpars.Rd
 620b175c65a0d24b8b25e3bde0e7cbb6 *man/fpois.Rd
