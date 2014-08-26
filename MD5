@@ -1,13 +1,12 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-66ed038cb21090c45601837dced80fcc *DESCRIPTION
+8cbb04fedf423b0fc85fdfcd05cb1f38 *DESCRIPTION
 f1b839875becb4e5fb917043c19c47d1 *NAMESPACE
 d908c357dd33978b584f52bf0cc16947 *R/BayesFactor.R
 6d6614c995ecf499682cc1a6e7b4fdb5 *R/dependence.R
 8018aea4be6d23707df25ecfe5b1a5eb *R/distfuns.R
-6267d390e2d121f17180c204c86f42fe *R/fitdiagnostics.R
+7726050b0a828ecc4228a6602003657f *R/fitdiagnostics.R
 e817247a9e04623fb3e77202ca2b23c5 *R/fitfuns.R
 9e9662fbeadfd879b344a66303821007 *R/misc.R
-314edece9316c9e0d622bf47d9483bbb *R/postpred.R
 d2be8397db1af7fa07c7ec3c4881793b *R/quantiles.R
 2e98344cc0a1be61fa002043548f46b0 *R/thresh.R
 790bb3d03d035bec0b65c7488ac4cd90 *data/Denmint.rda
@@ -66,7 +65,6 @@ f1edc7f3f6cb0e158bfb00d6b17748eb *man/lr.test.Rd
 9c78a34d77b2f9876f0defa0206a404f *man/parcov.fevd.Rd
 7145a4eaf17554fad6a96f61301f5dce *man/pextRemes.Rd
 3c6cf8805ec629538c38b9c6aa1eb02f *man/postmode.Rd
-7982e395dd5bcb317af4275891d6663d *man/postpred.Rd
 3726fba95580e761877c5730be754899 *man/profliker.Rd
 f3b0bd5a64c78d3545439b31439bb628 *man/qqnorm.Rd
 0e5d57950fb93b6ed417cbafef4fdae3 *man/qqplot.Rd

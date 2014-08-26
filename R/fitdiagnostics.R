@@ -472,8 +472,7 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	    else mod2 <- model
 
 	    if(!is.element(model,c("PP","GP","Beta","Pareto","Exponential"))) yq <- qevd(xp, loc=loc, scale=scale, shape=shape, type=mod2)
-	    else yq <- qevd(1 - xp, threshold=u, loc=loc, scale=scale, shape=shape, type=mod2)
-	    # else yq <- qevd(xp[n:1], loc=loc, scale=scale, shape=shape, type=mod2)
+	    else yq <- qevd(xp, threshold=u, loc=loc, scale=scale, shape=shape, type=mod2)
 
 	    if(is.null(args$main)) {
 
@@ -3834,8 +3833,7 @@ quantquant.plot.evd <- function(x, xp, y, u, loc, scale, shape, tform=FALSE, eid
         else mod2 <- model
     
         if(!is.element(model,c("PP","GP","Beta","Pareto"))) yq <- qevd(xp, loc=loc, scale=scale, shape=shape, type=mod2)
-        else yq <- qevd(1 - xp, threshold=u, loc=loc, scale=scale, shape=shape, type=mod2)
-        # else yq <- qevd(xp[n:1], loc=loc, scale=scale, shape=shape, type=mod2)
+        else yq <- qevd(xp, threshold=u, loc=loc, scale=scale, shape=shape, type=mod2)
         if(is.null(args$main)) {
             if(type=="primary") m2 <- ""
             else m2 <- deparse(x$call)
