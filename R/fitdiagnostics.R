@@ -45,8 +45,8 @@ lr.test <- function(x, y, alpha=0.05, df=1, ...) {
 
 } # end of 'lr.test' function.
 
-plot.fevd <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot", "hist", "density", "rl", "trace"),
-                    rperiods=c(2, 5, 10, 20, 50, 80, 100, 120, 200, 250, 300, 500, 800), a=0, hist.args=NULL, density.args=NULL, d = NULL, ...) {
+plot.fevd <- function(x, type = c("primary", "probprob", "qq", "qq2", "Zplot", "hist", "density", "rl", "trace"),
+                    rperiods = c(2, 5, 10, 20, 50, 80, 100, 120, 200, 250, 300, 500, 800), a=0, hist.args=NULL, density.args=NULL, d = NULL, ...) {
 
     x2 <- x
 

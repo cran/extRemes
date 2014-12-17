@@ -162,7 +162,7 @@ See text books on extreme value analysis (EVA) for more on univariate EVA (e.g.,
 
 The GEV df is given by
 
-    Pr{X <= x} = G(x) = exp[-{1 + shape*(x - location)/scale}^(-1/shape)]
+    Pr{X <= x} = G(x) = exp[-(1 + shape*(x - location)/scale)^(-1/shape)]
 
 for 1 + shape*(x - location) > 0 and scale > 0.  It the shape parameter is zero, then the df is defined by continuity and simplies to
 

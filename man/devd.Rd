@@ -28,8 +28,8 @@ revd(n, loc = 0, scale = 1, shape = 0, threshold = 0,
   \item{x,q}{numeric vector of quantiles.}
   \item{p}{numeric vector of probabilities.  Must be between 0 and 1 (non-inclusive).}
   \item{n}{number of observations to draw.}
-  \item{npy}{Number of points per period (period is usually year).  Currently not used.  PP model is converted to equivalent GEV df.}
-  \item{lambda}{Event frequency base rate.  Currently not used.  PP model is converted to equivalent GEV df.}
+  \item{npy}{Number of points per period (period is usually year).  Currently not used.}
+  \item{lambda}{Event frequency base rate.  Currently not used.}
   \item{loc, scale, shape}{location, scale and shape parameters.  Each may be a vector of same length as \code{x} (\code{devd} or length \code{n} for \code{revd}.  Must be length 1 for \code{pevd} and \code{qevd}.}
   \item{threshold}{numeric giving the threshold for the GP df.  May be  a vector of same length as \code{x} (\code{devd} or length \code{n} for \code{revd}.  Must be length 1 for \code{pevd} and \code{qevd}.}
   \item{log, log.p}{logical; if TRUE, probabilites p are given as log(p).}
@@ -37,7 +37,7 @@ revd(n, loc = 0, scale = 1, shape = 0, threshold = 0,
   \item{type}{character; one of "GEV" or "GP" describing whether to use the GEV or GP.}
 }
 \details{
-The extreme value distributions (EVD's) are generalized extreme value (GEV) or generalized Pareto (GP).  The point process characterization is an equivalent form, but is not handled here.  The GEV df is given by
+The extreme value distributions (EVD's) are generalized extreme value (GEV) or generalized Pareto (GP); if type is \dQuote{PP}, then \code{pevd} changes it to \dQuote{GEV}.  The point process characterization is an equivalent form, but is not handled here.  The GEV df is given by
 
     Pr{X <= x} = G(x) = exp[-{1 + shape * (x - location)/scale}^(-1/shape)]
 
@@ -55,7 +55,7 @@ where 1 + shape * (x - threshold)/scale > 0, scale > 0, and x > threshold.  If s
 
     F(x) = 1 - exp(-(x - threshold)/scale).
 
-There is an approximate relationship between the GEV and GP df's where the GP df is approximately the tail df for the GEV df.  In particular, the scale parameter of the GP is a function of the threshold (denote it scale.u), and is equivalent to scale + shape*(threshold - location) where scale, shape and location are parameters from the \dQuote{equivalent} GE Vdf.  Similar to the GEV df, the shape parameter determines the tail behavior, where shape = 0 gives rise to the exponential df (light tail), shape > 0 the Pareto df (heavy tail) and shape < 0 the Beta df (bounded upper tail at location - scale.u/shape).  Theoretical justification supports the use of the GP df family for modeling excesses over a high threshold (i.e., y = x - threshold).  It is assumed here that \code{x}, \code{q} describe x (not y = x - threshold).  Similarly, the random draws are y + threshold.
+There is an approximate relationship between the GEV and GP df's where the GP df is approximately the tail df for the GEV df.  In particular, the scale parameter of the GP is a function of the threshold (denote it scale.u), and is equivalent to scale + shape*(threshold - location) where scale, shape and location are parameters from the \dQuote{equivalent} GEV df.  Similar to the GEV df, the shape parameter determines the tail behavior, where shape = 0 gives rise to the exponential df (light tail), shape > 0 the Pareto df (heavy tail) and shape < 0 the Beta df (bounded upper tail at location - scale.u/shape).  Theoretical justification supports the use of the GP df family for modeling excesses over a high threshold (i.e., y = x - threshold).  It is assumed here that \code{x}, \code{q} describe x (not y = x - threshold).  Similarly, the random draws are y + threshold.
 
 See Coles (2001) and Reiss and Thomas (2007) for a very accessible text on extreme value analysis and for more theoretical texts, see for example, Beirlant et al. (2004), de Haan and Ferreira (2006), as well as Reiss and Thomas (2007).
 }

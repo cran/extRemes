@@ -84,7 +84,7 @@ pevd <- function(q, loc=0, scale=1, shape=0, threshold=0, lambda=1, npy,
 
    if(type == "pp") {
 
-	scale <- scale - shape * (threshold - loc)
+	# scale <- scale - shape * (threshold - loc)
 	type <- "gev"
 
    }

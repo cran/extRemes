@@ -1,4 +1,6 @@
-\name{extRemes internal }
+\name{extRemes internal}
+\alias{consecDayMax}
+\alias{cut366thDay}
 \alias{densplot.evd}
 \alias{eeplot}
 \alias{plot.ee}
@@ -7,10 +9,13 @@
 \alias{grlevd}
 \alias{grlevdTracer}
 \alias{histplot.evd}
+\alias{hwmiFun}
+\alias{hwyear}
 \alias{initializer}
 \alias{initializer.lmoments}
 \alias{initializer.moms}
 \alias{initializer.mle}
+\alias{mvThreshold}
 \alias{oevd}
 \alias{oevdgen}
 \alias{oevd.profpar}
