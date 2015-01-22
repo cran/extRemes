@@ -11,12 +11,17 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
     out$call <- match.call()
     if(!missing(data)) {
+
         out$data.name <- c(deparse(substitute(x)), deparse(substitute(data)))
 	# cov.pointer <- as.character(substitute(data))
+
     } else {
+
 	out$data.name <- c(deparse(substitute(x)), "")
 	# cov.pointer <- NULL
+
     }
+
     # data.pointer <- as.character(substitute(x))
     # if( length(data.pointer) > 1) out$x <- x	
     # else out$data.pointer <- data.pointer
@@ -29,30 +34,40 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     out$weights <- weights
 
     if(!missing(data)) {
+
         if(is.element(out$data.name[1], colnames(data))) {
+
             out$in.data <- TRUE
             wc <- out$data.name[1] == colnames(data)
             x <- c(data[,wc])
             x.fun <- ifelse(out$data.name[1] == "substitute(x)", deparse(x), out$data.name[1])
             x.fun <- formula(paste(x.fun, "~ 1"))
             out$x.fun <- x.fun
+
         } else if(is.formula(x)) {
+
             out$in.data <- TRUE
             x.fun <- x
             out$x.fun <- x.fun
             x <- model.response(model.frame(x.fun, data=data))
+
         } else out$in.data <- FALSE
+
         if(length(x) != nrow(data)) stop("fevd: data must have same number of rows as the length of x.")
         if(!identical(weights, 1) && length(x) != length(weights)) # CJP
           stop("fevd: weights should be the same length as x.") 
+
         tmp <- cbind(x, data)
         tmp <- na.action(tmp)
         x <- tmp[,1]
         data <- tmp[,-1, drop=FALSE]
+
     } else {
+
         if(is.formula(x)) stop("fevd: Must provide data argument if you supply a formula to the x argument.")
         x <- na.action(x)
         out$in.data <- FALSE
+
     }
 
     if(!out$in.data) {
@@ -62,28 +77,45 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     }
 
     if(!is.null(blocks)){  # CJP
+
       # test that blocks is of correct type
       if(type == "PP"){
+
         if(!is.element('nBlocks', names(blocks))){
+
           if(is.element('data', names(blocks))) {
+
             blocks$nBlocks <- nrow(blocks$data)
+
           } else stop("fevd: When supplying blocks, must provide 'blocks$nBlocks' if 'blocks$data' is  not provided.")
+
         }
-        if(!is.element('weights', names(blocks)))
-          blocks$weights <- 1
-        if(!is.element('proportionMissing', names(blocks)))
-          blocks$proportionMissing <- 0
+
+        if(!is.element('weights', names(blocks))) blocks$weights <- 1
+
+        if(!is.element('proportionMissing', names(blocks))) blocks$proportionMissing <- 0
+
         if(!is.element('threshold', names(blocks)) && !is.null(threshold)) {
+
           if(length(threshold) == 1) {
+
             blocks$threshold <- threshold
+
           } else {
+
             stop("fevd: No blocks$threshold specified and threshold is not constant. User must supply the threshold for each block via blocks$threshold.")
+
           }
+
         }
+
       } else {
+
         warning("fevd: Blocks are used only for type 'PP'; ignoring blocks argument.")
         blocks <- NULL # code will now operate as if user did not supply 'blocks'
+
       }
+
     }
 
     out$x <- x
@@ -91,19 +123,30 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     
     if(method == "MLE" && !is.null(priorFun)) method <- "GMLE"
     else if(method=="GMLE" && is.null(priorFun)) {
+
+	if(shape.fun != ~1) stop("fevd: must supply a prior function for GMLE method when shape parameter varies.")
+
 	if(is.element(type, c("GEV","GP","PP"))) {
+
 	    priorFun <- "shapePriorBeta"
 	    if(is.null(priorParams)) priorParams <- list(q=6, p=9)
+
 	} else {
+
 	    warning("fevd: method GMLE selected, but no priorFun given (and no default for the desired df type).  Switching to ML estimation.")
 	    method <- "MLE"
+
 	}
-    }
+
+    } # end of if else method is GMLE but no prior function input stmts.
 
     if(method=="GMLE") {
+
 	out$priorFun <- priorFun
 	out$priorParams <- priorParams
+
     }
+
     out$method <- method
     method <- tolower(method)
 
@@ -820,12 +863,15 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
     if(verbose) print(Sys.time() - begin.tiid)
     class(out) <- "fevd"
+
     return(out)
+
 } # end of 'fevd' function.
 
 levd <- function(x, threshold, location, scale, shape,
                 type=c("GEV", "GP", "PP", "Gumbel", "Weibull", "Frechet", "Exponential", "Beta", "Pareto"),
                 log=TRUE, negative=TRUE, span, npy=365.25, infval=Inf, weights=1, blocks=NULL) {
+
 # CJP added blocks argument
     type <- match.arg(type)
     type <- tolower(type)
@@ -996,20 +1042,28 @@ parcov.fevd <- function(x) {
     }
     designs <- setup.design(x)
     if(x$method != "GMLE") {
+
     hold <- try(suppressWarnings(optimHess(theta.hat, oevd, gr=grlevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks)), silent=TRUE) # CJP
+
         if((class(hold) != "try-error") && all(!is.na(hold))) {
+
             cov.theta <- try(suppressWarnings(solve(hold)), silent=TRUE)
 	    if(any(diag(cov.theta) <= 0)) re.do <- TRUE
 	    else re.do <- FALSE 
+
         } else re.do <- TRUE
+
     } else re.do <- TRUE
 
 
     if(re.do) {
+
        hold <- try(optimHess(theta.hat, oevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks), silent=TRUE) # CJP
        if(class(hold) != "try-error" && all(!is.na(hold))) {
+
            cov.theta <- try(solve(hold), silent=TRUE)
 	   if(class(cov.theta) == "try-error" || any(diag(cov.theta) <= 0)) cov.theta <- NULL
+
 	}
 
     } # end of if 're.do' stmts.
@@ -1924,9 +1978,10 @@ oevd <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, blocks=N
     if(missing(span)) res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, npy=npy, infval=1e10, weights=w, blocks=blocks)
     else res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, span=span, npy=npy, infval=1e10, weights=w, blocks=blocks)
     return(res)
+
 } # end of 'oevd' function.
 
-oevdgen <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, priorFun, priorParams=NULL, blocks=NULL) {
+oevdgen <- function(p, o, des, x, data = NULL, u = NULL, span, npy, phi = FALSE, priorFun, priorParams = NULL, blocks = NULL) {
 
     ##
     ## Function to be optimized by 'optim'.
@@ -1944,7 +1999,7 @@ oevdgen <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, prior
 
         X.loc <- des$X.loc
         nloc <- ncol(X.loc)
-        loc <- rowSums(matrix(p[1:nloc], n, nloc, byrow=TRUE)*X.loc)
+        loc <- rowSums(matrix(p[1:nloc], n, nloc, byrow=TRUE) * X.loc)
 	if(nloc == 1) lname <- "location"
 	else lname <- paste("mu", 0:(nloc - 1), sep = "")
 
@@ -1958,8 +2013,8 @@ oevdgen <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, prior
 
     X.sc <- des$X.sc
     nsc <- ncol(X.sc)
-    if(phi) scale <- exp(rowSums(matrix(p[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE)*X.sc))
-    else scale <- rowSums(matrix(p[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE)*X.sc)
+    if(phi) scale <- exp(rowSums(matrix(p[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE) * X.sc))
+    else scale <- rowSums(matrix(p[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE) * X.sc)
     if(nsc == 1) scname <- "scale"
     else scname <- paste("phi", 0:(nsc - 1), sep="")
 
@@ -1967,7 +2022,7 @@ oevdgen <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, prior
 
         X.sh <- des$X.sh
         nsh <- ncol(X.sh)
-        shape <- rowSums(matrix(p[(nloc+nsc+1):(nloc+nsc+nsh)], n, nsh, byrow=TRUE)*X.sh)
+        shape <- rowSums(matrix(p[(nloc+nsc+1):(nloc+nsc+nsh)], n, nsh, byrow=TRUE) * X.sh)
 	if(nsh == 1) shname <- "shape"
 	else shname <- paste("xi", 0:(nsh - 1), sep = "")
 
@@ -1981,27 +2036,24 @@ oevdgen <- function(p, o, des, x, data=NULL, u=NULL, span, npy, phi=FALSE, prior
 
     if(!is.null(blocks)) {
 
-      blocks$location <- rowSums(matrix(p[1:nloc], blocks$nBlocks, nloc, byrow=TRUE)*blocks$designs$X.loc)
-      if(phi) blocks$scale <- exp(rowSums(matrix(p[(nloc+1):(nloc+nsc)], blocks$nBlocks, nsc, byrow=TRUE)*blocks$designs$X.sc))
-      else blocks$scale <- rowSums(matrix(p[(nloc+1):(nloc+nsc)], blocks$nBlocks, nsc, byrow=TRUE)*blocks$designs$X.sc)
-      blocks$shape <- rowSums(matrix(p[(nloc+nsc+1):(nloc+nsc+nsh)], blocks$nBlocks, nsh, byrow=TRUE)*blocks$designs$X.sh)
+      blocks$location <- rowSums(matrix(p[1:nloc], blocks$nBlocks, nloc, byrow=TRUE) * blocks$designs$X.loc)
+      if(phi) blocks$scale <- exp(rowSums(matrix(p[(nloc+1):(nloc+nsc)], blocks$nBlocks, nsc, byrow=TRUE) * blocks$designs$X.sc))
+      else blocks$scale <- rowSums(matrix(p[(nloc+1):(nloc+nsc)], blocks$nBlocks, nsc, byrow=TRUE) * blocks$designs$X.sc)
+      blocks$shape <- rowSums(matrix(p[(nloc+nsc+1):(nloc+nsc+nsh)], blocks$nBlocks, nsh, byrow=TRUE) * blocks$designs$X.sh)
 
     }
     
     if(missing(span)) res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, npy=npy, infval=1e10, weights=w, blocks=blocks)
     else res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, span=span, npy=npy, infval=1e10, weights=w, blocks=blocks)
 
-    newp <- cbind(loc, scale, shape)
-    # newp <- numeric(0)
-    # if(nloc > 0) newp <- loc
-    # newp <- c(newp, scale)
-    # if(nsh > 0) newp <- c(newp, shape)
+    # newp <- cbind(loc, scale, shape)
+    # colnames(newp) <- c(lname, scname, shname)
 
-    colnames(newp) <- c(lname, scname, shname)
-
-    res2 <- do.call(priorFun, c(list(x=newp), priorParams))
+    # res2 <- do.call(priorFun, c(list(x = newp), priorParams))
+    res2 <- do.call(priorFun, c(list(x = p), priorParams))
 
     return(res + res2)
+
 } # end of 'oevdgen' function.
 
 shapePriorBeta <- function(x, p, q) {
@@ -2009,10 +2061,15 @@ shapePriorBeta <- function(x, p, q) {
     ## Function to calculate the GMLE prior for the shape parameter.
     ##
 
-    if(!is.element("shape", colnames(x))) stop("shapePriorBeta: invalid model for this prior penalty function.")
+    # if(!is.element("shape", colnames(x))) stop("shapePriorBeta: invalid model for this prior penalty function.") 
+    # xi <- 0.5 + x[,"shape"]
 
-    xi <- 0.5 + x[,"shape"]
-    res <- -sum(dbeta(x=xi, shape1=q, shape2=p, log=TRUE), na.rm=TRUE)
+    xi <- x[ length(x) ]
+
+    # res <- -sum(dbeta(x=xi, shape1=q, shape2=p, log=TRUE), na.rm=TRUE)
+
+    res <- - dbeta(x = xi, shape1 = q, shape2 = p, log = TRUE)
+    if(!is.finite(res)) res <- sign(res) * 1e16
 
     return(res)
 

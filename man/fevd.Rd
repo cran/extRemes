@@ -99,7 +99,7 @@ single numeric giving the number of years (or other desired temporal unit) in th
 (optional) character giving the units of the data, which if given may be used subsequently (e.g., on plot axis labels, etc.).
 }
   \item{time.units}{
-character string that must be one of \dQuote{hour}, \dQuote{minute}, \dQuote{second}, \dQuote{day}, \dQuote{month}, \dQuote{year}, \dQuote{m/hour}, \dQuote{m/minute}, \dQuote{m/second}, \dQuote{m/day}, \dQuote{m/month}, or \dQuote{m/year}; where m is a number.  If \code{span} is missing, then this argument is used in determining the value of \code{span}.  It is also returned with the output and used subsequently for plot labelling, etc.
+character string that must be one of \dQuote{hours}, \dQuote{minutes}, \dQuote{seconds}, \dQuote{days}, \dQuote{months}, \dQuote{years}, \dQuote{m/hour}, \dQuote{m/minute}, \dQuote{m/second}, \dQuote{m/day}, \dQuote{m/month}, or \dQuote{m/year}; where m is a number.  If \code{span} is missing, then this argument is used in determining the value of \code{span}.  It is also returned with the output and used subsequently for plot labelling, etc.
 }
   \item{period.basis}{
 character string giving the units for the period.  Used only for plot labelling and naming output vectors from some of the method functions (e.g., for establishing what the period represents for the return period).
@@ -188,7 +188,7 @@ Non-stationary models:
 
 The current code does not allow for non-stationary models with L-moments estimation.
 
-For MLE/GMLE and Bayesian estimation, linear models for the parameters may be fit using formulas, in which case the \code{data} argument must be supplied.  Specifically, the models allowed for a set of covariates, y, are:
+For MLE/GMLE (see El Adlouni et al 2007 for using GMLE in fitting models whose parameters vary) and Bayesian estimation, linear models for the parameters may be fit using formulas, in which case the \code{data} argument must be supplied.  Specifically, the models allowed for a set of covariates, y, are:
 
     location(y) = mu0 + mu1 * f1(y) + mu2 * f2(y) + ...
 
@@ -334,6 +334,8 @@ Akaike, H. (1974).  A new look at the statistical model identification.  \emph{I
 Beirlant, J., Goegebeur, Y., Teugels, J. and Segers, J. (2004). \emph{Statistics of Extremes: Theory and Applications}.  Chichester, West Sussex, England, UK: Wiley, ISBN 9780471976479, 522pp.
 
 Coles, S.  (2001). \emph{An introduction to statistical modeling of extreme values}, London: Springer-Verlag.
+
+El Adlouni, S., Ouarda, T. B. M. J., Zhang, X., Roy, R, and Bob\'{e}e, B. (2007).  Generalized maximum likelihood estimators for the nonstationary generalized extreme value model.  \emph{Water Resources Research}, \bold{43}, W03410, doi: 10.1029/2005WR004545, 13 pp.
 
 Gilleland, E. and Katz, R. W. (2011). New software to analyze how extremes change over time. \emph{Eos}, 11 January, \bold{92}, (2), 13--14.
 

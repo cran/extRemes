@@ -1,5 +1,5 @@
 Package: extRemes
-Version: 2.0-4
+Version: 2.0-5
 Date: 22 October 2012
 Title: Extreme Value Analysis
 Author: Eric Gilleland
@@ -9,7 +9,7 @@ Suggests: fields
 Description: Functions for performing extreme value analysis.
 License: GPL (>= 2)
 URL: http://www.assessment.ucar.edu/toolkit/
-Packaged: 2014-12-19 13:51:34 UTC; ripley
+Packaged: 2015-01-21 18:04:31 UTC; ericg
 NeedsCompilation: yes
 Repository: CRAN
-Date/Publication: 2014-12-19 14:55:00
+Date/Publication: 2015-01-22 00:57:47

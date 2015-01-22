@@ -13,8 +13,6 @@ abba <- function(y, sites, iters, Qb = NULL, knots = sites, X = cbind(1,sites),
   
   # LOAD PACKAGE
   
-  require(fields)
-  
   # BULLET PROOFING
   
   if(!is.matrix(y) || !is.numeric(y)) 

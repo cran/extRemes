@@ -23,6 +23,14 @@ This function computes the Heat Wave Magnitude Index and the associated duration
 This function takes a daily maximum temperature time series as input and computes the climate index HWMI (Heat Wave Magnitude Index).  The Heat Wave Magnitude Index is defined as the maximum magnitude of the heat waves in a year. A \dQuote{heat wave} is defined as a sequence of 3 or more days in which the daily maximum temperature is above the 90th percentile of daily maximum temperature for a 31-day running window surrounding this day during the baseline period (e.g., 1981-2010).
 
 Note that the argument \code{Tref} must have daily maximum temperatures for a 32-year period (e.g., using the baseline period of 1981 to 2010, \code{Tref} must be for 1980 through 2011).  The first and the 32nd years are needed to calculate the daily threshold over the first and the last year of the baseline period (1981-2010).
+
+If HWMI is calculated in the Southern Hemisphere, then, in order not to split a Heat Wave event into two, the year should start on the 1st of July and end on the 30th of June of the following year.
+
+In other words:
+
+1. Tref will be from the 1st of July 1980 up to the 30th of June 2012
+
+2. Similarly for Temp, each 365 days in a year must be taken between the 1st of July and the 30th of June.
 }
 
 \value{

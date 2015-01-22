@@ -3,7 +3,7 @@
 \alias{abba_latent}
 \title{Implementation of Stephenson-Shaby-Reich-Sullivan}
 \description{
-  Implements MCMC methodology for fitting spatial exterme
+  Implements MCMC methodology for fitting spatial extreme
   value models using Stephenson et al. (2014). Experimental.
 }
 \usage{
