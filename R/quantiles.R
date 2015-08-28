@@ -46,7 +46,7 @@ qqplot <-
         m <- length(x)
         n <- length(y)
         N <- m + n
-        M <- m * n / N
+        M <- m * (n / N)
         K <- 1.36
         p <- (1:m - 1)/(m - 1)
         yq <- qy(p)

@@ -27,7 +27,7 @@ The number of rows desired in the resulting matrix.  Only if \code{vals} is a ve
 \item{\dots}{optional arguments to \code{matrix} (e.g., byrow=TRUE, depending on the order for \code{vals}, if a vector).  Only used if \code{vals} is a vector.}
 }
 \details{
-Simply sets up a matrix of parameter coefficients to be used by \code{pextRemes}.  In particular, all parameters/thresholds that are constant (i.e., do not depend on covariate values) should have columns of all ones.  Paremters/threshold that vary in a non-stationary model may have whatever values are of interest.
+Simply sets up a matrix of parameter coefficients to be used by \code{pextRemes}.  In particular, all parameters/thresholds that are constant (i.e., do not depend on covariate values) should have columns of all ones.  Paramters/threshold that vary in a non-stationary model may have whatever values are of interest.
 
 \code{is.qcov} performs some very simple tests to determine if an object is a proper \code{qcov} matrix or not.  It is possible to have a matrix that is not a proper \code{qcov} matrix, but the returned value is TRUE.  It is also possible to have a valid \code{qcov} object that id not appropriate for a particular model.  Mostly this is an internal function.
 }

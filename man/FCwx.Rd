@@ -32,7 +32,7 @@ Snow: numeric daily accumulated snow amount,
 SnCv: numeric daily snow cover amount
 }
 \source{
-Colorado Climate Center, Colorado State University (\url{http://ulysses.atmos.colostate.edu}).
+Originally from the Colorado Climate Center at Colorado State University.  The Colorado state climatologist office no longer provides this data without charge. The data can be obtained from the NOAA/NCDC web site, but there are slight differences (i.e., some missing values for temperature).
 }
 \references{
 Katz, R. W., Parlange, M. B. and Naveau, P.  (2002) Statistics of extremes in hydrology. \emph{Advances in Water Resources}, \bold{25}, 1287--1304.

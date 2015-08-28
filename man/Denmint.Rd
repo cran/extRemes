@@ -17,7 +17,7 @@ Daily minimum temperature (degrees centigrade) for Denver, Colorado from 1949 th
   }
 }
 \source{
-Colorado Climate Center, Colorado State University (\url{http://ulysses.atmos.colostate.edu}).
+Originally, the data came from the Colorado Climate Center at Colorado State University.  The Colorado state climatologist office no longer provides these data without charge. They can be obtained from the NOAA/NCDC web site, but there are slight differences (i.e., some missing values for temperature).
 }
 \examples{
 data(Denmint)

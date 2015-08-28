@@ -1319,10 +1319,12 @@ findpars.fevd.mle <- function(x, use.blocks=FALSE, ..., qcov = NULL) { # Eric 8/
 profliker <- function(object, type=c("return.level", "parameter"), xrange=NULL, return.period=100, which.par=1, nint=20, plot=TRUE,
 			    gr=NULL, method="BFGS", lower=-Inf, upper=Inf, control=list(), ...) {
 
+
     type <- tolower(type)
     type <- match.arg(type)
     designs <- setup.design(object)
     tmp <- datagrabber(object)
+
     if(object$data.name[2] == "") {
 	y <- tmp
 	data <- NULL
@@ -1388,50 +1390,79 @@ profliker <- function(object, type=c("return.level", "parameter"), xrange=NULL, 
 
     } # end of if else 'return.levels' stmts.
 
-    fixedvals <- seq(xrange[1], xrange[2],,nint)
+    fixedvals <- seq(xrange[1], xrange[2],, nint)
     res <- numeric(nint) + NA
+
     if(type=="parameter") ipars <- pars[-which.par]
     else {
+
 	if(is.element(object$type, c("GEV", "Gumbel", "Weibull", "Frechet"))) {
+
 	    if(is.element("location", pnames)) ipars <- pars[pnames != "location"]
 	    else {
+
 		id <- substring(pnames, 1, 2) == "mu"
 		ipars <- pars[!id]
+
 	    }
+
 	} else {
+
 	    if(is.element("scale", pnames)) ipars <- pars[pnames != "scale"]
 	    else if(is.element("log.scale", pnames)) ipars <- pars[pnames != "log.scale"]
 	    else {
+
 		istr <- substring(pnames, 1, 3)
 		id <- (istr == "sig") | (istr == "phi")
 		ipars <- pars[!id]
+
 	    }
+
 	}
 
-	# ipars <- pars
     }
-    for(i in 1:nint) res[i] <- optim(ipars, oevd.profpar, o=object, des=designs, x=y, data=data, u=thresh,
-						fixed.index=which.par, fixed.value=fixedvals[i], which.type=type, rperiod=return.period,
-						gr=gr, method=method, lower=lower, upper=upper, control=control)$value
+
+    for(i in 1:nint) {
+
+	hold <- optim(par = ipars, fn = oevd.profpar, o=object, des=designs, x=y, data=data, u=thresh,
+				fixed.index=which.par, fixed.value=fixedvals[i], which.type=type, rperiod=return.period,
+				gr=gr, method=method, lower=lower, upper=upper, control=control)
+
+ 	ipars <- hold$par
+	res[ i ] <- hold$value
+
+    } # end of for 'i' loop.
    
      res <- -res 
+
      if(plot) {
-	if(type=="parameter") xl <- names(pars)[which.par]
+
+	if(type == "parameter") xl <- names(pars)[which.par]
 	else xl <- paste(return.period, "-", object$period.basis, " return level", sep="")
+
 	xl <- paste(xl, plot.msg, sep="\n")
 
 	if(is.null(args$main)) {
+
 	    msg <- deparse(object$call)
+
 	    if(is.null(args$xlab)) plot(fixedvals, res, type="l", xlab=xl, ylab="Profile Log-Likelihood", main=msg, ...)
 	    else plot(fixedvals, res, type="l", ylab="Profile Log-Likelihood", main=msg, ...)
+
 	} else {
+
 	    if(is.null(args$xlab)) plot(fixedvals, res, type="l", xlab=xl, ylab="Profile Log-Likelihood", ...)
 	    else plot(fixedvals, res, type="l", ylab="Profile Log-Likelihood", ...)
+
 	}
+
 	if(type=="parameter") abline(v=pars[which.par], lty=2, lwd=1.5)
 	else abline(v=rl.fevd(object, period=return.period), lty=2, lwd=1.5)
+
     } # end of if 'plot' stmts.
+
     invisible(res)
+
 } # end of 'profliker' function.
 
 oevd.profpar <- function(p, o, des, x, data=NULL, u=NULL, fixed.index, fixed.value, which.type=c("return.level","parameter"), rperiod=100) {
@@ -1453,76 +1484,111 @@ oevd.profpar <- function(p, o, des, x, data=NULL, u=NULL, fixed.index, fixed.val
     phi <- o$par.models$log.scale
 
     np <- length(p)+1
-    if(which.type=="parameter") {
+
+    if(which.type == "parameter") {
+
         p.tmp <- numeric(np) + NA
         p.tmp[-fixed.index] <- p
         p.tmp[fixed.index] <- fixed.value
+
     } else p.tmp <- p
 
     if(which.type=="parameter") {
+
         if(!is.element(type, c("GP","Beta","Pareto","Exponential"))) {
+
 	    if(which.type=="parameter") {
+
                 X.loc <- des$X.loc
                 nloc <- ncol(X.loc)
                 loc <- rowSums(matrix(p.tmp[1:nloc], n, nloc, byrow=TRUE)*X.loc)
+
 	    } else nloc <- 1
+
         } else {
+
             nloc <- 0
             loc <- 0
+
         }
+
     } else {
+
 	nloc <- 0
 	loc <- 0
+
     } # end of if 'which.type' parameter stmts.
 
     if(which.type=="parameter" || is.element(type, c("GEV", "Gumbel", "Weibull", "Frechet", "PP"))) {
+
         X.sc <- des$X.sc
         nsc <- ncol(X.sc)
         if(phi) scale <- exp(rowSums(matrix(p.tmp[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE)*X.sc))
         else scale <- rowSums(matrix(p.tmp[(nloc+1):(nloc+nsc)], n, nsc, byrow=TRUE)*X.sc)
+
     } else nsc <- 0
 
     if(!is.element(type, c("Gumbel","Exponential"))) {
+
         X.sh <- des$X.sh
         nsh <- ncol(X.sh)
         shape <- rowSums(matrix(p.tmp[(nloc+nsc+1):(nloc+nsc+nsh)], n, nsh, byrow=TRUE)*X.sh)
+
     } else {
+
         nsh <- 0
         shape <- 0
+
     }
 
-    if(!is.element(type, c("GP","Beta","Pareto","Exponential")) && (which.type=="return.level")) {
+    if(!is.element(type, c("GP","Beta","Pareto","Exponential")) && (which.type == "return.level")) {
+
 	if(type != "Gumbel") loc <- fixed.value + (scale/shape) * (1 - (-log(1 - 1/rperiod))^(-shape))
 	else loc <- fixed.value + scale * log(-log(1 - 1/rperiod))
-    } else if(which.type=="return.level") {
+
+    } else if(which.type == "return.level") {
+
 	lam <- mean(x > u)
 	m <- rperiod * npy
 	if(type != "Exponential") {
 	    zid <- shape == 0
 	    if(any(zid)) shape[zid] <- 1e-10
 	    scale <- ((fixed.value - u) * shape)/((m * lam)^shape - 1)
+
 	} else scale <- (fixed.value - u)/log(m * lam)
     }
 
-    if(missing(span)) res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, npy=npy, infval=1e10)  
+    if(is.null(span)) res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, npy=npy, infval=1e10)  
     else res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, span=span, npy=npy, infval=1e10)  
     # if(class(res) == "try-error") res <- 1e10
+
     return(res)
-} # end of 'oevd.prof' function.
+
+} # end of 'oevd.profpar' function.
 
 rl.fevd <- function(x, period=100) {
+
     pmods <- x$par.models
+
     if(is.fixedfevd(x)) {
+
 	p <- x$results$par
+
 	if(any(names(p) == "log.scale")) {
+
 	    id <- names(p) == "log.scale"
 	    p[id] <- exp(p[id])
 	    names(p)[id] <- "scale"
+
 	}
+
 	if(!is.null(x$threshold)) lam <- mean(datagrabber(x)[,1] > x$threshold)
 	else lam <- NULL
+
 	return(rlevd(period=period, loc=p["location"], scale=p["scale"], shape=p["shape"], threshold=x$threshold, type=x$type, npy=x$npy, rate=lam))
+
     } else return(erlevd(x, period=period))
+
 } # end of 'rl.fevd' function.
 
 rextRemes <- function(x, n, ...) {
@@ -2479,7 +2545,7 @@ ci.fevd.mle <- function(x, alpha=0.05, type=c("return.level", "parameter"), retu
 
     	    return(out)
 
-	} else out <- c(p - z.alpha * sqrt(var.theta), p, p + z.alpha * sqrt(var.theta)) # CJP2 - using var.theta
+	} else out <- c(p - z.alpha * sqrt(var.theta[ which.par ]), p, p + z.alpha * sqrt(var.theta[ which.par ])) # CJP2 - using var.theta
 
     } else if(method=="boot") {
 
@@ -2628,7 +2694,9 @@ ci.fevd.mle <- function(x, alpha=0.05, type=c("return.level", "parameter"), retu
 	    theta.hat <- rlevd(period=return.period, loc=th.est[1], scale=th.est[2], shape=th.est[3], threshold=x$threshold, type=x$type, npy=x$npy, rate=lam)
 
         } else stop("ci: invalid type argument.  Must be return.level or parameter.")
+
 	if(is.matrix(sam)) {
+
 	    out <- apply(sam, 1, quantile, probs=c(alpha/2, 1 - alpha/2))
             out.names <- rownames(out)
             out <- rbind(out[1,], theta.hat, out[2,])
@@ -2640,22 +2708,26 @@ ci.fevd.mle <- function(x, alpha=0.05, type=c("return.level", "parameter"), retu
             attr(out, "conf.level") <- (1 - alpha) * 100
 	    attr(out, "R") <- R
             class(out) <- "ci"
+
             return(out)
+
 	} else {
+
 	    out <- quantile(sam, probs=c(alpha/2, 1 - alpha/2))
             out <- c(out[1], mean(sam), out[2])
 	    attr(out, "R") <- R
+
 	}
 	if(verbose) cat("\n", "Finished fitting model to simulated data.\n")
 
-    } else if(method=="proflik") {
+    } else if( method == "proflik" ) {
 
       if(x$type == "PP" && !is.null(x$blocks)) stop("ci: cannot do profile likelihood with blocks.") # CJP
       
 	if(tscale) stop("ci: invalid argument configurations.")
 	
-	if(type=="parameter" && length(which.par) > 1) stop("ci: can only do one parameter at a time with profile likelihood method.")
-	else if(type=="return.level" && length(return.period) > 1) stop("ci: can only do one return level at a time with profile likelihood method.")
+	if( type == "parameter" && length( which.par ) > 1 ) stop("ci: can only do one parameter at a time with profile likelihood method.")
+	else if( type == "return.level" && length( return.period ) > 1 ) stop("ci: can only do one return level at a time with profile likelihood method.")
 	method.name <- "Profile Likelihood"
 	if(verbose) {
 	    if(x$type != "PP") cat("\n", "Calculating profile likelihood.  This may take a few moments.\n")
@@ -2716,7 +2788,9 @@ ci.fevd.mle <- function(x, alpha=0.05, type=c("return.level", "parameter"), retu
     attr(out, "method") <- method.name
     attr(out, "conf.level") <- (1 - alpha) * 100
     class(out) <- "ci"
+
     return(out)
+
 } # end of 'ci.fevd.mle' function.
 
 return.level.ns.fevd.bayesian <- function(x, return.period = 100, ..., burn.in = 499, FUN = "mean", do.ci = FALSE, verbose = FALSE, qcov = NULL, qcov.base = NULL) {

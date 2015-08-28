@@ -122,7 +122,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     if(!missing(data)) out$cov.data <- data
     
     if(method == "MLE" && !is.null(priorFun)) method <- "GMLE"
-    else if(method=="GMLE" && is.null(priorFun)) {
+    else if(method == "GMLE" && is.null(priorFun)) {
 
 	if(shape.fun != ~1) stop("fevd: must supply a prior function for GMLE method when shape parameter varies.")
 
@@ -661,19 +661,21 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
 		}
 
-	    } else if(method=="gmle") {
+	    } else if(method == "gmle") {
 
 		if(!missing(data)) {
 
-		    res <- optim(init.pars, oevdgen, gr=opt.gr, o=out, des=designs, x=x, data=data, u=threshold,
-			span=span/npy, npy=npy, phi=use.phi, blocks=blocks, priorFun=priorFun, priorParams=priorParams,
-			method=opt.method, lower=opt.lower, upper=opt.upper, control=opt.control, hessian=opt.hessian)
+		    res <- optim(init.pars, oevdgen, gr = opt.gr, o = out, des = designs, x = x, data = data,
+			u = threshold, span = span / npy, npy = npy, phi = use.phi, blocks = blocks,
+			priorFun = priorFun, priorParams = priorParams, method = opt.method, lower = opt.lower,
+			upper = opt.upper, control = opt.control, hessian = opt.hessian)
 
                 } else {
 
-		    res <- optim(init.pars, oevdgen, gr=opt.gr, o=out, des=designs, x=x, u=threshold, span=span/npy,
-			npy=npy, phi=use.phi, blocks = blocks, priorFun=priorFun, priorParams=priorParams,
-			method=opt.method, lower=opt.lower, upper=opt.upper, control=opt.control, hessian=opt.hessian)
+		    res <- optim(init.pars, oevdgen, gr = opt.gr, o = out, des = designs, x = x, u = threshold,
+			span = span / npy, npy = npy, phi = use.phi, blocks = blocks, priorFun = priorFun,
+			priorParams = priorParams, method = opt.method, lower = opt.lower, upper = opt.upper,
+			control = opt.control, hessian = opt.hessian)
 
 		}
 
@@ -2082,46 +2084,65 @@ initializer <- function(x, model, threshold, ...) {
 } # end of 'initializer' function.
 
 initializer.lmoments <- function(x, model, threshold, ..., npy, blocks=NULL) {
+
     if(is.element(model, c("gev", "weibull", "frechet", "gumbel"))) {
+
 	lambda <- Lmoments(x)
-	tau3 <- lambda[3]/lambda[2]
-        co <- 2/(3+tau3) - log(2)/log(3)
-        kappa <- 7.8590*co + 2.9554*co^2
+	tau3 <- lambda[3] / lambda[2]
+        co <- 2 / (3 + tau3) - log(2) / log(3)
+        kappa <- 7.8590 * co + 2.9554 * co^2
         g <- gamma(1 + kappa)
-        sigma <- (lambda[2]*kappa)/((1 - 2^(-kappa))*g)
-        mu <- lambda[1] - (sigma/kappa)*(1 - g)
+        sigma <- (lambda[2] * kappa)/((1 - 2^(-kappa)) * g)
+        mu <- lambda[1] - (sigma / kappa) * (1 - g)
         xi <- -kappa
 	res <- c(mu, sigma, xi)
 	names(res) <- c("location", "scale", "shape")
+
     } else if(is.element(model, c("gp", "exponential", "beta", "pareto", "pp"))) {
+
 	n <- length(x)
 	u <- threshold
 	if(length(u)==1) u <- rep(u, n)
 	id <- x > u
 	lambda <- Lmoments(x[id] - u[id])
-        tau2 <- lambda[2]/lambda[1]
-        sigma <- lambda[1]*(1/tau2 - 1)
-        kappa <- 1/tau2 - 2
+        tau2 <- lambda[2] / lambda[1]
+        sigma <- lambda[1] * (1 / tau2 - 1)
+        kappa <- 1 / tau2 - 2
         xi <- -kappa
+
         if(model=="pp") {
+
           if(is.null(blocks)) {
+
             rate <- npy * sum(id)/n
+
           } else {
+
             rate <- sum(id)/(blocks$nBlocks * mean(blocks$weights))
+
           }
+
           sigma <- exp(log(sigma) + xi*log(rate))
           mu <- mean(threshold) - (sigma/xi)*(rate^(-xi) - 1)
           res <- c(mu, sigma, xi, rate)
           names(res) <- c("location", "scale", "shape", "rate")
+
         } else if(model != "exponential") {
+
 	    res <- c(sigma, xi)
 	    names(res) <- c("scale", "shape")
+
 	} else {
+
 	    res <- sigma
 	    names(res) <- c("scale")
+
 	}
+
     } # end of 'which models to estimate' stmts.
+
     return(res)
+
 } # end of 'initializer.lmoments' function.
 
 initializer.moms <- function(x, model, threshold, ..., npy, blocks=NULL) {

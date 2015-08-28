@@ -2,7 +2,7 @@
 \alias{ci.rl.ns.fevd.bayesian}
 \alias{ci.rl.ns.fevd.mle}
 \title{
-Confidence/Credible Intrvals for Effective Return Levels
+Confidence/Credible Intervals for Effective Return Levels
 }
 \description{
 Calculates credible intervals based on the upper and lower alpha/2 quantiles of the MCMC sample for effective return levels from a non-stationary EVD fit using Bayesian estimation, or find normal approximation confidence intervals if estimation method is MLE.

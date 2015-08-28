@@ -18,15 +18,21 @@ This dataset gives the number of hurricanes per year (from 1925 to 1995) as well
 \details{
 More information on these data can be found in Pielke and Landsea (1998) or Katz (2002).
 }
-\source{
-\url{http://sciencepolicy.colorado.edu/pielke/hp_roger/hurr_norm/data.html}
-}
+
+% \source{
+% \url{http://sciencepolicy.colorado.edu/pielke/hp_roger/hurr_norm/data.html} 
+% }
+
 \references{
+
 Katz, R. W. (2002) Stochastic modeling of hurricane damage. \emph{Journal of Applied Meteorology}, \bold{41}, 754--762.
 
 Pielke, R. A. and Landsea, C. W. (1998) Normalized hurricane damages in the United States: 1925-95. \emph{Weather and Forecasting}, \bold{13}, (3), 621--631.
+
 }
+
 \examples{
+
 data(Rsum)
 str(Rsum)
 plot(Rsum)
@@ -39,5 +45,6 @@ plot(	Rsum[,"Year"], Rsum[,"TDam"]/1000, type="h", xlab="Year",
 # Reproduce Fig. 2 of Katz (2002).
 plot(Rsum[,"Year"],Rsum[,"Ct"],type="h", xlab="Year",
     ylab="Number of Hurricanes", ylim=c(0,5), lwd=2)
+
 }
 \keyword{datasets}
