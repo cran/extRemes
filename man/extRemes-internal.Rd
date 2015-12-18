@@ -10,6 +10,7 @@
 \alias{grlevdTracer}
 \alias{histplot.evd}
 \alias{hwmiFun}
+\alias{hwmidFun}
 \alias{hwyear}
 \alias{initializer}
 \alias{initializer.lmoments}

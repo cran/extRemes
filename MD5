@@ -1,5 +1,5 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-3e77c75cd219070233c9d6aad7e8f70e *DESCRIPTION
+7eaab27ef462902727c8ecddba1d8bd2 *DESCRIPTION
 6c163e7082e6cae71476eed24e5bd2df *NAMESPACE
 d908c357dd33978b584f52bf0cc16947 *R/BayesFactor.R
 c868ca419073e0132f802447867105e3 *R/abba.R
@@ -8,6 +8,7 @@ f6e9ea96e8fcb8d9f8a9285b87436085 *R/distfuns.R
 1050c021a5284a3d2b69a3dd10ef8c6b *R/fitdiagnostics.R
 8b558661699a62c9d5ba5994955aab2b *R/fitfuns.R
 189397d248f6eb48b43a00d084de8278 *R/hwmi.R
+c3ba8fc482151eeebe43e5a564f65117 *R/hwmid.R
 9e9662fbeadfd879b344a66303821007 *R/misc.R
 e31910df76453b8d6e2c26eea2725d29 *R/quantiles.R
 2e98344cc0a1be61fa002043548f46b0 *R/thresh.R
@@ -54,7 +55,7 @@ a47b8c112fd14224857bb34b718cbddd *man/decluster.Rd
 a9a4bb8724a44b63f57e04a65a64c7e0 *man/devd.Rd
 53cac5ca0bde4247f260f0591c52242e *man/distill.fevd.Rd
 0fe059a959432d33230f442e8f8213b0 *man/erlevd.Rd
-15553d893eeba551b503ee93803eff18 *man/extRemes-internal.Rd
+64e8b4c416aeca0ab86d21e2b4565a97 *man/extRemes-internal.Rd
 13becc9ca05b3de0a713d2e8e7a0ebf4 *man/extRemes-package.Rd
 e9b2d80d8b5ce9736283ec5e1af42834 *man/extremalindex.Rd
 32d11ec36b7dea75469ed94835db25f0 *man/fevd.Rd
@@ -63,6 +64,7 @@ feea3b20535dd5822be0a22c4b716e2b *man/findAllMCMCpars.Rd
 620b175c65a0d24b8b25e3bde0e7cbb6 *man/fpois.Rd
 d4dcb490556fdcce824e7a0c44e0a354 *man/ftcanmax.Rd
 ecb28496c9db4a4a89f14e4e84c71fd7 *man/hwmi.Rd
+ff829fb7c40ec6a323ea42211d80da62 *man/hwmid.Rd
 623e94407905bc3182d2f519c11010c1 *man/is.fixedfevd.Rd
 1c56441035b1a071502c044c237904ed *man/levd.Rd
 f1edc7f3f6cb0e158bfb00d6b17748eb *man/lr.test.Rd
