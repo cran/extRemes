@@ -32,7 +32,7 @@ character string stating which method should be used to estimate the extremal in
 For runs declustering only, an integer giving the number of threshold deficits to be considered as starting a new cluster.
 }
   \item{na.action}{
-funciton to handle missing values.
+function to handle missing values.
 }
   \item{alpha}{number between zero and one giving the (1 - alpha) * 100 percent confidence level.  For example, alpha = 0.05 corresponds to 95 percent confidence; alpha is the significance level (or probability of type I errors) for hypothesis tests based on the CIs.}
    \item{R}{Number of replicate samples to use in the bootstrap procedure.}

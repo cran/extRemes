@@ -1,12 +1,43 @@
 citHeader("To cite package 'extRemes' in publications use:")
-     
-     bibentry(bibtype="article",
-              title = "New software to analyze how extremes change over time",
-              author = personList(as.person("Eric Gilleland"),
-                                  as.person("Richard W. Katz")),
-	      journal = "Eos",
-              year = 2011,
-    	      volume = 92,
-	      number = 2,
-	      pages = "13--14", 
-                    )
+
+    bibentry(bibtype = "Article",
+
+  title        = "{extRemes} 2.0: An Extreme Value Analysis Package in {R}",
+
+  author       = c(person(given = "Eric",
+
+                          family = "Gilleland",
+
+                          email = "EricG@ucar.edu"),
+
+                   person(given = c("Richard", "W."),
+
+                          family = "Katz")),
+
+  journal      = "Journal of Statistical Software",
+
+  year         = "2016",
+
+  volume       = "72",
+
+  number       = "8",
+
+  pages        = "1--39",
+
+  doi          = "10.18637/jss.v072.i08",
+
+
+
+  header       = "To cite extRemes in publications use:",
+
+  textVersion  =
+
+  paste("Eric Gilleland, Richard W. Katz (2016).",
+
+        "extRemes 2.0: An Extreme Value Analysis Package in R.",
+
+        "Journal of Statistical Software, 72(8), 1-39.",
+
+        "doi:10.18637/jss.v072.i08")
+
+)

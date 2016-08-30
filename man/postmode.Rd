@@ -18,7 +18,7 @@ postmode(x, burn.in = 499, verbose = FALSE, ...)
 An object of class \dQuote{fevd} where component \code{method} = \dQuote{Bayesian}.}
 
   \item{burn.in}{
-The furst burn.in samples from teh posterior distribution will be removed before calculation.
+The furst burn.in samples from the posterior distribution will be removed before calculation.
 }
   \item{verbose}{
 logical, should progress information be printed to the screen.

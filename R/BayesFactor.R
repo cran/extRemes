@@ -27,7 +27,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 	np2 <- dim(m2$results)[2] - 1
 
 	H1 <- try(optimHess(theta1, oevd, gr = grlevd, o = m1, des = des1, x = y1, data = data1, u = m1$threshold,
-		npy = m1$npy, phi = m1$par.models$log.scale, blocks = m1$blocks))
+		npy = m1$npy, phi = m1$par.models$log.scale, blocks = m1$blocks), silent = TRUE)
 
 	if(class(H1) == "try-error") {
 
@@ -44,7 +44,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
 	} else {
 
-	    Sigma1 <- try(solve(H1))
+	    Sigma1 <- try(solve(H1), silent = TRUE)
 
             if(class(Sigma1) == "try-error") {
 
@@ -64,7 +64,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 	} # end of if else 'try error' for m1 stmts
 
 	H2 <- try(optimHess(theta2, oevd, gr = grlevd, o = m2, des = des2, x = y2, data = data2, u = m2$threshold,
-                npy = m2$npy, phi = m2$par.models$log.scale, blocks = m2$blocks))
+                npy = m2$npy, phi = m2$par.models$log.scale, blocks = m2$blocks), silent = TRUE)
 
 	if(class(H2) == "try-error") {
 
@@ -81,7 +81,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
         } else {
 
-            Sigma2 <- try(solve(H2))
+            Sigma2 <- try(solve(H2), silent = TRUE)
 
             if(class(Sigma2) == "try-error") {
 
@@ -100,12 +100,12 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
         } # end of if else 'try error' for m1 stmts
 
-	K1 <- try(chol(Sigma1))
+	K1 <- try(chol(Sigma1), silent = TRUE)
 
 	if(class(K1) == "try-error") det1 <- det(Sigma1) 
 	else det1 <- exp(2 * sum(log(diag(K1)), na.rm = TRUE))
 
-	K2 <- try(chol(Sigma2))
+	K2 <- try(chol(Sigma2), silent = TRUE)
 
         if(class(K2) == "try-error") det2 <- det(Sigma2)
         else det2 <- exp(2 * sum(log(diag(K2)), na.rm = TRUE))

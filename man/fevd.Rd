@@ -182,7 +182,7 @@ There is an approximate relationship between the GEV and GP distribution functio
 
 If interest is in minima or deficits under a low threshold, all of the above applies to the negative of the data (e.g., - max(-X_1,...,-X_n) = min(X_1, ..., X_n)) and \code{fevd} can be used so long as the user first negates the data, and subsequently realizes that the return levels (and location parameter) given will be the negative of the desired return levels (and location parameter), etc.
 
-The study of extremes often involves a paucity of data, and for small sample sizes, L-moments may give better estimates than competing methods, but generalized MLE introduced by Martins and Stedinger (2000, 2001) may give better estimates than the L-moments for such samples.
+The study of extremes often involves a paucity of data, and for small sample sizes, L-moments may give better estimates than competing methods, but penalized MLE (cf. Coles and Dixon, 1999; Martins and Stedinger, 2000; 2001) may give better estimates than the L-moments for such samples.  Martins and Stedinger (2000; 2001) use the terminology generalized MLE, which is also used here.
 
 Non-stationary models:
 
@@ -267,7 +267,7 @@ cannot be produced.
 
 Summaries and Printing:
 
-\code{summary} and \code{print} method functions are available, and give different information depending on the estimation method used.  However, in each case, the parameter estimates are printed to the screen.  \code{summary} returns some useful output (similar to distill, but in a list format).  The \code{print} method function need not be called as one can simply type the name of the \code{fevd} fitted object and return to execute the command (see examples below).  The deviance information criterion (DIC) is calculated for the Bayesian estimation method as DIC = D(mean(theta)) + 2 * pd, where pd = mean(D(theta)) - D(mean(theta)), and D(theta) = -2 * log-likelihood evaluated at teh parameter values given by theta.  The means are taken over the posterior MCMC sample.  The default estimation method for the parameter values from the MCMC sample is to take the mean of the sample (after removing the first burn.in samples).  A good alternative is to set the \code{FUN} argument to \dQuote{postmode} in order to obtain the posterior mode of the sample.
+\code{summary} and \code{print} method functions are available, and give different information depending on the estimation method used.  However, in each case, the parameter estimates are printed to the screen.  \code{summary} returns some useful output (similar to distill, but in a list format).  The \code{print} method function need not be called as one can simply type the name of the \code{fevd} fitted object and return to execute the command (see examples below).  The deviance information criterion (DIC) is calculated for the Bayesian estimation method as DIC = D(mean(theta)) + 2 * pd, where pd = mean(D(theta)) - D(mean(theta)), and D(theta) = -2 * log-likelihood evaluated at the parameter values given by theta.  The means are taken over the posterior MCMC sample.  The default estimation method for the parameter values from the MCMC sample is to take the mean of the sample (after removing the first burn.in samples).  A good alternative is to set the \code{FUN} argument to \dQuote{postmode} in order to obtain the posterior mode of the sample.
 
 Using Blocks to Reduce Computation in PP Fitting:
 
@@ -333,7 +333,9 @@ Akaike, H. (1974).  A new look at the statistical model identification.  \emph{I
 
 Beirlant, J., Goegebeur, Y., Teugels, J. and Segers, J. (2004). \emph{Statistics of Extremes: Theory and Applications}.  Chichester, West Sussex, England, UK: Wiley, ISBN 9780471976479, 522pp.
 
-Coles, S.  (2001). \emph{An introduction to statistical modeling of extreme values}, London: Springer-Verlag.
+Coles, S. G.  (2001). \emph{An introduction to statistical modeling of extreme values}, London: Springer-Verlag.
+
+Coles, S. G. and Dixon, M. J. (1999).  Likelihood-based inference for extreme value models.  \emph{Extremes}, \bold{2} (1), 5--23.
 
 El Adlouni, S., Ouarda, T. B. M. J., Zhang, X., Roy, R, and Bob\'{e}e, B. (2007).  Generalized maximum likelihood estimators for the nonstationary generalized extreme value model.  \emph{Water Resources Research}, \bold{43}, W03410, doi: 10.1029/2005WR004545, 13 pp.
 
@@ -721,10 +723,25 @@ plot(fitPP, "trace")
 # Can see the importance of good starting values!
 
 # Try out for small samples
-# These may error depending on random chance.
-z <- revd(10, loc=10, shape=-0.1)
+# Using one of the data example from Martins and Stedinger (2000)
+z <- c( -0.3955, -0.3948, -0.3913, -0.3161, -0.1657, 0.3129, 0.3386, 0.5979,
+    1.4713, 1.8779, 1.9742, 2.0540, 2.6206, 4.9880, 10.3371 )
+
+tmpML <- fevd( z ) # Usual MLE.
+
+# Find 0.999 quantile for the MLE fit.
+# "True" 0.999 quantile is around 11.79
+p <- tmpML$results$par
+qevd( 0.999, loc = p[ 1 ], scale = p[ 2 ], shape = p[ 3 ] )
+
 tmpLM <- fevd(z, method="Lmoments")
+p <- tmpLM$results
+qevd( 0.999, loc = p[ 1 ], scale = p[ 2 ], shape = p[ 3 ] )
+
 tmpGML <- fevd(z, method="GMLE")
+p <- tmpGML$results$par
+qevd( 0.999, loc = p[ 1 ], scale = p[ 2 ], shape = p[ 3 ] )
+
 plot(tmpLM)
 dev.new()
 plot(tmpGML)

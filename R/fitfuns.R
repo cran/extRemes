@@ -121,8 +121,8 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     out$x <- x
     if(!missing(data)) out$cov.data <- data
     
-    if(method == "MLE" && !is.null(priorFun)) method <- "GMLE"
-    else if(method == "GMLE" && is.null(priorFun)) {
+    if( method == "MLE" && !is.null(priorFun) ) method <- "GMLE"
+    else if( method == "GMLE" && is.null(priorFun) ) {
 
 	if(shape.fun != ~1) stop("fevd: must supply a prior function for GMLE method when shape parameter varies.")
 
@@ -133,7 +133,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
 	} else {
 
-	    warning("fevd: method GMLE selected, but no priorFun given (and no default for the desired df type).  Switching to ML estimation.")
+	    warning("fevd: Using method MLE.  No default for specified arguments.")
 	    method <- "MLE"
 
 	}
@@ -349,7 +349,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	}
 	xtemp <- x
 	class(xtemp) <- "lmoments"
-	ipars1 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks))
+	ipars1 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
 	if(class(ipars1) != "try-error") { # Eric -- 8/6/13
 	    if(ipars1["scale"] <= 0) ipars1["scale"] <- 1e-8
 	    if(method=="lmoments") {
@@ -369,7 +369,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
 	xtemp <- x
 	class(xtemp) <- "moms"
-	ipars2 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks))
+	ipars2 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
 
 	if(class(ipars2) != "try-error") {
 	    if(ipars2["scale"] <= 0) ipars2["scale"] <- 1e-8
@@ -512,9 +512,13 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     } # end of if type is not light tailed stmts.
 
     if(is.element(method, c("mle","gmle"))) {
+
 	if(use.phi) init.pars <- c(initial$location, initial$log.scale, initial$shape)
 	else init.pars <- c(initial$location, initial$scale, initial$shape)
-	if(type=="exponential" && const.scale) {
+
+	if(type == "exponential" && const.scale) {
+
+	    if( method == "gmle" ) warning( "Method MLE used." )
 
 	    res <- list()
 	    excess.id <- x > threshold
@@ -523,16 +527,20 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	    res$par <- mle
 	    k <- sum(excess.id)
 	    res$n <- k
-	    res$value <- k*(log(mle) + 1)
+	    res$value <- k * ( log(mle) + 1 )
 
 	} else {
 
 	    if(!is.null(a <- optim.args)) {
+
 	        anam <- names(a)
 	        if(!is.element("gr",anam)) {
+
 		    if(method=="mle") opt.gr <- grlevd
 		    else opt.gr <- NULL
+
 	        } else opt.gr <- a$gr
+
 	        if(is.null(a$method) && use.phi) opt.method <- ifelse(is.element(type,c("gev","gp","pp", "gumbel")), "BFGS", "L-BFGS-B")
 	        else opt.method <- a$method
 	        if(is.element(type, c("weibull","beta","frechet","pareto"))) opt.method <- "L-BFGS-B"
@@ -622,7 +630,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 
 		    testGPmle <- try(levd(x=x, threshold=threshold, location=rowSums(matrix(mu3, n, nloc)*X.loc),
 				    scale=rowSums(matrix(sigma3, n, ncol(X.sc))*X.sc),
-				    shape=rowSums(matrix(xi3, n, ncol(X.sh))*X.sh), type="PP", npy=npy, blocks=blocks))
+				    shape=rowSums(matrix(xi3, n, ncol(X.sh))*X.sh), type="PP", npy=npy, blocks=blocks), silent = TRUE)
 
 		    if(class(testGPmle) == "try-error") testGPmle <- Inf
 

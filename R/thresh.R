@@ -11,7 +11,8 @@ mrlplot <- function(x, nint=100, alpha=0.05, na.action=na.fail, xlab="Threshold"
     mrlfun <- function(u, x, z) {
 	eid <- x > u
 	xu <- x[eid]
-	n <- sum(xu, na.rm=TRUE)
+	# n <- sum(xu, na.rm=TRUE)
+	n <- length( xu )
 	m <- mean(xu - u)
 	s <- sqrt(var(xu)/n)
 	res <- c(m - s * z, m, m + s * z)
@@ -44,8 +45,8 @@ threshrange.plot <- function(x, r, type=c("GP","PP","Exponential"), nint=10, alp
 	fit <- try(fevd(x=x, threshold=u, type=type, verbose=verbose, ...), silent=verbose)
 	if(verbose) print(fit)
 	if(class(fit) != "try-error") {
-	    if(!is.element(type,c("PP","Exponential"))) res <- try(ci(fit,type="parameter", alpha=a, R=100, tscale=TRUE), silent=verbose)
-	    else res <- try(ci(fit,type="parameter", alpha=a, R=100), silent=verbose)
+	    if(!is.element(type,c("PP","Exponential"))) res <- try(ci(fit,type="parameter", alpha=a, R=100, tscale=TRUE, ... ), silent=verbose)
+	    else res <- try(ci(fit,type="parameter", alpha=a, R=100, ... ), silent=verbose)
 	    if(verbose) print(res)
 # 	    if((class(res) != "try-error") && !is.element(type, c("PP","Exponential")) && fit$method != "Lmoments") {
 # 		if(is.element(fit$method, c("MLE","GMLE"))) {
@@ -86,9 +87,13 @@ threshrange.plot <- function(x, r, type=c("GP","PP","Exponential"), nint=10, alp
     else rownames(out) <- c("low.scale", "scale", "up.scale")
 
     if(set.panels) {
+
+	op <- par()
+
 	if(type=="PP") par(mfrow=c(3,1))
 	else if(type != "Exponential") par(mfrow=c(2,1))
 	xlb <- ""
+
     } else xlb <- "Threshold"
 
     m1 <- deparse(match.call())
@@ -118,5 +123,8 @@ threshrange.plot <- function(x, r, type=c("GP","PP","Exponential"), nint=10, alp
         for(j in 1:nint) lines(c(u.i[j],u.i[j]), out[c("low.scale","up.scale"),j])
     }
 
+    if( set.panels ) par( mfrow = op$mfrow )
+
     invisible(t(out))
+
 } # end of 'threshrange.plot' function.

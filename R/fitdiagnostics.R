@@ -64,9 +64,11 @@ plot.fevd.lmoments <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
     type <- match.arg(type)
     type <- tolower(type)
 
-    if(type=="trace") {
+    if( type == "trace" ) {
+
 	cat("\n", "No trace plot available for L-moments estimation.\n")
 	invisible()
+
     }
 
     args <- list(...)
@@ -96,22 +98,24 @@ plot.fevd.lmoments <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
     if(is.element(type, c("primary","probprob","qq","rl"))) xp <- ppoints(m, a = a)
 
-    if(type=="probprob") probprob.plot.evd(xp=xp, y=y, model=model, loc=loc, scale=scale, shape=shape, u=u, tform=FALSE, eid=eid, obj=x, npy=x$npy, ...)
+    if(type=="probprob") out <- probprob.plot.evd(xp=xp, y=y, model=model, loc=loc, scale=scale, shape=shape, u=u, tform=FALSE, eid=eid, obj=x, npy=x$npy, ...)
 
-    if(type=="primary") {
+    if( type == "primary" ) {
+
+	op <- par()
 
 	if(model != "PP") par(mfrow=c(2,2), oma=c(0,0,2,0))
 	else par(mfrow = c(3, 2), oma = c(0,0,2,0))
 
     }
     
-    if(is.element(type,c("primary","qq"))) quantquant.plot.evd(x=x, xp=xp, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=FALSE, eid=eid, model=model, type=type, ...)
+    if(is.element(type,c("primary","qq"))) out <- quantquant.plot.evd(x=x, xp=xp, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=FALSE, eid=eid, model=model, type=type, ...)
 
-    if(is.element(type,c("primary","qq2"))) quantquant2.plot.evd(x=x, y=y, eid=eid, model=model, type=type)
+    if(is.element(type,c("primary","qq2"))) out <- quantquant2.plot.evd(x=x, y=y, eid=eid, model=model, type=type)
 
-    if(type=="hist") histplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, eid=eid, model=model, hist.args=hist.args, ...)
+    if(type=="hist") out <- histplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, eid=eid, model=model, hist.args=hist.args, ...)
 
-    if(is.element(type, c("primary","density"))) densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, eid=eid,
+    if(is.element(type, c("primary","density"))) out <- densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, eid=eid,
 	model=model, tform=FALSE, density.args=density.args, type=type, ...)
 
     if(is.element(type, c("primary", "Zplot")) && model == "PP") {
@@ -120,15 +124,23 @@ plot.fevd.lmoments <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
 	    eeplot(x = x, type = "Zplot", main = "Zplot", d = d, ...)
 
-	} else eeplot(x = x, type = "Zplot", d = d, ...)
+	} else out <- eeplot(x = x, type = "Zplot", d = d, ...)
 
     }    
 
-    if(is.element(type, c("primary","rl"))) rlplot.evd(x=x, xp=xp, y=y, u=u, eid=eid, rperiods=rperiods, tform=FALSE, model=model, type=type, a=a, ...)
+    if(is.element(type, c("primary","rl"))) out <- rlplot.evd(x=x, xp=xp, y=y, u=u, eid=eid, rperiods=rperiods, tform=FALSE, model=model, type=type, a=a, ...)
 
-    if(type=="primary") mtext(deparse(x$call), line=0.5, outer=TRUE)
+    if( type == "primary" ) { 
 
-    invisible()
+	mtext(deparse(x$call), line=0.5, outer=TRUE)
+
+	par( mfrow = op$mfrow, oma = op$oma )
+
+    } # end of if 'type' is primary stmt.
+
+    if( type != "primary" ) invisible( out )
+    else invisible()
+
 } # end of 'plot.fevd.lmoments' function.
 
 plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot", "hist", "density", "rl", "trace"),
@@ -251,26 +263,34 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
     if(is.element(type, c("primary","probprob","qq","rl"))) xp <- ppoints(m, a = a)
 
-    if(type=="probprob") probprob.plot.evd(xp=xp, y=y, model=model, loc=loc, scale=scale, shape=shape, u=u, tform=tform, eid=eid, obj=x, ytrans=ytrans, npy=x$npy, ...)
+    if( type == "probprob" ) out <- probprob.plot.evd(xp=xp, y=y, model=model, loc=loc, scale=scale, shape=shape, u=u, tform=tform, eid=eid, obj=x, ytrans=ytrans, npy=x$npy, ...)
 
     if(type=="primary") {
+
+	op <- par()
 
 	if(model != "PP") par(mfrow=c(2,2), oma=c(0,0,2,0))
 	else if(!tform) par(mfrow = c(3,2), oma = c(0,0,2,0))
 	else par(mfrow = c(2,2), oma = c(0,0,2,0))
 
-    } else if(type=="trace") par(mfcol=c(2,np), oma=c(0,0,2,0))
+    } else if(type=="trace") {
 
-    if(is.element(type,c("primary","qq"))) quantquant.plot.evd(x=x, xp=xp, y=y, u=u, loc=loc, scale=scale, shape=shape,
+	op <- par()
+
+	par(mfcol=c(2,np), oma=c(0,0,2,0))
+
+    }
+
+    if(is.element(type,c("primary","qq"))) out <- quantquant.plot.evd(x=x, xp=xp, y=y, u=u, loc=loc, scale=scale, shape=shape,
 								    tform=tform, ytrans=ytrans, eid=eid, model=model, type=type, ...)
 
-    if(is.element(type,c("primary","qq2"))) quantquant2.plot.evd(x=x, y=y, eid=eid, model=model, type=type)
+    if(is.element(type,c("primary","qq2"))) out <- quantquant2.plot.evd(x=x, y=y, eid=eid, model=model, type=type)
 
     if(type=="hist") {
 
-	if(model != "PP") histplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, ytrans=ytrans,
+	if(model != "PP") out <- histplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, ytrans=ytrans,
 		tform=tform, eid=eid, model=model, hist.args=hist.args, ...)
-	else if(!tform) histplot.evd(x=x, y=ybm, u=u, loc=loc, scale=scale, shape=shape, ytrans=ytrans,
+	else if(!tform) out <- histplot.evd(x=x, y=ybm, u=u, loc=loc, scale=scale, shape=shape, ytrans=ytrans,
                 tform=tform, eid=eid, model=model, hist.args=hist.args, ...)
 
     }
@@ -281,7 +301,7 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
             eeplot(x = x, type = "Zplot", main = "Z plot", d = d, ...)
 
-        } else eeplot(x = x, type = type, d = d, ...)
+        } else out <- eeplot(x = x, type = type, d = d, ...)
 
     }
 
@@ -292,9 +312,9 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
     } else if(is.element(type, c("primary","density"))) {
 
-        if(model != "PP") densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=tform, eid=eid, ytrans=ytrans,
+        if(model != "PP") out <- densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=tform, eid=eid, ytrans=ytrans,
 								    model=model, density.args=density.args, type=type, ...)
-	else if(!tform) densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=tform, eid=eid, ytrans=ybm,
+	else if(!tform) out <- densplot.evd(x=x, y=y, u=u, loc=loc, scale=scale, shape=shape, tform=tform, eid=eid, ytrans=ybm,
                                                                     model=model, density.args=density.args, type=type, ...)
     }
     
@@ -319,7 +339,7 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 
 	}
 
-	if(do.rlplot) rlplot.evd(x=x, xp=xp, y=y, u=u, eid=eid, rperiods=rperiods, tform=tform, model=model, type=type, a=a, ...)
+	if(do.rlplot) out <- rlplot.evd(x=x, xp=xp, y=y, u=u, eid=eid, rperiods=rperiods, tform=tform, model=model, type=type, a=a, ...)
 
     }
 
@@ -332,16 +352,20 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 	msg <- paste("Posterior Density\n", pnames, sep="")
 	for(i in 1:np) {
 
+	    out1 <- list()
+
 	    if(is.null(density.args)) {
 
-		if(i==1) plot(density(p2[-(1:burn.in),i]), main=msg[i], ...)
-		else plot(density(p2[-(1:burn.in),i]), ylab="", main=msg[i], ...)
+		if(i==1) plot( out1[[ i ]] <- density(p2[-(1:burn.in),i]), main=msg[i], ... )
+		else plot( out1[[ i ]] <- density(p2[-(1:burn.in),i]), ylab="", main=msg[i], ... )
 
 	    } else {
 
 		yd <- do.call("density", c(list(x=p2[-(1:burn.in),i]), density.args))
 		if(i==1) plot(yd, main=msg[i], ...)
 		else plot(yd, ylab="", main=msg[i], ...)
+
+		out1[[ i ]] <- yd
 
 	    }
 
@@ -358,11 +382,24 @@ plot.fevd.bayesian <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zp
 	    # legend("topleft", legend=c("trace","posterior mean","cumsum diff"), col=c("black","gray","darkorange"), lty=1:3, bty="n")
 
 	} # end of for 'i' loop.
+
+	out2 <- data.frame( xt, p2 )
+	colnames( out2 ) <- c( "iteration", pnames )
+	
+	out <- list( posterior.density = out1, MCMC.trace = out2 )
+
     } # end of if 'trace' stmts.
 
-    if(is.element(type, c("primary","trace"))) mtext(deparse(x$call), line=0.5, outer=TRUE)
+    if(is.element(type, c("primary","trace"))) {
 
-    invisible()
+	mtext(deparse(x$call), line=0.5, outer=TRUE)
+
+	par( mfrow = op$mfrow, mfcol = op$mfcol, oma = op$oma )
+
+    }
+
+    if( type != "primary" ) invisible( out )
+    else invisible()
 
 } # end of 'plot.fevd.bayesian' function.
 
@@ -428,6 +465,8 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
     if(type=="primary") {
 
+	op <- par()
+
 	# if(is.element(model, c("GP", "Exponential", "Beta", "Pareto")) && tform) par(mfrow = c(1, 2), oma = c(0,0,2,0))
 	if(model != "PP") par(mfrow=c(2,2), oma=c(0,0,2,0))
 	else if(!tform) par(mfrow = c(3, 2), oma = c(0,0,2,0))
@@ -436,6 +475,7 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
     }
 
     if(type=="probprob") {
+
 	if(is.null(args$main))  m1 <- deparse(x$call)
 
         if(!tform) {
@@ -461,6 +501,9 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
             } else  plot(xp, yp, xlab="Residual Empirical Probabilities", ylab="Residual Model Probabilities", ...)
 	    abline(0,1)
 	}
+
+	out <- data.frame( empirical = xp, model = yp )
+
     } # end of 'probprob' stmts.
 
     if(is.element(type,c("primary","qq"))) {
@@ -478,13 +521,35 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
 		if(type=="primary") m2 <- ""
 		else m2 <- deparse(x$call)
-	        if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2)
-		else plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2, ...)
+	        if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) {
+
+		    plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( y ), model = yq )
+
+		} else {
+
+		    plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2, ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( y[ eid ] ), model = yq )
+
+		}
 
 	    } else {
 
-		if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
-		else plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
+		if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) {
+
+		    plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( y ), model = yq )
+
+		} else {
+
+		    plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( y[ eid ] ), model = yq )
+
+		}
 
 	    }
 
@@ -498,29 +563,70 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 		if(is.element(model, c("GEV","Weibull","Frechet"))) m2 <- paste(m2, "(Gumbel Scale)", sep="\n")
 		else if(is.element(model, c("PP", "GP", "Beta", "Pareto"))) m2 <-  paste(m2, "Exponential Scale", sep="\n")
 
-	        if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) plot(-log(-log(sort(xp))), sort(ytrans), main=m2,
-										    xlab="(Standardized) Model Quantiles", ylab="Empirical Residual Quantiles", ...)
-		else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) plot(-log(1 - xp), sort(ytrans), main=m2,
-										    xlab="(Standardized) Residual Quantiles", ylab="Empirical Residual Quantiles", ...)
-		else if(model=="PP") plot(-log(1 - xp), sort(-log(ytrans)), main=m2, xlab="(Standardized) Residual Quantiles", ylab="Empirical Residual Quantiles", ...)
+	        if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) {
+
+		    plot(-log(-log(sort(xp))), sort(ytrans), main=m2, xlab="(Standardized) Model Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(-log(sort(xp))) )
+
+		} else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) {
+
+		    plot(-log(1 - xp), sort(ytrans), main=m2, xlab="(Standardized) Residual Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(1 - xp) )
+
+		} else if(model=="PP") {
+
+		    plot(-log(1 - xp), sort(-log(ytrans)), main=m2, xlab="(Standardized) Residual Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort(-log(ytrans)), model = -log(1 - xp) )
+
+		}
+
 	    } else {
-		if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) plot(-log(-log(sort(xp))), sort(ytrans), xlab="Model", ylab="Empirical", ...)
-		else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) plot(-log(1 - xp), sort(ytrans), xlab="Model", ylab="Empirical", ...)
-		else if(model=="PP") plot(-log(1 - xp), sort(-log(ytrans)), xlab="Model", ylab="Empirical", ...)
+
+		if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) {
+
+		    plot(-log(-log(sort(xp))), sort(ytrans), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(-log(sort(xp))) )
+
+		} else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) {
+
+		    plot(-log(1 - xp), sort(ytrans), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(1 - xp) )
+
+		} else if(model=="PP") { 
+
+		    plot(-log(1 - xp), sort(-log(ytrans)), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( -log( ytrans ) ), model = -log(1 - xp) )
+
+		}
 	    }
 	} # end of if else 'tform' stmts.
+
 	abline(0,1)
+
     } # end of if 'qq' stmts.
 
     if(is.element(type, c("primary","qq2"))) {
 
       if(is.fixedfevd(x) && !is.null(x$blocks)) {
 
-        z <- rextRemes(x, round(x$blocks$nBlocks * x$npy)) # CJP: for stationary, it generates based on number of obs, so need to tell it how many obs there would be
+        z <- rextRemes(x, round(x$blocks$nBlocks * x$npy))
+# CJP: for stationary, it generates based on number of obs, so need to tell it how many obs there would be
 
       } else {
 
-        z <- rextRemes(x)  # for non-stationary, it generates based on number of exceedances, so this is fine
+	if(!is.element(model, c("PP","GP","Beta","Exponential","Pareto"))) z <- rextRemes(x)
+	else z <- rextRemes( x, n = sum( eid, na.rm = TRUE ) )
+
+# for non-stationary, it generates based on number of exceedances, so this is fine
 
       }
 	if(!is.element(model, c("PP","GP","Beta","Exponential","Pareto"))) {
@@ -544,11 +650,13 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
 	    if(type=="primary") mQQ <- ""
 	    else mQQ <- deparse(x$call)
-	    qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data")
+	    if( type != "qq2" ) qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data")
+	    else out <- qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data")
 
 	} else {
 
-	    qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
+	    if( type != "qq2" ) qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
+	    else out <- qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
 
 	}
 
@@ -709,7 +817,9 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
     
     	} # end of if model is non-stationary GEV stmts.
           } # end of if else '!tform' stmts.
-    
+   
+	    if( type == "density" ) out <- yd
+ 
         } # end of if 'primary plots or density' stmts.
     }
 
@@ -752,24 +862,37 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	}
 
 	if(is.null(hist.args)) {
+
 	    if(!is.null(args$ylim)) {
+
  	        if(is.null(args$main)) {
-	            if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ...)
-	            else  hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ...)
+
+	            if(is.null(args$col)) {
+
+ 			out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ...)
+
+	            } else  out <- hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ...)
+
 	        } else {
-	            if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
-                    else  hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
+
+	            if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
+                    else  out <- hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
+
 	        }
+
 	    } else {
+
 		if(is.null(args$main)) {
-                    if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ylim=c(0,1.5), ...)
-                    else  hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ylim=c(0,1.5), ...)
+
+                    if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ylim=c(0,1.5), ...)
+                    else  out <- hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ylim=c(0,1.5), ...)
                 } else {
-                    if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
-                    else  hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
+                    if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
+                    else out <-  hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
                 }
 	    }
-	} else do.call("hist", c(list(yh), hist.args))
+	} else out <- do.call("hist", c(list(yh), hist.args))
+
     } # end of if 'type = hist' stmts.
 
     if(!(tform && is.element(model, c("PP", "GP", "Beta", "Exponential", "Pareto")))) {
@@ -829,7 +952,7 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
             eeplot(x = x, type = "Zplot", main = "Z plot", d = d, ...)
 
-        } else eeplot(x = x, type = type, d = d, ...)
+        } else out <- eeplot(x = x, type = type, d = d, ...)
 
     }
 
@@ -894,8 +1017,10 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	    xlb <- paste("Return Period (", x$period.basis, "s)", sep="")
 
 	    if(is.null(args$main)) {
+
 		if(!is.null(args$ylim)) plot(xrl, yrl, type="l", log="x", xlab=xlb, ylab=ylb, main=m5, ...)
 		else plot(xrl, yrl, type="l", log="x", ylim=yl, xlab=xlb, ylab=ylb, main=m5, ...)
+
 	    } else {
 		if(!is.null(args$ylim)) plot(xrl, yrl, type="l", log="x", xlab=xlb, ylab=ylb, ...)
 		else plot(xrl, yrl, type="l", log="x", ylim=yl, xlab=xlb, ylab=ylb, ...)
@@ -904,18 +1029,41 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	    lines(xrl, bds[,1], col="gray", lty=2, lwd=2)
 	    lines(xrl, bds[,3], col="gray", lty=2, lwd=2)
 
-	    if(is.element(model, c("GEV", "Gumbel", "Weibull", "Frechet"))) points(-1/log(xp), sort(y))
-	    else if(is.element(model, c("GP", "Beta", "Pareto", "Exponential"))) {
+	    if(is.element(model, c("GEV", "Gumbel", "Weibull", "Frechet"))) {
+
+		points(-1/log(xp), sort(y))
+
+		if( type == "rl" ) out <- list( model = bds,
+						empirical = data.frame( transformed.period = -1/log(xp), sorted.level = sort( y ) ) )
+
+	    } else if(is.element(model, c("GP", "Beta", "Pareto", "Exponential"))) {
+
 		n2 <- x$n
 		if(is.null(a)) xp2 <- ppoints(n2)
 		else xp2 <- ppoints(n2, a=a)
 		sdat <- sort(y)
 		points(-1/log(xp2)[sdat > u]/npy, sdat[sdat > u])
+
+		if( type == "rl" ) {
+
+		    out <- list( model = bds,
+                                 empirical = data.frame( transformed.period = -1/log(xp2)[sdat > u]/npy,
+				 sorted.level = sdat[sdat > u] ) )
+
+		}
+
 	    } else if(model == "PP") {
+
 		if(is.null(a)) xp2 <- ppoints(length(yEmp))
 		else xp2 <- ppoints(length(yEmp), a=a)
 		points(-1/log(xp2), sort(yEmp))
+
+		if( type == "rl" ) out <- list( model = bds,
+                                                empirical = data.frame( transformed.period = -1/log(xp2),
+						sorted.level = sort( yEmp) ) )
+
 	    }
+
 	} else {
 
 	    np <- length(rperiods)
@@ -941,6 +1089,8 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
                 }
 
+		if( type == "rl" ) out <- list( series = y, level = effrl )
+
 	    } else {
 
 	        if(is.null(args$main)) {
@@ -956,6 +1106,8 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	    	    # else plot(y[eid], type="l", xlab="index", ylab=ylb, ...)
 
 	        }
+
+		if( type == "rl" ) out <- list( series = y[ eid ], level = effrl )
 
 	    } # end of if else 'ylim passed via '...' stmts.
 
@@ -978,6 +1130,9 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
     } # end of if 'make return level plots' stmts.
 
     if(type=="trace") {
+
+	op <- par()
+
 	ntheta <- length(pars)
 	if(is.null(prange)) {
 	    theta.hat <- pars
@@ -1020,10 +1175,20 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 	    if(i==1) plot(hold[[i]], type="gradient", main="")
 	    else plot(hold[[i]], type="gradient", main="", ylab="")
 	} # end of second for 'i' loop.
+
+	out <- hold
+
     } # end of if 'type == trace' stmts.
 
-    if(is.element(type, c("primary","trace"))) mtext(deparse(x$call), line=0.5, outer=TRUE)
-    if(type=="trace") invisible(hold)
+    if(is.element(type, c("primary","trace"))) {
+
+	mtext(deparse(x$call), line=0.5, outer=TRUE)
+
+	par( mfrow = op$mfrow, oma = op$oma )
+
+    }
+
+    if( type != "primary" ) invisible( out )
     else invisible()
 
 } # end of 'plot.fevd.mle' function.
@@ -1561,6 +1726,8 @@ oevd.profpar <- function(p, o, des, x, data=NULL, u=NULL, fixed.index, fixed.val
     if(is.null(span)) res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, npy=npy, infval=1e10)  
     else res <- levd(x=x, threshold=u, location=loc, scale=scale, shape=shape, type=type, span=span, npy=npy, infval=1e10)  
     # if(class(res) == "try-error") res <- 1e10
+
+    if( o$method == "GMLE" ) res <- res + do.call( o$priorFun, c( list( x = p.tmp ), o$priorParams ) )
 
     return(res)
 
@@ -3892,7 +4059,9 @@ probprob.plot.evd <- function(xp, y, model, loc, scale, shape, u, tform=FALSE, e
             } else  plot(xp, yp, xlab="Residual Empirical Probabilities", ylab="Residual Model Probabilities", ...)
             abline(0,1)
         }
-    invisible()
+
+    invisible( data.frame( empirical = xp, model = yp ) )
+
 } # end of 'probprob.plot.evd' stmts.
 
 quantquant.plot.evd <- function(x, xp, y, u, loc, scale, shape, tform=FALSE, eid, ytrans=NULL,
@@ -3911,33 +4080,99 @@ quantquant.plot.evd <- function(x, xp, y, u, loc, scale, shape, tform=FALSE, eid
         if(is.null(args$main)) {
             if(type=="primary") m2 <- ""
             else m2 <- deparse(x$call)
-            if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2)
-            else plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2, ...)
+            if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) {
+
+		plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( y ), model = yq )
+
+            } else { 
+
+		plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", main=m2, ...)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( y[ eid ] ), model = yq )
+
+	    }
+
         } else {
-            if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
-            else plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
-        }
-    } else {
-	if(is.null(args$main)) {
-                if(type=="primary") m2 <- ""
-                else m2 <- deparse(x$call)
 
-                if(is.element(model, c("GEV","Weibull","Frechet"))) m2 <- paste(m2, "(Gumbel Scale)", sep="\n")
-                else if(is.element(model, c("PP", "GP", "Beta", "Pareto"))) m2 <-  paste(m2, "Exponential Scale", sep="\n")
+            if(is.element(model, c("GEV","Weibull","Frechet","Gumbel"))) {
 
-                if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) plot(-log(-log(sort(xp))), sort(ytrans), main=m2,
-                                                                                    xlab="(Standardized) Model Quantiles", ylab="Empirical Residual Quantiles", ...)
-                else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) plot(-log(1 - xp), sort(ytrans), main=m2,
-                                                                                    xlab="(Standardized) Residual Quantiles", ylab="Empirical Residual Quantiles", ...)
-                else if(model=="PP") plot(-log(1 - xp), sort(-log(ytrans)), main=m2, xlab="(Standardized) Residual Quantiles", ylab="Empirical Residual Quantiles", ...)
+		plot(yq, sort(y), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( y ), model = yq )
+
             } else {
-                if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) plot(-log(-log(sort(xp))), sort(ytrans), xlab="Model", ylab="Empirical", ...)
-                else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) plot(-log(1 - xp), sort(ytrans), xlab="Model", ylab="Empirical", ...)
-                else if(model=="PP") plot(-log(1 - xp), sort(-log(ytrans)), xlab="Model", ylab="Empirical", ...)
+
+		plot(yq, sort(y[eid]), xlab="Model Quantiles", ylab="Empirical Quantiles", ...)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( y[ eid ] ), model = yq )
+
+	    }
+
+        }
+
+    } else {
+
+	if(is.null(args$main)) {
+
+            if(type=="primary") m2 <- ""
+            else m2 <- deparse(x$call)
+
+            if(is.element(model, c("GEV","Weibull","Frechet"))) m2 <- paste(m2, "(Gumbel Scale)", sep="\n")
+            else if(is.element(model, c("PP", "GP", "Beta", "Pareto"))) m2 <-  paste(m2, "Exponential Scale", sep="\n")
+
+            if( is.element(model, c("GEV","Weibull","Gumbel","Frechet")) ) {
+
+		plot(-log(-log(sort(xp))), sort(ytrans), main=m2, xlab="(Standardized) Model Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(-log(sort(xp))) )
+
+            } else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) {
+
+		 plot(-log(1 - xp), sort(ytrans), main=m2, xlab="(Standardized) Residual Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(1 - xp) )
+
+            } else if(model=="PP") {
+
+		    plot(-log(1 - xp), sort(-log(ytrans)), main=m2, xlab="(Standardized) Residual Quantiles",
+			ylab="Empirical Residual Quantiles", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort(-log(ytrans)), model = -log(1 - xp) )
+
+	        }
+
+            } else {
+
+                if(is.element(model, c("GEV","Weibull","Gumbel","Frechet"))) {
+
+		    plot(-log(-log(sort(xp))), sort(ytrans), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort(ytrans), model = -log(-log(sort(xp))) )
+
+                } else if(is.element(model, c("GP","Beta","Exponential","Pareto"))) {
+
+		    plot(-log(1 - xp), sort(ytrans), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort( ytrans ), model = -log(1 - xp) )
+
+                } else if(model=="PP") {
+
+		    plot(-log(1 - xp), sort(-log(ytrans)), xlab="Model", ylab="Empirical", ...)
+
+		    if( type == "qq" ) out <- data.frame( empirical = sort(-log(ytrans)), model = -log(1 - xp) )
+
+		}
             }
     }
     abline(0,1)
-    invisible()
+
+    if( type == "qq" ) invisible( out )
+    else invisible()
+
 } # end of 'quantquant.plot.evd' funciton.
 
 quantquant2.plot.evd <- function(x, y, eid, model=c("GEV", "GP", "PP", "Gumbel", "Frechet", "Weibull", "Exponential", "Beta", "Pareto"), type=c("primary","qq2"), ...) {
@@ -3947,7 +4182,12 @@ quantquant2.plot.evd <- function(x, y, eid, model=c("GEV", "GP", "PP", "Gumbel",
     type <- match.arg(type)
 
     if(is.fixedfevd(x)) z <- rextRemes(x, n=x$n)
-    else z <- rextRemes(x)
+    else {
+
+	if(!is.element(model, c("PP","GP","Beta","Exponential","Pareto"))) z <- rextRemes(x)
+	else z <- rextRemes( x, n = sum( eid, na.rm = TRUE ) )
+
+    }
 
     if(!is.element(model, c("PP","GP","Beta","Exponential","Pareto"))) {
 
@@ -3970,15 +4210,18 @@ quantquant2.plot.evd <- function(x, y, eid, model=c("GEV", "GP", "PP", "Gumbel",
 
         if(type=="primary") mQQ <- ""
         else mQQ <- deparse(x$call)
-        qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data")
+        if( type != "qq2" ) qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data" )
+	else out <- qqplot(yQQ, z, main=mQQ, xlab=xl, ylab="Quantiles from Model Simulated Data" )
 
     } else {
 
-        qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
+        if( type != "qq2" ) qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
+	else out <- qqplot(yQQ, z, xlab=xl, ylab="Quantiles from Model Simulated Data")
 
     }
 
-    invisible()
+    if( type == "qq2" ) invisible( out )
+    else invisible()
 
 } # end of 'quantquant2.plot.evd' function.
 
@@ -4015,22 +4258,24 @@ histplot.evd <- function(x, y, u=u, loc=loc, scale=scale, shape=shape, ytrans=NU
    if(is.null(hist.args)) {
        if(!is.null(args$ylim)) {
            if(is.null(args$main)) {
-                    if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ...)
-                    else  hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ...)
+                    if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ...)
+                    else  out <- hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ...)
            } else {
-                    if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
-                    else  hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
+                    if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
+                    else  out <- hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ...)
                 }
            } else {
                 if(is.null(args$main)) {
-                   if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ylim=c(0,1.5), ...)
-                   else  hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ylim=c(0,1.5), ...)
+                   if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], main=m4, ylim=c(0,1.5), ...)
+                   else  out <- hist(yh, freq=FALSE, breaks="FD", main=m4, xlab=x$data.name[1], ylim=c(0,1.5), ...)
+
             } else {
-               if(is.null(args$col)) hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
-               else  hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
+
+               if(is.null(args$col)) out <- hist(yh, col="darkblue", freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
+               else out <- hist(yh, freq=FALSE, breaks="FD", xlab=x$data.name[1], ylim=c(0,1.5), ...)
             }
         }
-    } else do.call("hist", c(list(yh), hist.args))
+    } else out <- do.call("hist", c(list(yh), hist.args))
     xh <- seq(min(yh, na.rm=TRUE), max(yh, na.rm=TRUE),,100)
     if(is.element(model, c("Gumbel", "Weibull", "Frechet"))) mod2 <- "GEV"
     else if(is.element(model, c("PP", "Pareto", "Frechet", "Beta", "Exponential"))) mod2 <- "GP"
@@ -4041,7 +4286,7 @@ histplot.evd <- function(x, y, u=u, loc=loc, scale=scale, shape=shape, ytrans=NU
 
     lines(xh, ymod, lty=2, col="blue", lwd=1.5)
 
-    invisible()
+    invisible( out )
 
 } # end of 'hitsplot.evd' function.
 
@@ -4167,7 +4412,7 @@ densplot.evd <- function(x, y, u, loc, scale, shape, tform=FALSE, eid, ytrans=NU
         # if(!is.element(model, c("pp","gp","beta","exponential","pareto"))) points(y, rep(0, length(y)), pch="|", cex=0.5)
         # else points(y[eid], rep(0, length(y[eid])), pch="|", cex=0.5)
 
-    invisible()
+    invisible( yd )
 
 } # end of 'densplot.evd' function.
 
@@ -4250,11 +4495,17 @@ rlplot.evd <- function(x, xp, y, u, eid, rperiods, tform=FALSE, model= c("GEV", 
             sdat <- sort(y)
             points(-1/log(xp2)[sdat > u]/x$npy, sdat[sdat > u])
 
+	    out <- list( model = bds, empirical = data.frame( transformed.points = -1/log(xp2)[sdat > u]/x$npy,
+			sorted.level = sdat[sdat > u] ) )
+
         } else if(model == "PP") {
 
             if(is.null(a)) xp2 <- ppoints(length(yEmp))
             else xp2 <- ppoints(length(yEmp), a=a)
             points(-1/log(xp2), sort(yEmp))
+
+	    out <- list( model = bds, empirical = data.frame( transformed.points = -1/log(xp2),
+                        sorted.level = sort( yEmp ) ) )
 
         }
 
@@ -4274,7 +4525,6 @@ rlplot.evd <- function(x, xp, y, u, eid, rperiods, tform=FALSE, model= c("GEV", 
 
                     if(!is.element(model, c("GP", "Beta", "Exponential", "Pareto"))) plot(y, type="l", xlab="index", main=m5, ylim=yl, ...)
 		    else plot(y[eid], type = "l", xlab = "index", ylim = yl, main = m5, ...)
-
 
         	} else {
 
@@ -4301,6 +4551,8 @@ rlplot.evd <- function(x, xp, y, u, eid, rperiods, tform=FALSE, model= c("GEV", 
 
         for(i in 1:np) lines(effrl[,i], lty=i, col=i+1)
 
+	out <- list( series = y[ eid ], level = effrl )
+
 	if(is.element(model, c("PP", "GP", "Beta", "Exponential", "Pareto"))) {
 
 	    if(length(u) > 1 && all(u == u[1])) u <- u[1]
@@ -4312,7 +4564,8 @@ rlplot.evd <- function(x, xp, y, u, eid, rperiods, tform=FALSE, model= c("GEV", 
 
     } # end of if else '!tform' stmts.
 
-    invisible()
+    if( type == "rl" ) invisible( out )
+    else invisible()
 
 } # end of 'rlplot.evd' function.
 
@@ -4333,6 +4586,8 @@ eeplot <- function(x, type = c("both", "Zplot", "Wplot"), set.pw = FALSE, d = NU
     out <- Tk
 
     if(set.pw) {
+
+	op <- par()
 
         if(type == "both") par(mfrow = c(1, 2), oma = c(0, 0, 2, 0))
         else par(mfrow = c(1, 1), oma = c(0, 0, 2, 0))
@@ -4430,7 +4685,13 @@ eeplot <- function(x, type = c("both", "Zplot", "Wplot"), set.pw = FALSE, d = NU
 	else colnames(out) <- c("Exceed Time", "Wk")
     }
 
-    if(set.pw) mtext(deparse(x$call), line=0.5, outer=TRUE)
+    if(set.pw) {
+
+	mtext(deparse(x$call), line=0.5, outer=TRUE)
+
+	par( mfrow = op$mfrow, oma = op$oma )
+
+    }
 
     attr(out, "call") <- theCall
     class(out) <- "ee"

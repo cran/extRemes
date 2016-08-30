@@ -7,7 +7,7 @@ datagrabber.extremalindex <- function(x, ...) {
     # if(length(a$data.name) == 1) res <- c(get(a$data.name, ...))
     if(length(a$data.name) == 1) res <- c(a$data)
     else {
-	look <- try(get(a$data.name[1], ...))
+	look <- try(get(a$data.name[1], ...), silent = TRUE)
 	if(class(look) == "try-error") look <- a$data
 	nm <- colnames(look)
 	if(!is.null(nm) & is.element(a$data.name[2], nm)) res <- look[,a$data.name[2]]
