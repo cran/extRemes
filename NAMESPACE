@@ -1,7 +1,9 @@
-useDynLib(extRemes)
+useDynLib( extRemes, .registration = TRUE )
 
 # Export all names
 exportPattern(".")
+# export("gevspatial")
+# export("gevspatial_latent")
 
 
 # Import all packages listed as Imports or Depends
@@ -79,6 +81,10 @@ S3method(rextRemes, fevd.lmoments)
 S3method(rextRemes, fevd.mle)
 S3method(setup.design, default)
 S3method(setup.design, fevd)
+S3method(strip, fevd)
+S3method(strip, fevd.bayesian)
+S3method(strip, fevd.lmoments)
+S3method(strip, fevd.mle)
 S3method(summary, fevd)
 S3method(summary, fevd.bayesian)
 S3method(summary, fevd.lmoments)

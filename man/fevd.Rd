@@ -162,9 +162,9 @@ See text books on extreme value analysis (EVA) for more on univariate EVA (e.g.,
 
 The GEV df is given by
 
-    Pr{X <= x} = G(x) = exp[-(1 + shape*(x - location)/scale)^(-1/shape)]
+    Pr(X <= x) = G(x) = exp[-(1 + shape*(x - location)/scale)^(-1/shape)]
 
-for 1 + shape*(x - location) > 0 and scale > 0.  It the shape parameter is zero, then the df is defined by continuity and simplies to
+for 1 + shape*(x - location) > 0 and scale > 0.  If the shape parameter is zero, then the df is defined by continuity and simplies to
 
     G(x) = exp(-exp((x - location)/scale)).
 
@@ -172,7 +172,7 @@ The GEV df is often called a family of distribution functions because it encompa
 
 The generalized Pareo df is given by (Pickands, 1975)
 
-    Pr{X <= x} = F(x) = 1 - [1 + shape*(x - threshold)/scale]^(-1/shape)
+    Pr(X <= x) = F(x) = 1 - [1 + shape*(x - threshold)/scale]^(-1/shape)
 
 where 1 + shape*(x - threshold)/scale > 0, scale > 0, and x > threshold.  If shape = 0, then the GP df is defined by continuity and becomes
 

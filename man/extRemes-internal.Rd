@@ -1,4 +1,7 @@
 \name{extRemes internal}
+\alias{strip.fevd.mle}
+\alias{strip.fevd.lmoments}
+\alias{strip.fevd.bayesian}
 \alias{consecDayMax}
 \alias{cut366thDay}
 \alias{densplot.evd}

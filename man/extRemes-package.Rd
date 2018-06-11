@@ -11,9 +11,7 @@ Versions >= 2.0-0 of this package differ considerably from the original package 
 
 For assistance using \pkg{extRemes} (>= 2.0-0), please see the tutorial at:
 
-\url{http://www.assessment.ucar.edu/toolkit}
-
-where it is also possible to register, which is vital to ensure continued maintenance and support for \pkg{extRemes} (and \pkg{ismev}).
+\url{https://www.jstatsoft.org/article/view/v072i08} 
 
 Extreme Value Statistics:
 

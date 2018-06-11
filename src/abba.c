@@ -1008,3 +1008,16 @@ void R_chol2inv(double *A, int *n)
     }
   }
 }
+
+static const R_CMethodDef CEntries[] = {
+    {"fgevspatial",             (DL_FUNC)   &fgevspatial,              38},
+    {"fgevspatial_latent",      (DL_FUNC)   &fgevspatial_latent,       24},
+    {NULL, NULL, 0}
+};
+
+void R_init_SpatialExtremes(DllInfo *dll)
+{
+    R_registerRoutines(dll, CEntries, NULL, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}
+

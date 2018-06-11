@@ -804,7 +804,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	if(use.phi) res[1,(nloc+1):(nloc+nsc)] <- initial$log.scale
 	else res[1,(nloc+1):(nloc+nsc)] <- initial$scale
 
-	res[1,(nloc+nsc+1):np] <- initial$shape
+	if( type != "Gumbel" ) res[1,(nloc+nsc+1):np] <- initial$shape
 
 	theta.i <- res[1,1:np]
 
@@ -872,7 +872,10 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     out$initial.results <- inout
 
     if(verbose) print(Sys.time() - begin.tiid)
-    class(out) <- "fevd"
+    if( method == "GMLE" ) cl <- "mle"
+    else cl <- tolower( method )
+    # class(out) <- c( "fevd", paste( "fevd.", cl ) )
+    class( out ) <- "fevd"
 
     return(out)
 
@@ -1084,10 +1087,12 @@ parcov.fevd <- function(x) {
 
 distill.fevd <- function(x, ...) {
 
-    if(x$method=="GMLE") newcl <- "fevd.mle"
-    else newcl <- tolower(x$method)
-    class(x) <- paste("fevd.", newcl, sep="")
-    UseMethod("distill",x)
+    if( x$method=="GMLE" ) newcl <- "mle"
+    else newcl <- tolower( x$method )
+    # class(x) <- c( paste("fevd.", newcl, sep=""), class( x ) )
+    # UseMethod("distill",x)
+    res <- get( paste( "distill.fevd.", tolower( x$method ), sep = "" ) )( x = x, ... )
+    return( res )
 
 } # end of 'distill.fevd' function.
 
@@ -1166,9 +1171,10 @@ distill.fevd.mle <- function(x, cov=TRUE, ...) {
 summary.fevd <- function(object, ...) {
 
     if(object$method == "GMLE") newcl <- "mle"
-    else newcl <- tolower(object$method)
-    class(object) <- paste("fevd.", newcl, sep="")
-    UseMethod("summary", object)
+    else newcl <- tolower( object$method )
+    # class(object) <- c( paste("fevd.", newcl, sep=""), class( object ) )
+    # UseMethod("summary", object)
+    get( paste( "summary.fevd.", newcl, sep = "" ) )( object = object, ... )
 
 } # end of 'summary.fevd' function.
 
@@ -1225,7 +1231,7 @@ summary.fevd.bayesian <- function(object, FUN="mean", burn.in=499, ...) {
     # if(const) out$rl <- ci(x, return.period=c(2,20,100), FUN=FUN, burn.in=burn.in)
     pdim <- dim(x$results)
     # out$acceptance.rate <- colMeans(x$results[2:pdim[1], -pdim[2]] != x$results[1:(pdim[1] - 1), -pdim[2] ])
-    out$acceptance.rate <- colMeans(x$chain.info[, 2:(pdim[2] - 1)], na.rm = TRUE)
+    out$acceptance.rate <- colMeans(x$chain.info[, 2:(pdim[2] - 1), drop = FALSE ], na.rm = TRUE)
 
     if(!silent) {
 	cat("\n", "Acceptance Rates:\n")

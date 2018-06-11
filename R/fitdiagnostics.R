@@ -1,6 +1,6 @@
 lr.test <- function(x, y, alpha=0.05, df=1, ...) {
 
-    if(class(x) == "fevd") {
+    if( class( x ) == "fevd" ) {
 
         if(!is.element(x$method, c("MLE", "GMLE"))) stop("lr.test: fit method must be MLE or GMLE")
         l1 <- x$results$value
@@ -48,12 +48,21 @@ lr.test <- function(x, y, alpha=0.05, df=1, ...) {
 plot.fevd <- function(x, type = c("primary", "probprob", "qq", "qq2", "Zplot", "hist", "density", "rl", "trace"),
                     rperiods = c(2, 5, 10, 20, 50, 80, 100, 120, 200, 250, 300, 500, 800), a=0, hist.args=NULL, density.args=NULL, d = NULL, ...) {
 
-    x2 <- x
+    # x2 <- x
 
-    if(is.element(x$method, c("MLE", "GMLE"))) class(x2) <- "fevd.mle"
-    else class(x2) <- paste("fevd.", tolower(x$method), sep="")
+    # if(is.element(x$method, c("MLE", "GMLE"))) class(x2) <- c( "fevd.mle", class( x2 ) )
+    # else class( x2 ) <- c( paste( "fevd.", tolower( x$method ), sep="" ), class( x2 ) )
 
-    UseMethod("plot", x2)
+    # UseMethod("plot", x2)
+    # UseMethod( "plot", x )
+
+    newcl <- if(is.element(x$method, c("MLE", "GMLE")))
+                 "fevd.mle"
+             else
+                 paste( "fevd.", tolower( x$method ), sep="" )
+    get(paste0("plot.", newcl))(x = x, type = type, rperiods = rperiods,
+        a = a, hist.args = hist.args, density.args = density.args,
+        d = d, ...)
 
 } # end of 'plot.fevd' function.
 
@@ -425,7 +434,7 @@ plot.fevd.mle <- function(x, type=c("primary", "probprob", "qq", "qq2", "Zplot",
 
     # Eric -- 8/27/13 -- Don't allow rl plot if model is POT, threshold varies, but parameters are all constant.
     if(is.element(model, c("PP", "GP", "Exponential", "Beta", "Pareto")) && !const.thresh && all(c(const.loc, const.scale, const.shape)) && type == "rl")
-	stop("plot.fevd: invalid type argument for POT models with varying thresholds but constant parameters (are you sure you about this model choice?).")
+	stop("plot.fevd: invalid type argument for POT models with varying thresholds but constant parameters (are you sure about this model choice?).")
 
     tform <- !is.fixedfevd(x)
     if(tform) {
@@ -1245,10 +1254,11 @@ findpars <- function(x, ...) {
 
 findpars.fevd <- function(x, ...) {
     meth <- tolower(x$method)
-    if(meth=="gmle") newcl <- "fevd.mle"
-    else newcl <- paste("fevd.", meth, sep="")
-    class(x) <- newcl
-    UseMethod("findpars",x)
+    if( meth == "gmle" ) meth <- "mle"
+    # newcl <- paste("fevd.", meth, sep="")
+    # class(x) <- c( newcl, class( x ) )
+    # UseMethod( "findpars", x )
+    get( paste( "findpars.fevd.", meth, sep = "" ) )( x = x, ... )
 } # end of 'findpars.fevd' function.
 
 findpars.fevd.lmoments <- function(x, ...) {
@@ -1752,12 +1762,19 @@ rl.fevd <- function(x, period=100) {
 	if(!is.null(x$threshold)) lam <- mean(datagrabber(x)[,1] > x$threshold)
 	else lam <- NULL
 
-	return(rlevd(period=period, loc=p["location"], scale=p["scale"], shape=p["shape"], threshold=x$threshold, type=x$type, npy=x$npy, rate=lam))
+	if( "shape" %in% names( p ) ) {
+
+	    return(rlevd(period=period, loc=p["location"], scale=p["scale"], shape=p["shape"], threshold=x$threshold, type=x$type, npy=x$npy, rate=lam))
+
+ 	} else  return(rlevd(period=period, loc=p["location"], scale=p["scale"], shape=0, threshold=x$threshold, type=x$type, npy=x$npy, rate=lam))
+
 
     } else return(erlevd(x, period=period))
 
 } # end of 'rl.fevd' function.
 
+# TO DO: Add possibility to make random PP draws using the rate from a Poisson
+# instead of forcing the number of excesses to be n.
 rextRemes <- function(x, n, ...) {
 
     UseMethod("rextRemes", x)
@@ -1766,14 +1783,17 @@ rextRemes <- function(x, n, ...) {
 
 rextRemes.fevd <- function(x, n, ...) {
 
-    if(x$method=="GMLE") newcl <- "mle"
-    else newcl <- tolower(x$method)
-    class(x) <- paste("fevd.", newcl, sep="")
-    UseMethod("rextRemes", x)
+    if( x$method == "GMLE" ) newcl <- "mle"
+    else newcl <- tolower( x$method )
+    # class(x) <- c( paste( "fevd.", newcl, sep="" ), class( x ) )
+    # UseMethod("rextRemes", x)
+    get( paste( "rextRemes.fevd.", newcl, sep = "" ) )( x = x, n = n, ... )
 
 } # end of 'rextRemes.fevd' function. 
 
 rextRemes.fevd.lmoments <- function(x, n, ...) {
+
+    if( missing( n ) ) n <- x$n
 
     p <- x$results
     pnames <- names(p)
@@ -2058,10 +2078,12 @@ pextRemes <- function(x, q, lower.tail=TRUE, ...) {
 } # end of 'pextRemes' function.
 
 pextRemes.fevd <- function(x, q, lower.tail=TRUE, ..., qcov=NULL) {
-    if(x$method=="GMLE") newcl <- "mle"
+    if( x$method == "GMLE" ) newcl <- "mle"
     else newcl <- tolower(x$method)
-    class(x) <- paste("fevd.", newcl, sep="")
-    UseMethod("pextRemes", x)
+    # class(x) <- c( paste("fevd.", newcl, sep=""), class( x ) )
+    # UseMethod("pextRemes", x)
+    get( paste( "pextRemes.fevd.", newcl, sep = "" ) )( x = x, q = q, lower.tail = lower.tail, ..., qcov = qcov )
+
 } # end of 'pextRemes.fevd' function.
 
 pextRemes.fevd.lmoments <- function(x, q, lower.tail=TRUE, ...) {
@@ -2348,8 +2370,9 @@ ci.fevd <- function(x, alpha=0.05, type=c("return.level", "parameter"), return.p
 
     if(x$method == "GMLE") newcl <- "fevd.mle"
     else newcl <- paste("fevd.", tolower(x$method), sep="")
-    class(x) <- newcl
-    UseMethod("ci",x)
+    # class(x) <- c( newcl, class( x ) )
+    # UseMethod("ci",x)
+    get( paste( "ci.", newcl, sep = "" ) )( x = x, alpha = alpha, type = type, return.period = return.period, which.par = which.par, R = R, ... )
 
 } # end of 'ci.fevd' function.
 
@@ -3483,8 +3506,10 @@ return.level <- function(x, return.period=c(2, 20, 100), ...) {
 return.level.fevd <- function(x, return.period=c(2, 20, 100), ...) {
   newcl <- tolower(x$method)
   if(newcl == "gmle") newcl <- "mle"
-  class(x) <- paste("fevd.", newcl, sep="")
-  UseMethod("return.level", x)
+  # class(x) <- c( paste("fevd.", newcl, sep=""), class( x ) )
+  # UseMethod("return.level", x)
+    get( paste( "return.level.fevd.", newcl, sep = "" ) )( x = x, return.period = return.period, ... )
+
 } # end of 'return.level.fevd' function.
 
 return.level.fevd.lmoments <- function(x, return.period=c(2, 20, 100), ..., do.ci = FALSE) {
@@ -4726,6 +4751,6 @@ plot.ee <- function(x, pch2 = "+", col2 = "gray", xlab = "Time of Exceeding Thre
 
     if(is.null(args$main)) title(attributes(x)$call)
 
-    invisible()
+    invisible( x )
 
 } # end of 'plot.ee' function.

@@ -185,7 +185,7 @@ abba <- function(y, sites, iters, Qb = NULL, knots = sites, X = cbind(1,sites),
   # C INTERFACE 
   
   np <- npmu + npsig + npxi + 6
-  mc <- .C("fgevspatial", iters, ns, nf, nt, y, Xmu, npmu, Xsig, npsig, Xxi, npxi,
+  mc <- .C( "fgevspatial", iters, ns, nf, nt, y, Xmu, npmu, Xsig, npsig, Xxi, npxi,
     mnbmu, taumu, mnbsig, tausig, mnbxi, tauxi,
     alpha, logbw, beta, logs, u, Qb, dw2,
     MHbeta, MHalpha, MHlogbw, MHs, MHu,
@@ -344,7 +344,7 @@ abba_latent <- function(y, sites, iters, Qb = NULL, X = cbind(1,sites),
   # C INTERFACE 
   
   np <- npmu + npsig + npxi + 4
-  mc <- .C("fgevspatial_latent", iters, ns, nt, y, Xmu, npmu, Xsig, npsig, Xxi, npxi,
+  mc <- .C( "fgevspatial_latent", iters, ns, nt, y, Xmu, npmu, Xsig, npsig, Xxi, npxi,
            mnbmu, taumu, mnbsig, tausig, mnbxi, tauxi,
            beta, Qb, MHbeta, 
            pribeta, pritau, trace,     

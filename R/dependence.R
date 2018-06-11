@@ -100,7 +100,7 @@ taildep <- function(x, y, u, type=c("all", "chi", "chibar"), na.rm=FALSE) {
     n <- length(x)
     if(n != length(y)) stop("taildep: y must have same length as x.")
     if(na.rm) {
-	good <- !is.na(x) && !is.na(y)
+	good <- !is.na(x) & !is.na(y)
 	x <- x[good]
 	y <- y[good]
 	n <- length(x)

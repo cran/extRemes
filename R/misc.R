@@ -247,3 +247,84 @@ blockmaxxer.matrix <- function(x, ..., which = 1, blocks = NULL, blen = NULL, sp
     return(res)
 
 } # end of 'blockmaxxer.matrix' function.
+
+strip <- function( x, use.names = TRUE, ... ) {
+
+    UseMethod( "strip", x )
+
+} # end of 'strip' function.
+
+strip.fevd <- function( x, use.names = TRUE, ... ) {
+
+    if (x$method == "GMLE") newcl <- "mle"
+    else newcl <- tolower(x$method)
+
+    # class(x) <- c( paste("fevd.", newcl, sep = ""), class( x ) )
+    # UseMethod("strip", x)
+
+    get( paste( "strip.fevd.", newcl, sep = "" ) )( x = x, use.names = use.names, ... )
+
+} # end of 'strip.fevd' function.
+
+strip.fevd.mle <- function( x, use.names = TRUE, ... ) {
+
+    out <- x$results$par
+
+    if( !use.names ) names( out ) <- NULL
+
+    return( out )
+
+} # end of 'strip.fevd.mle' function.
+
+strip.fevd.lmoments <- function( x, use.names = TRUE, ... ) {
+
+    out <- x$results
+
+    if( !use.names ) names( out ) <- NULL
+
+    return( out )
+
+} # end of 'strip.fevd.lmoments' function.
+
+strip.fevd.bayesian <- function( x, use.names = TRUE, burn.in = 499, FUN = "mean", ... ) {
+
+    f <- match.fun(FUN)
+    p <- x$results
+    np <- dim(p)[2] - 1
+    p <- p[, -(np + 1)]
+
+    pnames <- colnames(p)
+
+    if (is.element("log.scale", pnames)) {
+
+        id <- pnames == "log.scale"
+        p[, "log.scale"] <- exp(p[, "log.scale"])
+        pnames[id] <- "scale"
+        colnames(p) <- pnames
+
+    }
+
+    if (burn.in != 0) {
+
+        n <- dim(p)[1]
+        if (missing(burn.in)) 
+            if (burn.in <= 2 * n - 1) 
+                burn.in <- floor(n/4)
+            else if (burn.in <= n - 1) 
+                stop("distill: number of MCMC iterations too small compared to burn.in")
+        p <- p[-(1:burn.in), ]
+
+    }
+
+    if( FUN == "mean" ) out <- colMeans(p, na.rm = TRUE)
+    else if( FUN == "postmode" || FUN == "mode" ) out <- postmode( x, burn.in = burn.in )
+    else out <- apply( p, 2, f, ... )
+
+    if( use.names && is.null( names( out ) ) ) names( out ) <- pnames
+    else if( !use.names && !is.null( names( out ) ) ) names( out ) <- NULL
+
+    return( out )
+
+} # end of 'strip.fevd.bayesian' function.
+
+
