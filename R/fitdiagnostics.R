@@ -4683,8 +4683,9 @@ eeplot <- function(x, type = c("both", "Zplot", "Wplot"), set.pw = FALSE, d = NU
 	out <- cbind(out, Zk)
 	colnames(out) <- c("Exceed Time", "Zk")
 
-        qqPlot(Zk, distribution = "exp", xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed Z_k Values",
-		col.lines = "grey", grid = FALSE, ...)
+        # qqPlot(Zk, distribution = "exp", xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed Z_k Values",
+	# 	col.lines = "grey", grid = FALSE, ...)
+	qqplot( qexp( (1:length(Zk) - 0.5)/length(Zk) ), Zk,  xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed Z_k Values" )
 
 	abline(0, 1, col = "darkorange", lty = 2)
 
@@ -4698,8 +4699,9 @@ eeplot <- function(x, type = c("both", "Zplot", "Wplot"), set.pw = FALSE, d = NU
 
         Wk <- (1/p$shape[Tk]) * log(1 + p$shape[Tk] * (y[Tk] - u[Tk])/(p$scale[Tk] + p$shape[Tk] * (u[Tk] - p$location[Tk])))
 
-        qqPlot(Wk, distribution = "exp", xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed W_k Values", 
-		col.lines = "grey", grid = FALSE, ...)
+        # qqPlot(Wk, distribution = "exp", xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed W_k Values", 
+	# 	col.lines = "grey", grid = FALSE, ...)
+	qqplot( qexp( (1:length(Wk) - 0.5)/length(Wk) ), Wk, xlab = "Expected Values\nUnder exponential(1)", ylab = "Observed W_k Values" )
 
 	abline(0, 1, col = "darkorange", lty = 2)
 

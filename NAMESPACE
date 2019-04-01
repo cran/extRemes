@@ -9,13 +9,13 @@ exportPattern(".")
 # Import all packages listed as Imports or Depends
 
 importFrom("graphics", "abline", "hist", "image", "legend", "lines", "mtext", "par", "plot", "points", "title")
-importFrom("stats", "aggregate", "approxfun", "as.ts", "bw.SJ", "cov", "dbeta", "density", "dist", "dnorm",
+importFrom("stats", "aggregate", "approxfun", "as.ts", "bw.SJ", "cov", "dbeta", "density", "dist", "dnorm", "qexp",
     "formula", "integrate", "lm", "model.frame", "model.matrix", "model.response", "na.fail", "na.omit", "optim",
     "optimHess", "pchisq", "pnorm", "ppoints", "predict", "qchisq", "qnorm", "quantile", "rexp", "rnorm", "runif",
     "spline", "var")
 
 import(
-  Lmoments, distillery, car
+  Lmoments, distillery
 )
 
 S3method(blockmaxxer, data.frame)

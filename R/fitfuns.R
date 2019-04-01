@@ -57,12 +57,16 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
         if(!identical(weights, 1) && length(x) != length(weights)) # CJP
           stop("fevd: weights should be the same length as x.") 
 
+        out$missing.values <- is.na( x )
+
         tmp <- cbind(x, data)
         tmp <- na.action(tmp)
         x <- tmp[,1]
         data <- tmp[,-1, drop=FALSE]
 
     } else {
+
+        out$missing.values <- is.na( x )
 
         if(is.formula(x)) stop("fevd: Must provide data argument if you supply a formula to the x argument.")
         x <- na.action(x)
@@ -870,6 +874,8 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
     } else stop("fevd: invalid method argument.")
 
     out$initial.results <- inout
+
+    # if( method %in% c( "MLE", "GMLE" ) && results$convergence != 0 ) warning( print( results$convergence ) )
 
     if(verbose) print(Sys.time() - begin.tiid)
     if( method == "GMLE" ) cl <- "mle"

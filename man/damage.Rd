@@ -15,7 +15,7 @@ Estimated economic damage (billions USD) caused by hurricanes.
   }
 }
 \details{
-More information on these data can be found in Pielke and Landsea (1998) or Katz (2002).  Also see the tutorial at \url{http://www.isse.ucar.edu/extremevalues/evtk.html} for examples using \pkg{extRemes}.
+More information on these data can be found in Pielke and Landsea (1998) or Katz (2002).
 }
 
 \references{

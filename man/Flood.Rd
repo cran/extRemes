@@ -29,7 +29,7 @@ of national wealth uses the net stock of fixed reproducible tangible wealth in m
 and Downton (2000) for more details; see also Katz et al. (2002) for analysis).
 }
 \source{
-NWS web site: \url{http://www.nws.noaa.gov/oh/hic}
+NWS web site: \url{https://www.nws.noaa.gov/}
 }
 \references{ 
 Katz, R. W., Parlange, M. B. and Naveau, P. (2002) Statistics of extremes in hydrology, \emph{Advances in Water Resources}, \bold{25}, 1287--1304.
