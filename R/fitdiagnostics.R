@@ -1381,7 +1381,7 @@ findpars.fevd.bayesian <- function(x, burn.in=499, FUN="mean", use.blocks=FALSE,
 	    if(is.element("shape", pnames)) nsh <- 1
 	    else nsh <- sum(substring(pnames, 1, 2) == "xi")
 
-	    if(!is.element(model, c("GP", "Beta", "Pareto"))) loc <- rowSums(matrix(rep(p[1:nloc], nr), nloc, nr, byrow = TRUE) * qcov[,1:nloc])
+	    if(!is.element(model, c("GP", "Beta", "Pareto"))) loc <- rowSums(matrix(rep(p[1:nloc], nr), nloc, nr, byrow = TRUE) %*% qcov[,1:nloc])
 	    else loc <- NULL
 
 	    scale <- rowSums(matrix(rep(p[(nloc + 1):(nloc + nsc)], nr), nsc, nr, byrow=TRUE) * qcov[,(nloc + 1):(nloc + nsc)])
@@ -1475,13 +1475,13 @@ findpars.fevd.mle <- function(x, use.blocks=FALSE, ..., qcov = NULL) { # Eric 8/
         if(is.element("shape", pnames)) nsh <- 1
         else nsh <- sum(substring(pnames, 1, 2) == "xi")
 
-        if(!is.element(model, c("GP", "Beta", "Pareto"))) loc <- rowSums(matrix(rep(p[1:nloc], nr), nloc, nr, byrow = TRUE) * qcov[,1:nloc])
+        if(!is.element(model, c("GP", "Beta", "Pareto"))) loc <- rowSums(matrix(rep(p[1:nloc], nr), nloc, nr, byrow = TRUE) %*% qcov[,1:nloc])
         else loc <- NULL
 
         scale <- rowSums(matrix(rep(p[(nloc + 1):(nloc + nsc)], nr), nsc, nr, byrow=TRUE) * qcov[,(nloc + 1):(nloc + nsc)])
         if(x$par.models$log.scale) scale <- exp(scale)
 
-        if(!is.element(model, c("Gumbel", "Exponential"))) shape <- rowSums(matrix(rep(p[(nloc + nsc + 1):(nloc + nsc + nsh)], nr), nsh, nr, byrow = TRUE) *
+        if(!is.element(model, c("Gumbel", "Exponential"))) shape <- rowSums(matrix(rep(p[(nloc + nsc + 1):(nloc + nsc + nsh)], nr), nsh, nr, byrow = TRUE) %*%
                 qcov[,(nloc + nsc + 1):(nloc + nsc + nsh)])
         else shape <- NULL
 
