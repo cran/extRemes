@@ -12,6 +12,7 @@
 \alias{grlevd}
 \alias{grlevdTracer}
 \alias{histplot.evd}
+\alias{hist.fbvpot}
 \alias{hwmiFun}
 \alias{hwmidFun}
 \alias{hwyear}
@@ -24,7 +25,11 @@
 \alias{oevdgen}
 \alias{oevd.profpar}
 \alias{percentilefun}
+\alias{plot.fbvpot}
+\alias{plot.xtibbed}
 \alias{plot.grlevdTracer}
+\alias{print.xtibbed}
+\alias{print.fbvpot}
 \alias{probprob.plot.evd}
 \alias{quantilefun}
 \alias{quantquant.plot.evd}
@@ -32,11 +37,16 @@
 \alias{rl.fevd}
 \alias{rlgrad.fevd}
 \alias{rlplot.evd}
+\alias{rlvar}
 \alias{setup.design}
 \alias{setup.design.default}
 \alias{setup.design.fevd}
 \alias{shapePriorBeta}
+\alias{tf}
+\alias{tformRankFrechet}
 \alias{will.accept}
+\alias{xbooterBM}
+\alias{xbooterPOT}
 \title{
   extRemes Internal and Secondary Functions
 }

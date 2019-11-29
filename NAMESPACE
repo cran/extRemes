@@ -10,9 +10,9 @@ exportPattern(".")
 
 importFrom("graphics", "abline", "hist", "image", "legend", "lines", "mtext", "par", "plot", "points", "title")
 importFrom("stats", "aggregate", "approxfun", "as.ts", "bw.SJ", "cov", "dbeta", "density", "dist", "dnorm", "qexp",
-    "formula", "integrate", "lm", "model.frame", "model.matrix", "model.response", "na.fail", "na.omit", "optim",
-    "optimHess", "pchisq", "pnorm", "ppoints", "predict", "qchisq", "qnorm", "quantile", "rexp", "rnorm", "runif",
-    "spline", "var")
+    "formula", "integrate", "lm", "model.frame", "model.matrix", "model.response", "na.fail", "na.omit", "nlminb", 
+    "optim", "optimHess", "pchisq", "pnorm", "ppoints", "predict", "qchisq", "qnorm", "quantile", "rexp", "rnorm",
+    "rpois", "runif", "spline", "var", "ecdf")
 
 import(
   Lmoments, distillery
@@ -58,17 +58,22 @@ S3method(pextRemes, fevd.mle)
 S3method(plot, atdf)
 S3method(plot, declustered)
 S3method(plot, ee)
+S3method(plot, fbvpot)
 S3method(plot, fevd)
 S3method(plot, fevd.bayesian)
 S3method(plot, fevd.lmoments)
 S3method(plot, fevd.mle)
 S3method(plot, grlevdTracer)
+S3method(hist, fbvpot)
 S3method(plot, qqplot)
+S3method(plot, xtibbed)
 S3method(postmode, fevd)
 S3method(print, declustered)
 S3method(print, extremalindex)
+S3method(print, fbvpot)
 S3method(print, fevd)
 S3method(print, return.level)
+S3method(print, xtibbed)
 S3method(return.level, fevd)
 S3method(return.level, fevd.bayesian)
 S3method(return.level, fevd.lmoments)

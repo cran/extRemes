@@ -44,7 +44,7 @@ threshrange.plot <- function(x, r, type=c("GP","PP","Exponential"), nint=10, alp
     thfun <- function(u, x, type, a, verbose, ...) {
 	fit <- try(fevd(x=x, threshold=u, type=type, verbose=verbose, ...), silent=verbose)
 	if(verbose) print(fit)
-	if(class(fit) != "try-error") {
+	if( all( class(fit) != "try-error" ) ) {
 	    if(!is.element(type,c("PP","Exponential"))) res <- try(ci(fit,type="parameter", alpha=a, R=100, tscale=TRUE, ... ), silent=verbose)
 	    else res <- try(ci(fit,type="parameter", alpha=a, R=100, ... ), silent=verbose)
 	    if(verbose) print(res)
@@ -73,7 +73,7 @@ threshrange.plot <- function(x, r, type=c("GP","PP","Exponential"), nint=10, alp
 # 		}
 # 	    }
 	} else res <- fit
-	if(class(res) == "try-error") {
+	if( any( class(res) == "try-error" ) ) {
 	    if(type=="PP") res <- matrix(NA, 3, 3)
 	    else if(type != "Exponential") res <- matrix(NA, 2, 3)
 	    else res <- rep(NA, 3)

@@ -29,7 +29,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 	H1 <- try(optimHess(theta1, oevd, gr = grlevd, o = m1, des = des1, x = y1, data = data1, u = m1$threshold,
 		npy = m1$npy, phi = m1$par.models$log.scale, blocks = m1$blocks), silent = TRUE)
 
-	if(class(H1) == "try-error") {
+	if( any( class(H1) == "try-error" ) ) {
 
 	    warning("BayesFactor: unable to estimate the Hessian at the posterior mode for m1.  Using the covariance of the MCMC sample instead.")
 	    if(!is.na(burn.in) && !is.null(burn.in) && burn.in > 0) {
@@ -46,7 +46,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
 	    Sigma1 <- try(solve(H1), silent = TRUE)
 
-            if(class(Sigma1) == "try-error") {
+            if( any( class(Sigma1) == "try-error" ) ) {
 
                 warning("BayesFactor: unable to find the inverse Hessian at the posterior mode for m1.  Using the covariance of the MCMC sample instead.")
 		if(!is.na(burn.in) && !is.null(burn.in) && burn.in > 0) {
@@ -66,7 +66,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 	H2 <- try(optimHess(theta2, oevd, gr = grlevd, o = m2, des = des2, x = y2, data = data2, u = m2$threshold,
                 npy = m2$npy, phi = m2$par.models$log.scale, blocks = m2$blocks), silent = TRUE)
 
-	if(class(H2) == "try-error") {
+	if( any( class(H2) == "try-error" ) ) {
 
             warning("BayesFactor: unable to estimate the Hessian at the posterior mode for m2.  Using the covariance of the MCMC sample instead.")
             if(!is.na(burn.in) && !is.null(burn.in) && burn.in > 0) {
@@ -83,7 +83,7 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
             Sigma2 <- try(solve(H2), silent = TRUE)
 
-            if(class(Sigma2) == "try-error") {
+            if( any( class(Sigma2) == "try-error" ) ) {
 
                 warning("BayesFactor: unable to find the inverse Hessian at the posterior mode for m2.  Using the covariance of the MCMC sample instead.")
                 if(!is.na(burn.in) && !is.null(burn.in) && burn.in > 0) {
@@ -102,12 +102,12 @@ BayesFactor <- function(m1, m2, burn.in = 499, FUN = "postmode", method = c("lap
 
 	K1 <- try(chol(Sigma1), silent = TRUE)
 
-	if(class(K1) == "try-error") det1 <- det(Sigma1) 
+	if( any( class(K1) == "try-error" ) ) det1 <- det(Sigma1) 
 	else det1 <- exp(2 * sum(log(diag(K1)), na.rm = TRUE))
 
 	K2 <- try(chol(Sigma2), silent = TRUE)
 
-        if(class(K2) == "try-error") det2 <- det(Sigma2)
+        if( any( class(K2) == "try-error" ) ) det2 <- det(Sigma2)
         else det2 <- exp(2 * sum(log(diag(K2)), na.rm = TRUE))
 
 	ll1 <- oevd(p = theta1, o = m1, des = des1, x = y1, data = data1, u = m1$threshold,

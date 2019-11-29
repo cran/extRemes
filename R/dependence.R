@@ -645,7 +645,7 @@ plot.declustered <- function(x, which.plot=c("scatter", "atdf"), qu=0.85, xlab=N
         else lines(1:length(u), u, lty=2)
         if(tmp$groups.name != "NULL") {
 	    if(is.null(bl)) bl <- tmp$groups
-	    if(class(bl) != "try-error") # warning("plot.declustered: unable to get groups for clusters.")
+	    if( all( class(bl) != "try-error" ) ) # warning("plot.declustered: unable to get groups for clusters.")
 	    {
 		m2 <- length(unique(bl))
 	        m3 <- length(bl)

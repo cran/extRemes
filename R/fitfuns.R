@@ -354,7 +354,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	xtemp <- x
 	class(xtemp) <- "lmoments"
 	ipars1 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
-	if(class(ipars1) != "try-error") { # Eric -- 8/6/13
+	if( all( class(ipars1) != "try-error" ) ) { # Eric -- 8/6/13
 	    if(ipars1["scale"] <= 0) ipars1["scale"] <- 1e-8
 	    if(method=="lmoments") {
 	        out$results <- ipars1
@@ -375,7 +375,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	class(xtemp) <- "moms"
 	ipars2 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
 
-	if(class(ipars2) != "try-error") {
+	if( all( class(ipars2) != "try-error" ) ) {
 	    if(ipars2["scale"] <= 0) ipars2["scale"] <- 1e-8
 	} else ipars2 <- NULL
 
@@ -636,7 +636,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 				    scale=rowSums(matrix(sigma3, n, ncol(X.sc))*X.sc),
 				    shape=rowSums(matrix(xi3, n, ncol(X.sh))*X.sh), type="PP", npy=npy, blocks=blocks), silent = TRUE)
 
-		    if(class(testGPmle) == "try-error") testGPmle <- Inf
+		    if( any( class(testGPmle) == "try-error" ) ) testGPmle <- Inf
 
 		} else testGPmle <- Inf
 
@@ -1064,7 +1064,7 @@ parcov.fevd <- function(x) {
 
     hold <- try(suppressWarnings(optimHess(theta.hat, oevd, gr=grlevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks)), silent=TRUE) # CJP
 
-        if((class(hold) != "try-error") && all(!is.na(hold))) {
+        if( all( ( class(hold) != "try-error" ) ) && all( !is.na(hold) ) ) {
 
             cov.theta <- try(suppressWarnings(solve(hold)), silent=TRUE)
 	    if(any(diag(cov.theta) <= 0)) re.do <- TRUE
@@ -1078,10 +1078,10 @@ parcov.fevd <- function(x) {
     if(re.do) {
 
        hold <- try(optimHess(theta.hat, oevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks), silent=TRUE) # CJP
-       if(class(hold) != "try-error" && all(!is.na(hold))) {
+       if( all( class(hold) != "try-error" ) && all(!is.na(hold)) ) {
 
            cov.theta <- try(solve(hold), silent=TRUE)
-	   if(class(cov.theta) == "try-error" || any(diag(cov.theta) <= 0)) cov.theta <- NULL
+	   if( any( class(cov.theta) == "try-error" ) || any(diag(cov.theta) <= 0) ) cov.theta <- NULL
 
 	}
 
