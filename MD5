@@ -1,5 +1,5 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-528f188410e08094f7858bd8191208ae *DESCRIPTION
+886938b18b5068e4affd206a73f40fc1 *DESCRIPTION
 97fe924b73c8d07d169aa90dd4cf1c00 *NAMESPACE
 d78d477c5521f11119dd14ac64d4ddaf *R/BayesFactor.R
 75ecb5a5699f891bee4c820918cac9dc *R/abba.R
@@ -17,7 +17,7 @@ e31910df76453b8d6e2c26eea2725d29 *R/quantiles.R
 a78dd03f49ce2565211a5fdb96cc7412 *R/tformRankFrechet.R
 1642000957b8754ed474f5f4ad51af69 *R/thresh.R
 2d5303344bbba8ecc4b63bd1bce3047e *R/xbooter.R
-ad11542ac432a2253555e8489feaa866 *R/xtibber.R
+67d2ecd277e180f2a5cb97c120c29c8c *R/xtibber.R
 6f0cb052e353c473eac1c73e6fa22f3a *data/CarcasonneHeat.rda
 790bb3d03d035bec0b65c7488ac4cd90 *data/Denmint.rda
 98fbeb4b903b59f07e27036cb31787d9 *data/Denversp.rda
@@ -65,7 +65,7 @@ a9a4bb8724a44b63f57e04a65a64c7e0 *man/devd.Rd
 53cac5ca0bde4247f260f0591c52242e *man/distill.fevd.Rd
 0fe059a959432d33230f442e8f8213b0 *man/erlevd.Rd
 4ded596341c214a9524695b5fa49c398 *man/extRemes-internal.Rd
-d64a913b377423336d0954c71077c17b *man/extRemes-package.Rd
+61b107ba63e987b3c27b6d9a5ee4d43f *man/extRemes-package.Rd
 05185117d49bb5a74628e3caea36c37d *man/extremalindex.Rd
 20d88dcebf19c8b6ee24f553a1c5522a *man/fbvpot.Rd
 3cefe1e662204fb3e1ea352bfbcb04c1 *man/fevd.Rd

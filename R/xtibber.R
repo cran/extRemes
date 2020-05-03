@@ -80,7 +80,7 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
             fixed.value = par, which.type = "parameter",
             lower = lower, upper = upper ) )
 
-	if( all( class( hold ) != "try-error" ) ) p <- hold$par
+	if( class( hold ) != "try-error" ) p <- hold$par
 	else {
 
 	    # TO DO: What to do if the fit above doesn't work?
@@ -98,6 +98,7 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
 	else if( obj2$method == "Lmoments" ) obj2$results <- p
 
 	if( length( cdat ) > 0 ) out <- data.frame( y = rextRemes( obj2 ), cdat )
+	else out <- c( rextRemes( obj2 ) )
 
 	return( out )
 
@@ -118,7 +119,7 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
 
 	y <- datagrabber( object )
 	ydim <- dim( y )
-	if( is.null( ydim ) ) {
+	if( is.null( ydim ) || ydim[ 2 ] == 1 ) {
 
 	    fit <- try( fevd( x = data, threshold = object$threshold, use.phi = pm$log.scale,
 			type = object$type, method = object$method, period.basis = object$period.basis,
@@ -135,7 +136,7 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
 
 	}
 
-	if( any( class( fit ) == "try-error" ) ) return( rep( NA, np ) )
+	if( class( fit ) == "try-error" ) return( rep( NA, np ) )
 
 	sumobj <- summary( fit, silent = TRUE )
 

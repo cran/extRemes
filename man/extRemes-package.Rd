@@ -77,7 +77,7 @@ To see how to cite \pkg{extRemes} in publications or elsewhere, use \code{citati
 }
 
 \section{Acknowledgements}{
-Funding for \pkg{extRemes} was provided by the Weather and Climate Impacts Assessment Science (WCIAS, \url{http://www.assessment.ucar.edu/}) Program at the National Center for Atmospheric Research (NCAR) in Boulder, Colorado. WCIAS is funded by the National Science Foundation (NSF).  The National Center for Atmospheric Research (NCAR) is operated by the nonprofit University Corporation for Atmospheric Research (UCAR) under the sponsorship of the NSF. Any opinions, findings, conclusions, or recommendations expressed in this publication/software package are those of the author(s) and do not necessarily reflect the views of the NSF.
+Funding for \pkg{extRemes} was originally provided by the Weather and Climate Impacts Assessment Science (WCIAS) Program at the National Center for Atmospheric Research (NCAR) in Boulder, Colorado. WCIAS was funded by the National Science Foundation (NSF).  Curent funding is provided by the  Regional  Climate  Uncertainty  Program  (RCUP),  an  NSF-supported  program  at NCAR.  NCAR is operated by the nonprofit University Corporation for Atmospheric Research (UCAR) under the sponsorship of the NSF. Any opinions, findings, conclusions, or recommendations expressed in this publication/software package are those of the author(s) and do not necessarily reflect the views of the NSF.
 }
 
 \references{

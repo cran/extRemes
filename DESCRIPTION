@@ -1,6 +1,6 @@
 Package: extRemes
-Version: 2.0-11
-Date: 2019-11-21
+Version: 2.0-12
+Date: 2020-05-02
 Title: Extreme Value Analysis
 Author: Eric Gilleland
 Maintainer: Eric Gilleland <ericg@ucar.edu>
@@ -11,6 +11,6 @@ Description: Functions for performing extreme value analysis.
 License: GPL (>= 2)
 URL: http://www.ral.ucar.edu/staff/ericg/extRemes
 NeedsCompilation: yes
-Packaged: 2019-11-28 16:30:10 UTC; eric
+Packaged: 2020-05-02 18:45:04 UTC; eric
 Repository: CRAN
-Date/Publication: 2019-11-29 19:50:05 UTC
+Date/Publication: 2020-05-03 20:00:02 UTC
