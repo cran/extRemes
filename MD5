@@ -1,5 +1,5 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-886938b18b5068e4affd206a73f40fc1 *DESCRIPTION
+eda40cb2a17d2023815038e0cd46f1c1 *DESCRIPTION
 97fe924b73c8d07d169aa90dd4cf1c00 *NAMESPACE
 d78d477c5521f11119dd14ac64d4ddaf *R/BayesFactor.R
 75ecb5a5699f891bee4c820918cac9dc *R/abba.R
@@ -38,7 +38,7 @@ d26035df2ed33e8799a333f2f6e0c9ba *data/SEPTsp.rda
 31ddb2f228f716ac29bc943eac44c3a1 *data/ftcanmax.rda
 b783165717d082260e88eebfd0ba08d6 *inst/CITATION
 3b39d398d62e5d29f04a5554da3e9ad2 *man/BayesFactor.Rd
-9e61a8283955b3ca8d6742adb88f97ac *man/CarcasonneHeat.Rd
+df82eddacd8557f213ea712ec83d9423 *man/CarcasonneHeat.Rd
 ffa142b794f663c2dbfb3a6a06e9c7db *man/Denmint.Rd
 d9adc75d404cca55d22844108f640b7b *man/Denversp.Rd
 7b07f1daf339a5b931d21ced997b0a65 *man/FCwx.Rd
@@ -73,8 +73,8 @@ feea3b20535dd5822be0a22c4b716e2b *man/findAllMCMCpars.Rd
 60954f7317481d847bfdd9ca5d23f3b8 *man/findpars.Rd
 620b175c65a0d24b8b25e3bde0e7cbb6 *man/fpois.Rd
 d4dcb490556fdcce824e7a0c44e0a354 *man/ftcanmax.Rd
-ecb28496c9db4a4a89f14e4e84c71fd7 *man/hwmi.Rd
-ff829fb7c40ec6a323ea42211d80da62 *man/hwmid.Rd
+0d1b189d8b45af035e16fb62c9c7ede2 *man/hwmi.Rd
+5baf323443127eb471a311c87098c0da *man/hwmid.Rd
 623e94407905bc3182d2f519c11010c1 *man/is.fixedfevd.Rd
 1c56441035b1a071502c044c237904ed *man/levd.Rd
 caec1f9e3104b8f32665d20cfce9e657 *man/logistic.Rd
@@ -97,7 +97,7 @@ b8f8329406728f34710af508e3cdd9a2 *man/rlevd.Rd
 fe0613698b1927dc4f13eb9d19a8b96a *man/taildep.test.Rd
 f6f05e5895bb70d5e31c6655d789c78e *man/threshrange.plot.Rd
 f9e6b53a15b0226bf2aa8ec7788ae7b9 *man/trans.Rd
-3bd589b9ab858e5486c7b6d222f2cf7e *man/xbooter.Rd
-dcb92bddb31161f24e434d63dce33916 *man/xtibber.Rd
+a5a026b23d38a6c5ee389c147aa581fc *man/xbooter.Rd
+ec1714658f04ca15947c343fc7f61da5 *man/xtibber.Rd
 619d13ce6900fca2139e2139408d39ad *src/Makevars
 b3de733be0ace48b295770ec510d6990 *src/abba.c

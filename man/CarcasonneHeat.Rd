@@ -29,7 +29,7 @@ temperature and precipitation series for the European Climate Assessment. Int. J
 22, 1441-1453.
 
 Data and metadata available at
-\url{http://www.ecad.eu}
+\url{https://www.ecad.eu:443/}
 }
 
 \references{

@@ -46,7 +46,7 @@ pdfy: the estimated density values.  These will be non-negative, but can be zero
 \references{
 Russo, S. and Coauthors, 2014. Magnitude of extreme heat waves in present climate and their projection in a warming world. \emph{J. Geophys. Res.}, doi:10.1002/2014JD022098.
 
-\url{http://www.nature.com/news/russian-summer-tops-universal-heatwave-index-1.16250}
+\url{https://www.nature.com/news/russian-summer-tops-universal-heatwave-index-1.16250}
 }
 \examples{
 

@@ -74,6 +74,12 @@ xtibber(x, type = c("return.level", "parameter"), which.one,
 \author{
 Eric Gilleland
 }
+
+\references{
+Gilleland, E. (2020) Bootstrap methods for statistical inference. Part I: Comparative forecast verification for continuous variables. \emph{Journal of Atmospheric and Oceanic Technology}, \bold{37} (11), 2117 - 2134, doi: 10.1175/JTECH-D-20-0069.1.
+
+Gilleland, E. (2020) Bootstrap methods for statistical inference. Part II: Extreme-value analysis. \emph{Journal of Atmospheric and Oceanic Technology}, \bold{37} (11), 2135 - 2144, doi: 10.1175/JTECH-D-20-0070.1.
+}
 \seealso{
 \code{\link{fevd}}, \code{\link{tibber}}, \code{\link{booter}}
 }
