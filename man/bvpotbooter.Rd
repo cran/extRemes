@@ -52,6 +52,7 @@ Eric Gilleland
 \code{\link{fbvpot}}, \code{\link{booter}}, \code{\link{ci}}
 }
 \examples{
+\dontrun{
 data( "SantaAna" )
 
 Z <- SantaAna[,3:4]
@@ -67,7 +68,7 @@ fit2 <- fbvpot( x = Z, threshold = apply( Z, 2, quantile, probs = 0.95 ),
 fit2booted <- bvpotbooter( fit2, B = 50, rsize = 62, block.length = 7 )
 summary( fit2booted )
 ci( fit2booted, type = "perc" )
-
+}
 }
 \keyword{ distribution }% use one of  RShowDoc("KEYWORDS")
 \keyword{ multivariate }% __ONLY ONE__ keyword per line

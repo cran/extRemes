@@ -1,5 +1,5 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-eda40cb2a17d2023815038e0cd46f1c1 *DESCRIPTION
+98df617dba868edcf1d786698ef3df58 *DESCRIPTION
 97fe924b73c8d07d169aa90dd4cf1c00 *NAMESPACE
 d78d477c5521f11119dd14ac64d4ddaf *R/BayesFactor.R
 75ecb5a5699f891bee4c820918cac9dc *R/abba.R
@@ -55,7 +55,7 @@ ec72dc616767d6cc07ec1bf8d653a718 *man/Tphap.Rd
 ce7deb261ba55c0b7e70002b48d4954f *man/abba.Rd
 10859b962082412863a8a57becd0a65a *man/atdf.Rd
 5c0c10998a001bc53ba80fb596df7775 *man/blockmaxxer.Rd
-b5cc2850af2dc25c93135fd51f8f9e2b *man/bvpotbooter.Rd
+9023c3deb3c2e391e0220f40041d83fe *man/bvpotbooter.Rd
 aacf2cbb161b38b2c0d6c73c2527bafe *man/ci.fevd.Rd
 729be9fce305680897d81feea6e3fb14 *man/ci.rl.ns.fevd.bayesian.Rd
 0625fc7e8e7e37370a43cd239da30f8e *man/damage.Rd
