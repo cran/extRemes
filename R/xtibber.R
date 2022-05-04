@@ -80,7 +80,8 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
             fixed.value = par, which.type = "parameter",
             lower = lower, upper = upper ) )
 
-	if( class( hold ) != "try-error" ) p <- hold$par
+	hc <- class( hold )
+	if( !( "try-error" %in% hc ) ) p <- hold$par
 	else {
 
 	    # TO DO: What to do if the fit above doesn't work?
@@ -136,7 +137,8 @@ function( x, type = c( "return.level", "parameter" ), which.one, tib.method = c(
 
 	}
 
-	if( class( fit ) == "try-error" ) return( rep( NA, np ) )
+	cf <- class( fit )
+	if( "try-error" %in% cf ) return( rep( NA, np ) )
 
 	sumobj <- summary( fit, silent = TRUE )
 

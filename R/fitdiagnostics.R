@@ -1,6 +1,7 @@
 lr.test <- function(x, y, alpha=0.05, df=1, ...) {
 
-    if( class( x ) == "fevd" ) {
+    cx <- class( x )
+    if( "fevd" %in% cx ) {
 
         if(!is.element(x$method, c("MLE", "GMLE"))) stop("lr.test: fit method must be MLE or GMLE")
         l1 <- x$results$value
@@ -11,9 +12,10 @@ lr.test <- function(x, y, alpha=0.05, df=1, ...) {
     else if(is.numeric(x) && length(x)==2) l1 <- x[1]
     else stop("lr.test: invalid x argument.  Must be a single number, length two numeric vector, or an fevd object.")
 
-    if(class(x) != "fevd") dname <- deparse(substitute(x))
+    if( !("fevd" %in% cx ) ) dname <- deparse(substitute(x))
 
-    if(class(y) == "fevd") {
+    cy <- class( y )
+    if( "fevd" %in% cy ) {
 
         if(!is.element(y$method, c("MLE", "GMLE"))) stop("lr.test: fit method must be MLE or GMLE")
         l2 <- y$results$value
@@ -23,14 +25,14 @@ lr.test <- function(x, y, alpha=0.05, df=1, ...) {
     } else if(is.numeric(y) && length(y) == 1) l2 <- y
     else stop("lr.test: invalid y argument.  Must be a single number or an fevd object.")
 
-    if((class(x) == "fevd") && class(y) == "fevd") {
+    if(("fevd" %in% cx) && ( "fevd" %in% cy ) ) {
 
         if(df2 < df1) return(lr.test(x=y, y=x, alpha=alpha, df=df, ...))
         else df <- df2 - df1
 
     }
 
-    if(class(y) != "fevd") dname <- c(dname, deparse(substitute(y)))
+    if(!("fevd" %in% cy ) ) dname <- c(dname, deparse(substitute(y)))
 
     names(dname) <- c("x", "y")
 

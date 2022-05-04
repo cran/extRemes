@@ -11,7 +11,7 @@ Versions >= 2.0-0 of this package differ considerably from the original package 
 
 For assistance using \pkg{extRemes} (>= 2.0-0), please see the tutorial at:
 
-\url{https://www.jstatsoft.org/article/view/v072i08} 
+\doi{10.18637/jss.v072.i08} 
 
 Extreme Value Statistics:
 
@@ -85,7 +85,7 @@ Coles, S.  (2001) \emph{An introduction to statistical modeling of extreme value
 
 Ferro, C. A. T. and Segers, J. (2003). Inference for clusters of extreme values. \emph{Journal of the Royal Statistical Society B}, \bold{65}, 545--556.
 
-Gilleland, E. and Katz, R. W. (2011). New software to analyze how extremes change over time. \emph{Eos}, 11 January, \bold{92}, (2), 13--14.
+Gilleland, E. and Katz, R. W. (2011). New software to analyze how extremes change over time. \emph{Eos}, 11 January, \bold{92}, (2), 13--14, \doi{10.18637/jss.v072.i08}.
 }
 
 \keyword{ package }

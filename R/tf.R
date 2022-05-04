@@ -28,7 +28,8 @@ tf <- function( fit, type = "Frechet", ... ) {
 
     } # end of internal 'tfun' function.
 
-    if( class( fit ) == "fevd" ) out <- tfun( fit, ... )
+    cf <- class( fit )
+    if( "fevd" %in% cf ) out <- tfun( fit, ... )
     else out <- lapply( fit, tfun, ... )
 
     out <- cbind( out[[ 1 ]], out[[ 2 ]] )

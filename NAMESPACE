@@ -1,4 +1,4 @@
-useDynLib( extRemes, .registration = TRUE )
+# useDynLib( extRemes, .registration = TRUE )
 
 # Export all names
 exportPattern(".")
