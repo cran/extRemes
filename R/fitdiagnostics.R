@@ -1296,12 +1296,20 @@ findpars.fevd.bayesian <- function(x, burn.in=499, FUN="mean", use.blocks=FALSE,
         if(is.element(model, c("PP","GEV","Gumbel","Weibull","Frechet"))) {
             loc <- p["location"]
             nloc <- 1
-        } else loc <- NULL
+        } else {
+	
+		loc <- NULL
+		nloc <- 0
+
+		}
 
         scale <- p["scale"]
 
-        if(!is.element(model, c("Gumbel","Exponential"))) shape <- p["shape"]
-        else shape <- NULL
+        if(!is.element(model, c("Gumbel","Exponential"))) {
+	
+	    shape <- p["shape"]
+
+        } else shape <- NULL
  
        ytrans <- NULL
 
@@ -1321,7 +1329,12 @@ findpars.fevd.bayesian <- function(x, burn.in=499, FUN="mean", use.blocks=FALSE,
 	        nloc <- ncol(X.loc)
                 loc <- rowSums(matrix(p[1:nloc], x$n, nloc, byrow=TRUE) * X.loc)
 
-              } else loc <- NULL
+              } else {
+	      
+	          loc <- NULL
+		  nloc <- 0
+
+		  }
           
               X.sc <- designs$X.sc
               nsc <- ncol(X.sc)
@@ -1344,7 +1357,13 @@ findpars.fevd.bayesian <- function(x, burn.in=499, FUN="mean", use.blocks=FALSE,
 	        nloc <- ncol(X.loc)
                 loc <- rowSums(matrix(p[1:nloc], x$blocks$nBlocks, nloc, byrow=TRUE) * X.loc)
 
-              } else loc <- NULL
+              } else {
+	      
+	          loc <- NULL
+
+		 nloc <- 0
+
+		  }
           
               X.sc <- x$blocks$designs$X.sc
               nsc <- ncol(X.sc)

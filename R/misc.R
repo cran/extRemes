@@ -8,7 +8,7 @@ datagrabber.extremalindex <- function(x, ...) {
     if(length(a$data.name) == 1) res <- c(a$data)
     else {
 	look <- try(get(a$data.name[1], ...), silent = TRUE)
-	if( any( class(look) == "try-error" ) ) look <- a$data
+	if( is(look, "try-error" ) ) look <- a$data
 	nm <- colnames(look)
 	if(!is.null(nm) & is.element(a$data.name[2], nm)) res <- look[,a$data.name[2]]
 	else res <- look[,as.numeric(a$data.name[2])]
@@ -22,14 +22,14 @@ datagrabber.declustered <- function(x, ...) {
 
     if(length(a$data.name) == 1) {
 	res <- c(try(get(a$data.name, ...), silent=TRUE))
-	if( any( class(res) == "try-error" ) ) {
+	if( is(res, "try-error" ) ) {
 	    # res <- NULL
 	    res <- a$data
 	    return(res)
 	}
     } else {
 	look <- try(get(a$data.name[1], ...), silent=TRUE)
-	if( any( class(look) == "try-error" ) ) {
+	if( is(look, "try-error" ) ) {
 	    # res <- NULL
 	    res <- a$data
 	    return(res)

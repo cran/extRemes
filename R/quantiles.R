@@ -139,7 +139,7 @@ shiftplot <- function(x, y, pch = 20, xlab = "x Quantiles", ylab = "y Quantiles"
     } # end of 'shiftplot' function.
 
 # qqevd <- function( object, conf=NULL, ...) {
-#    if( class( object) == "gev.fit") {
+#    if( is( object, "gev.fit") {
 # 	n <- length( object$data)
 # 	x <- (1:n)/(n + 1)
 # 	if( object$trans) {
@@ -153,7 +153,7 @@ shiftplot <- function(x, y, pch = 20, xlab = "x Quantiles", ylab = "y Quantiles"
 # 		v <- apply( d, 1, q.form, m=object$cov)
 # 	   }
 # 	} # end of if 'trans' stmts.
-#    } else if( class( object) == "gpd.fit") {
+#    } else if( is( object, "gpd.fit") {
 # 
 #    } else {
 # 

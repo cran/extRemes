@@ -23,7 +23,7 @@ xbooterBM <- function( data, fevd.object, return.period, qcov, qcov.base, init, 
 
     } # end of whether or not there is a 'data' argument stmt.
 
-    if( any( class( fit ) == "try-error" ) ) return( rep( NA, np ) )
+    if( is( fit, "try-error" ) ) return( rep( NA, np ) )
 
     nomen <- fevd.object$parnames
     res <- c( distill( fit, cov = FALSE ) )[ 1:length( nomen ) ]
@@ -110,7 +110,7 @@ xbooterPOT <- function( data, fevd.object, return.period, qcov, qcov.base, init,
 
     }
 
-    if( any( class( fit ) == "try-error" ) ) return( rep( NA, np ) )
+    if( is( fit, "try-error" ) ) return( rep( NA, np ) )
 
     nomen <- fevd.object$parnames
     res <- c( distill( fit, cov = FALSE ) )[ 1:length( nomen ) ]

@@ -354,7 +354,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	xtemp <- x
 	class(xtemp) <- "lmoments"
 	ipars1 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
-	if( all( class(ipars1) != "try-error" ) ) { # Eric -- 8/6/13
+	if( !is( ipars1, "try-error" ) ) { # Eric -- 8/6/13
 	    if(ipars1["scale"] <= 0) ipars1["scale"] <- 1e-8
 	    if(method=="lmoments") {
 	        out$results <- ipars1
@@ -375,7 +375,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 	class(xtemp) <- "moms"
 	ipars2 <- try(initializer(xtemp, model=type, threshold=threshold, npy=npy, blocks=blocks), silent = TRUE)
 
-	if( all( class(ipars2) != "try-error" ) ) {
+	if( !is(ipars2, "try-error" ) ) {
 	    if(ipars2["scale"] <= 0) ipars2["scale"] <- 1e-8
 	} else ipars2 <- NULL
 
@@ -636,7 +636,7 @@ fevd <- function(x, data, threshold=NULL, threshold.fun=~1, location.fun=~1, sca
 				    scale=rowSums(matrix(sigma3, n, ncol(X.sc))*X.sc),
 				    shape=rowSums(matrix(xi3, n, ncol(X.sh))*X.sh), type="PP", npy=npy, blocks=blocks), silent = TRUE)
 
-		    if( any( class(testGPmle) == "try-error" ) ) testGPmle <- Inf
+		    if( is(testGPmle, "try-error" ) ) testGPmle <- Inf
 
 		} else testGPmle <- Inf
 
@@ -1064,7 +1064,7 @@ parcov.fevd <- function(x) {
 
     hold <- try(suppressWarnings(optimHess(theta.hat, oevd, gr=grlevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks)), silent=TRUE) # CJP
 
-        if( all( ( class(hold) != "try-error" ) ) && all( !is.na(hold) ) ) {
+        if( !is(hold, "try-error" ) && all( !is.na(hold) ) ) {
 
             cov.theta <- try(suppressWarnings(solve(hold)), silent=TRUE)
 	    if(any(diag(cov.theta) <= 0)) re.do <- TRUE
@@ -1078,10 +1078,10 @@ parcov.fevd <- function(x) {
     if(re.do) {
 
        hold <- try(optimHess(theta.hat, oevd, o=x, des=designs, x=xdat, data=data, u=x$threshold, npy=x$npy, phi=phiU, blocks=x$blocks), silent=TRUE) # CJP
-       if( all( class(hold) != "try-error" ) && all(!is.na(hold)) ) {
+       if( !is(hold, "try-error" ) && all(!is.na(hold)) ) {
 
            cov.theta <- try(solve(hold), silent=TRUE)
-	   if( any( class(cov.theta) == "try-error" ) || any(diag(cov.theta) <= 0) ) cov.theta <- NULL
+	   if( is(cov.theta, "try-error" ) || any(diag(cov.theta) <= 0) ) cov.theta <- NULL
 
 	}
 
@@ -2078,7 +2078,22 @@ oevdgen <- function(p, o, des, x, data = NULL, u = NULL, span, npy, phi = FALSE,
 
 } # end of 'oevdgen' function.
 
-shapePriorBeta <- function(x, p, q) {
+shapePriorBeta <- function( x, p, q ) {
+
+    xi <- x[ length(x) ]
+    if( xi >= -0.5 & xi <= 0.5 ) {
+
+        -( 0.5 + xi )^( q-1 ) * ( 0.5 - xi )^( p-1 ) / beta(q,p)
+
+    } else {
+
+        1e16
+
+    } # end of if else 'xi between -0.5 and 0.5' stmts.
+
+} # end of 'shapePriorBeta' function.
+
+shapePriorBetaOld <- function(x, p, q) {
     ##
     ## Function to calculate the GMLE prior for the shape parameter.
     ##
@@ -2095,7 +2110,7 @@ shapePriorBeta <- function(x, p, q) {
 
     return(res)
 
-} # end of 'shapePriorBeta' function.
+} # end of 'shapePriorBetaOld' function.
 
 initializer <- function(x, model, threshold, ...) {
 

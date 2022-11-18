@@ -42,6 +42,7 @@
 \alias{setup.design.default}
 \alias{setup.design.fevd}
 \alias{shapePriorBeta}
+\alias{shapePriorBetaOld}
 \alias{tf}
 \alias{tformRankFrechet}
 \alias{will.accept}
