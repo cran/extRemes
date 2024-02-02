@@ -61,7 +61,7 @@ Coles, S., Heffernan, J. E., and Tawn, J. A. (1999) Dependence measures for extr
 
 de Haan, L. and Ferreira, A. (2006) \emph{Extreme Value Theory: An Introduction}.  New York, NY, USA: Springer, 288pp.
 
-Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkh\"{a}user, 530pp., 3rd edition.
+Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkhauser, 530pp., 3rd edition.
 
 Sibuya, M. (1960) Bivariate extreme statistics.  \emph{Ann. Inst. Math. Statist.}, \bold{11}, 195--210.
 

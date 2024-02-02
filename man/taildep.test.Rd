@@ -54,7 +54,7 @@ A list object of class \dQuote{htest} is returned with components:
   \item{p.value}{numeric between 0 and 1 giving the p-value for the test.}
 }
 \references{
-Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkh\"{a}user, 530pp., 3rd edition.
+Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkhauser, 530pp., 3rd edition.
 }
 \author{
 Eric Gilleland

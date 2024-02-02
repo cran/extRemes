@@ -22,7 +22,7 @@ Ground level ozone readings in parts per billion (ppb) are recorded hourly at oz
 For more analysis on the original data regarding the U.S. EPA NAAQS for ground-level ozone, see Fuentes (2003), Gilleland and Nychka (2005) and Gilleland et al. (2006).  These data are in the form required by the \code{rlarg.fit} function of Stuart Coles available in the R package \pkg{ismev}; see Coles (2001) for more on the r-th largest order statistic model and the function \code{rlarg.fit}.
 }
 \source{
-Data was originally provided by the U.S. EPA, and can be obtained (daily maximum 8-hour average ozone for all five seasons from 1995 to 1999) from the Geophysical Statistics Project (GSP) at the National Center for Atmospheric Research (NCAR) at \url{http://www.image.ucar.edu/Data/} along with the orignal longitude/latitude coordinates for the stations.
+Data was originally provided by the U.S. EPA
 }
 \references{
 Coles, S. (2001) \emph{An Introduction to Statistical Modeling of Extreme Values}. London, U.K.: Springer-Verlag, 208pp.

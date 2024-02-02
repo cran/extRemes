@@ -44,11 +44,11 @@ The auto-tail dependence function using chi(u) and/or chibar(u) employs X agains
 
 The associated estimators for the auto-tail dependence functions employed by these functions are based on the above two coefficients of tail dependence, and are given by Reiss and Thomas (2007) Eq (2.65) and (13.28) for a lag h as
 
-    rho.hat(u, h) = sum(min(x_i, x_{i+h}) > sort(x)[floor(n*u)])/(n*(1-u))   [based on chi]
+    rho.hat(u, h) = sum( min(x_i, x_(i+h) ) > sort(x)[floor(n*u)])/(n*(1-u))   [based on chi]
 
 and
 
-    rhobar.hat(u, h) = 2*log(1 - u)/log(sum(min(x_i,x_{i+h}) > sort(x)[floor(n*u)])/(n - h)) - 1.
+    rhobar.hat(u, h) = 2*log(1 - u)/log(sum(min(x_i,x_(i+h)) > sort(x)[floor(n*u)])/(n - h)) - 1.
 
 Some properties of the above dependence coefficients, chi(u), chi, and chibar(u) and chibar, are that 0 <= chi(u), chi <= 1, where if X and Y are stochastically independent, then chi(u) = 1 - u, and chibar = 0.  If X = Y (perfectly dependent), then chi(u) = chi = 1.  For chibar(u) and chibar, we have that -1 <= chibar(u), chibar <= 1.  If U = V, then chibar = 1.  If chi = 0, then chibar < 1 (tail independence with chibar determining the degree of dependence).
 }
@@ -71,7 +71,7 @@ Coles, S., Heffernan, J. E., and Tawn, J. A. (1999) Dependence measures for extr
 
 de Haan, L. and Ferreira, A. (2006) \emph{Extreme Value Theory: An Introduction}.  New York, NY, USA: Springer, 288pp.
 
-Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkh\"{a}user, 530pp., 3rd edition.
+Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkhauser, 530pp., 3rd edition.
 
 Sibuya, M. (1960) Bivariate extreme statistics.  \emph{Ann. Inst. Math. Statist.}, \bold{11}, 195--210.
 }

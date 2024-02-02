@@ -337,7 +337,7 @@ Coles, S. G.  (2001). \emph{An introduction to statistical modeling of extreme v
 
 Coles, S. G. and Dixon, M. J. (1999).  Likelihood-based inference for extreme value models.  \emph{Extremes}, \bold{2} (1), 5--23.
 
-El Adlouni, S., Ouarda, T. B. M. J., Zhang, X., Roy, R, and Bob\'{e}e, B. (2007).  Generalized maximum likelihood estimators for the nonstationary generalized extreme value model.  \emph{Water Resources Research}, \bold{43}, W03410, doi: 10.1029/2005WR004545, 13 pp.
+El Adlouni, S., Ouarda, T. B. M. J., Zhang, X., Roy, R, and Bobee, B. (2007).  Generalized maximum likelihood estimators for the nonstationary generalized extreme value model.  \emph{Water Resources Research}, \bold{43}, W03410, doi: 10.1029/2005WR004545, 13 pp.
 
 Gilleland, E. and Katz, R. W. (2011). New software to analyze how extremes change over time. \emph{Eos}, 11 January, \bold{92}, (2), 13--14.
 
@@ -351,7 +351,7 @@ Martins, E. S. and Stedinger, J. R. (2001).  Generalized maximum likelihood Pare
 
 Pickands, J. (1975). Statistical inference using extreme order statistics.  \emph{Annals of Statistics}, \bold{3}, 119--131.
 
-Reiss, R.-D. and Thomas, M. (2007). \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkh\"{a}user, 530pp., 3rd edition.
+Reiss, R.-D. and Thomas, M. (2007). \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkhauser, 530pp., 3rd edition.
 
 Schwarz, G. E. (1978).  Estimating the dimension of a model.  \emph{Annals of Statistics}, \bold{6}, 461--464.
 

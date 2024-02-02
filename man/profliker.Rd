@@ -31,7 +31,7 @@ If a parameter is of interest, this number tells for which component of the para
 The profile likelihood is calculated for a sequence of \code{nint} values covering \code{xrange}.
 }
   \item{plot}{
-logical; should a plot of the likelihood be made?  Note that this is controlled by the \code{verbose} argument in the ]code{ci} method function for MLE \code{fevd} objects when \dQuote{proflik} is chosen as the method for finding confidence intervals.  It is usually a good idea to plot the profile likelihood to see if the confidence intervals are really found or not.
+logical; should a plot of the likelihood be made?  Note that this is controlled by the \code{verbose} argument in the \code{ci} method function for MLE \code{fevd} objects when \dQuote{proflik} is chosen as the method for finding confidence intervals.  It is usually a good idea to plot the profile likelihood to see if the confidence intervals are really found or not.
 }
   \item{gr, method, lower, upper, control}{
 optional arguments to \code{optim}.

@@ -61,7 +61,7 @@ For the stationary case only, any optional arguments to the \code{ci} function. 
 \details{
 The extreme value distributions (EVD's) are generalized extreme value (GEV) or generalized Pareto (GP).  The point process characterization is an equivalent form, but is not handled here.  The GEV df is given by
 
-    Pr{X <= x} = G(x) = exp[-{1 + shape*(x - location)/scale}^(-1/shape)]
+    Pr(X <= x) = G(x) = exp[-(1 + shape*(x - location)/scale)^(-1/shape)]
 
 for 1 + shape*(x - location) > 0 and scale > 0.  It the shape parameter is zero, then the df is defined by continuity and simplies to
 
@@ -71,7 +71,7 @@ The GEV df is often called a family of df's because it encompasses the three typ
 
 The generalized Pareo df is given by (Pickands, 1975)
 
-    Pr{X <= x} = F(x) = 1 - [1 + shape*(x - threshold)/scale]^(-1/shape)
+    Pr(X <= x) = F(x) = 1 - [1 + shape*(x - threshold)/scale]^(-1/shape)
 
 where 1 + shape*(x - threshold)/scale > 0, scale > 0, and x > threshold.  If shape = 0, then the GP df is defined by continuity and becomes
 
@@ -123,7 +123,7 @@ Jenkinson, A. F. (1955) The frequency distribution of the annual maximum (or min
 
 Pickands, J. (1975) Statistical inference using extreme order statistics.  \emph{Annals of Statistics}, \bold{3}, 119--131.
 
-Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkh\"{a}user, 530pp., 3rd edition.
+Reiss, R.-D. and Thomas, M. (2007) \emph{Statistical Analysis of Extreme Values: with applications to insurance, finance, hydrology and other fields}. Birkhauser, 530pp., 3rd edition.
 
 von Mises, R. (1936) La distribution de la plus grande de n valeurs, \emph{Rev. Math. Union Interbalcanique} \bold{1}, 141--160.
 }
