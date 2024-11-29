@@ -8,7 +8,7 @@ citHeader("To cite package 'extRemes' in publications use:")
 
                           family = "Gilleland",
 
-                          email = "EricG@ucar.edu"),
+                          email = "eric.gilleland@colostate.edu"),
 
                    person(given = c("Richard", "W."),
 

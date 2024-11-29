@@ -27,7 +27,7 @@ Several analyses have been performed on streamflow at this location (see, e.g., 
 Meerschaert (1998), Dettinger and Diaz (2000); and, for extreme stream flow, Katz et al. (2002) Sec. 5.2.2).
 }
 \source{
-U.S. Geological Survey (\url{http://water.usgs.gov/nwis/peak}) for Salt River peak flows.
+U.S. Geological Survey for Salt River peak flows.
 NOAA Climate Prediction Center (\url{http://www.cpc.ncep.noaa.gov/data/indices}) for seasonal mean
 Darwin pressures.
 }

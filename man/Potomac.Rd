@@ -20,7 +20,7 @@ Potomac River peak stream flow (cfs) data for water years (Oct-Sep) 1895 through
 These data (up to 1986) have been analyzed by Smith (1987) and this entire dataset by Katz et al. (2002) Sec. 2.3.2.
 }
 \source{
-U.S. Geological Survey (\url{http://water.usgs.gov/nwis/peak}).
+U.S. Geological Survey.
 }
 \references{
 Katz, R. W., Parlange, M. B. and Naveau, P. (2002) Statistics of extremes in hydrology. \emph{Advances in Water Resources}, \bold{25}, 1287--1304. 

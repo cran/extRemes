@@ -125,7 +125,7 @@ Eric Gilleland
 }
 
 \seealso{
-\code{\link{fevd}}, \code{\link{ci.rl.ns.fevd.bayesian}}, \code{\link{ci}}
+\code{\link{fevd}}, \code{\link{ci.rl.ns.fevd.bayesian}}, \code{\link[distillery:ci]{distillery::ci}}
 }
 \examples{
 

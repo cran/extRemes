@@ -102,7 +102,7 @@ Eric Gilleland
 }
 
 \seealso{
-\code{\link{extremalindex}}, \code{\link{datagrabber}}, \code{\link{fevd}}
+\code{\link{extremalindex}}, \code{\link{fevd}}
 }
 \examples{
 y <- rnorm(100, mean=40, sd=20)

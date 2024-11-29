@@ -46,7 +46,7 @@ Gilleland, E. (2020) Bootstrap methods for statistical inference. Part I: Compar
 Gilleland, E. (2020) Bootstrap methods for statistical inference. Part II: Extreme-value analysis. \emph{Journal of Atmospheric and Oceanic Technology}, \bold{37} (11), 2135 - 2144, doi: 10.1175/JTECH-D-20-0070.1.
 }
 \seealso{
-\code{\link{fevd}}, \code{\link{booter}}, \code{\link{xtibber}}, \code{\link{ci.fevd}}
+\code{\link{fevd}}, \code{\link[distillery:booter]{distillery::booter}}, \code{\link{xtibber}}, \code{\link{ci.fevd}}
 }
 \examples{
 set.seed( 409 )

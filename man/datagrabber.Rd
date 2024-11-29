@@ -38,7 +38,7 @@ Eric Gilleland
 }
 
 \seealso{
-\code{\link{datagrabber}}, \code{\link{extremalindex}}, \code{\link{decluster}}, \code{\link{fevd}}, \code{\link{get}}
+\code{\link[distillery:datagrabber]{d[distillery::datagrabber}}, \code{\link{extremalindex}}, \code{\link{decluster}}, \code{\link{fevd}}, \code{\link{get}}
 }
 \examples{
 y <- rnorm(100, mean=40, sd=20)

@@ -60,7 +60,7 @@ Eric Gilleland
 }
 
 \seealso{
-\code{\link{fevd}}, \code{\link{ci.fevd}}, \code{\link{distill}}
+\code{\link{fevd}}, \code{\link{ci.fevd}}, \code{\link[distillery:distill]{distillery::distill}}
 }
 \examples{
 

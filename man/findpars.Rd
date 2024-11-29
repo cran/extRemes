@@ -52,7 +52,7 @@ A list object is returned with components
 Eric Gilleland
 }
 \seealso{
-\code{\link{fevd}}, \code{\link{distill}}, \code{\link{parcov.fevd}}
+\code{\link{fevd}}, \code{\link[distillery:distill]{distillery::distill}}, \code{\link{parcov.fevd}}
 }
 \examples{
 z <- revd(100, loc=20, scale=0.5, shape=-0.2)

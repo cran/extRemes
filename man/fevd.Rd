@@ -388,11 +388,11 @@ To grab the parameters of a fitted \code{fevd} model, see: \code{\link{findpars}
 To calculate the parameter covariance, see:
     \code{\link{optimHess}}, \code{\link{parcov.fevd}}
 
-To see more about the \pkg{extRemes} method functions described here, see: \code{\link{ci}} and \code{\link{distill}}
+To see more about the \pkg{extRemes} method functions described here, see: \code{\link[distillery:ci]{distillery::ci}} and \code{\link[distillery:distill]{distillery::distill}}
 
 To calculate effective return levels and CI's for MLE and Bayesian estimation of non-stationary models, see \code{\link{ci.rl.ns.fevd.bayesian}}, \code{\link{ci.rl.ns.fevd.mle}} and \code{\link{return.level}}
 
-To obtain the original data set from a fitted \code{fevd} object, use: \code{\link{datagrabber}}
+To obtain the original data set from a fitted \code{fevd} object, use: \code{\link[distillery:datagrabber]{distillery::datagrabber}}
 
 To calculate the profile likelihood, see: \code{\link{profliker}}
 
