@@ -1,5 +1,5 @@
 393a5ca445f6965873eca0259a17f833 *COPYING
-31b204f4450934982f1081775822c657 *DESCRIPTION
+da0386b3da0f0f1e5ba461964096881d *DESCRIPTION
 7101264c4513c415922d227dd0c4a97e *NAMESPACE
 eac5df5624c246097596eb90422c056e *R/BayesFactor.R
 c67cf0463c00240c95792031af410357 *R/dependence.R
@@ -15,7 +15,7 @@ a78dd03f49ce2565211a5fdb96cc7412 *R/tformRankFrechet.R
 eb091b8270fd5c2df50573fb9337d5d3 *R/thresh.R
 6eae1ac2fa9637eda2aa179197ae2945 *R/xbooter.R
 522d0f7e56596a7fd025bafc9ff9f17d *R/xtibber.R
-1dda19015f0aa969acee990c150e3ac9 *build/partial.rdb
+181b5ac5a69bd3e3e542680739e88fd5 *build/partial.rdb
 6f0cb052e353c473eac1c73e6fa22f3a *data/CarcasonneHeat.rda
 790bb3d03d035bec0b65c7488ac4cd90 *data/Denmint.rda
 98fbeb4b903b59f07e27036cb31787d9 *data/Denversp.rda
@@ -40,12 +40,12 @@ df82eddacd8557f213ea712ec83d9423 *man/CarcasonneHeat.Rd
 ffa142b794f663c2dbfb3a6a06e9c7db *man/Denmint.Rd
 d9adc75d404cca55d22844108f640b7b *man/Denversp.Rd
 7b07f1daf339a5b931d21ced997b0a65 *man/FCwx.Rd
-9677da4ecce73bbd49a8e27084241a9f *man/Flood.Rd
+cca597beb48da26000de2193a932fb9d *man/Flood.Rd
 e98385b3510a9db49222d9532c9bacd2 *man/Fort.Rd
 3d6c0d28a201de1c56d60ce68a8c03de *man/HEAT.Rd
 85625729ac03e02b77801e740e739d53 *man/Ozone4H.Rd
 2286c70452e31b3464006f3d53164b70 *man/PORTw.Rd
-f89ffcbe877032e8733068efe8716ee6 *man/Peak.Rd
+d88233c473e06f3fb53f91dfa5bd65d7 *man/Peak.Rd
 4e9b540727fd1ec63f430bbefbc73cee *man/Potomac.Rd
 fe858c31022fe4c7caf2b4e94961e341 *man/Rsum.Rd
 9a4bba89a860eaba5ab7012d39cfe9f9 *man/SantaAna.Rd

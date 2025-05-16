@@ -28,7 +28,7 @@ Meerschaert (1998), Dettinger and Diaz (2000); and, for extreme stream flow, Kat
 }
 \source{
 U.S. Geological Survey for Salt River peak flows.
-NOAA Climate Prediction Center (\url{http://www.cpc.ncep.noaa.gov/data/indices}) for seasonal mean
+NOAA Climate Prediction Center for seasonal mean
 Darwin pressures.
 }
 \references{
